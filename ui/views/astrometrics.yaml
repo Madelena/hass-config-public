@@ -1,0 +1,347 @@
+# MAXIMALIST DASHBOARD
+# Astrometrics Showxating
+# Made by Madelena Mak 2022
+
+title: Astrometrics
+path: astrometrics
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 32px auto 32px
+  grid-template-areas: |
+    ". cc ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(max-width: 870px)':
+      grid-template-columns: 0 auto 0
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        '(min-width: 2320px)':
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(720px, 1fr) [col-end])'
+        '(max-width: 800px)':
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])'
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            '(max-width: 800px)':
+              grid-template-columns: 1fr
+          margin: -1px
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            content: >
+              # Sol System
+
+              Welcome to Sector 001. R3 (Strong) Flare at 9:55 am EDT on 10 May, 2022. Sky is clear for observations.
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 2
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_my_website
+                    name: OPAS Tynan ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: 'https://MadelenaMak.com'
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: sensor.my_last_fm_play_count
+                    name: Last.fm ↗
+                    icon: 'mdi:music'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: 'https://last.fm/user/pakkei'
+
+
+      # [Column] The Sun
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: SOL
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+              grid-template-rows: auto
+              grid-column-gap: 32px
+              margin: -1px
+            cards:
+
+              - type: vertical-stack
+                cards:
+                  - type: markdown
+                    content: '### Coronal Mass Ejections (CMEs)'
+                    style: 'ha-card {background: none;}'
+
+                  - type: picture
+                    image: https://services.swpc.noaa.gov/images/animations/lasco-c3/latest.jpg
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    card_mod:
+                      style: >
+                        :host {margin-bottom: 16px !important;}
+                        ha-card {border-radius: 50%; filter:grayscale(1) brightness(.85)
+                        contrast(2.5); border: 2px solid rgba(255,255,255,.1); height: auto !important; }
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+                      grid-template-rows: auto
+                      margin: -1
+                    cards:
+
+                      - type: 'custom:decluttering-card'
+                        template: mini_graph_tile
+                        variables:
+                          - entities:
+                            - entity: sensor.noaa_space_weather_solar_wind_speed
+                          - title: Solar Wind Speed
+                          - aspect_ratio: 2/1
+                        view_layout:
+                          grid-column: span 2
+
+                      - type: 'custom:decluttering-card'
+                        template: mini_graph_tile
+                        variables:
+                          - entities:
+                            - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bt
+                          - title: Magnetic Fields - Bt
+
+                      - type: 'custom:decluttering-card'
+                        template: mini_graph_tile
+                        variables:
+                          - entities:
+                            - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bz
+                          - title: Magnetic Fields - Bz
+
+                      - type: 'custom:decluttering-card'
+                        template: mini_graph_tile
+                        variables:
+                          - entities:
+                            - entity: sensor.noaa_space_weather_noon_10_7cm_radio_flux
+                          - title: 10.7cm Radio Flux
+
+              - type: vertical-stack
+                cards:
+                  - type: markdown
+                    content: '### Aurora Forecast'
+                    style: 'ha-card {background: none;}'
+
+                  - type: picture
+                    image: >-
+                      https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    card_mod:
+                      style: >
+                        :host {margin-bottom: 16px !important;}
+                        ha-card {border-radius: 50%; filter:grayscale(.8) contrast(1);
+                        border: 2px solid rgba(255,255,255,.1); overflow: hidden;
+                        aspect-ratio: 1/1;} img { width: 125% !important; top: -12.5%;
+                        position: relative; left: -12.5%;}
+
+                  # - type: custom:list-card
+                  #   entity: sensor.noaa_space_weather_alerts
+                  #   title: Space Weather Alerts
+                  #   feed_attribute: entries
+                  #   columns:
+                  #     - field: product_id
+
+      # Space Weather, Solar Flare
+
+
+      # [Column] The System Only Dreams in Total Darkness
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: SYSTEM
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+              grid-template-rows: auto
+              grid-column-gap: 32px
+              margin: -1px
+            cards:
+
+              - type: vertical-stack
+                cards:
+
+                  - type: markdown
+                    content: '### Inner Planets'
+                    style: 'ha-card {background: none;}'
+
+                  - type: iframe
+                    url: >-
+                      https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=0&cz=350&fov=45
+                    aspect_ratio: 100%
+                    card_mod:
+                      style: >
+                        :host {margin-bottom: 16px !important;}
+                        ha-card { overflow: hidden; border-radius: 50%; border: 2px solid
+                        rgba(255,255,255,.1); }
+
+                        iframe { width: 300% !important; height: 300% !important; position:
+                        relative; top: -100% !important; left: -100% !important; transform:
+                        scale(1.75);}
+
+              - type: vertical-stack
+                cards:
+
+                  - type: markdown
+                    content: '### The Belt + Outer Planets'
+                    style: 'ha-card {background: none;}'
+
+                  - type: iframe
+                    url: >-
+                      https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=0&cz=7500&fov=45
+                    aspect_ratio: 100%
+                    card_mod:
+                      style: >
+                        :host {margin-bottom: 16px !important;}
+                        ha-card { overflow: hidden; border-radius: 50%; border: 2px solid
+                        rgba(255,255,255,.1); }
+
+                        iframe { width: 300% !important; height: 300% !important; position:
+                        relative; top: -100% !important; left: -100% !important; transform:
+                        scale(1.75);}
+
+                  - type: entity
+                    entity: sensor.anniversary_cake_day
+      # Luna Location, Planetary Positions, Man Made Object locations (ISS, etc.)
+
+
+      # [Column] Look Up The Stars
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: STARS
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+              grid-template-rows: auto
+              grid-column-gap: 32px
+              margin: -1px
+            cards:
+
+              - type: vertical-stack
+                cards:
+                  - type: markdown
+                    content: '### Northern Hemisphere'
+                    style: 'ha-card {background: none;}'
+                  - type: iframe
+                    url: >-
+                      https://virtualsky.lco.global/embed/index.html?longitude=-73.951442&latitude=40.698470&gradient=false&projection=polar&showstarlabels=true&showorbits=true&showdate=false&showposition=false&gridlines_gal=true&showgalaxy=true&magnitude=4.5&live=true&fontfamily=SegoeUI&fontsize=10px
+                    aspect_ratio: 100%
+                    card_mod:
+                      style: >
+                        :host {margin-bottom: 16px !important;}
+                        ha-card {border-radius: 50%;  border: 2px solid
+                        rgba(255,255,255,.1);}
+                        
+              - type: vertical-stack
+                cards:
+                  - type: markdown
+                    content: '### Southern Hemisphere'
+                    style: 'ha-card {background: none;}'
+                  - type: iframe
+                    url: >-
+                      https://virtualsky.lco.global/embed/index.html?longitude=106.048558&latitude=-40.698470&az=0&gradient=false&projection=polar&showstarlabels=true&showorbits=true&showdate=false&showposition=false&gridlines_gal=true&showgalaxy=true&magnitude=4.5&live=true&fontfamily=SegoeUI&fontsize=10px
+                    aspect_ratio: 100%
+                    card_mod:
+                      style: >
+                        :host {margin-bottom: 16px !important;}
+                        ha-card {border-radius: 50%;  border: 2px solid
+                        rgba(255,255,255,.1);}
+
+                  - type: 'custom:home-feed-card'
+                    title: Astronomy Calendar
+                    show_empty: false
+                    calendars:
+                      - calendar.astronomy_calendar
+                    calendar_days_back: 7
+                    calendar_days_forward: 30
+                    scrollbars_enabled: false
+                    show_icons: false
+      # Astro Event Calendar, Sky Watching Weather

@@ -1,0 +1,764 @@
+# MAXIMALIST DASHBOARD
+# Energy View
+# Made by Madelena Mak 2022
+
+title: Energy
+path: 'energy'
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 32px auto 32px
+  grid-template-areas: |
+    ". cc ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(max-width: 870px)':
+      grid-template-columns: 0 auto 0
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        '(max-width: 800px)':
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(240px, 1fr) [col-end])'
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            '(max-width: 800px)':
+              grid-template-columns: 1fr
+          margin: 0
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            content: >
+              # Energy
+
+              You have {{ expand('group.all_on_off')|length }} switches and
+              {{
+              expand('group.all_on_off')|selectattr('state','equalto','on')|list|length
+              }} of them are turned on.
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 3
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: group.all_on_off
+                    name: All Switches ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: more-info
+
+                  - type: 'custom:mushroom-template-card'
+                    primary: Electricity Map ↗
+                    secondary: >
+                      {{ states('sensor.co2_intensity') + 'g (' +
+                      states('sensor.grid_fossil_fuel_percentage') + '%)' }}
+                    icon: 'mdi:home-lightning-bolt'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: 'https://app.electricitymap.org/zone/US-NY-NYIS'
+
+                  - type: 'custom:mushroom-template-card'
+                    primary: ConEdison ↗
+                    icon: 'mdi:transmission-tower'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: >-
+                        https://www.coned.com/en/accounts-billing/dashboard?tab1=billingandusage-1&tab2=sectionEnergyBillingUsage-1&tab3=sectionEnergyHistory-2
+
+
+      # [Row] Summary + Totals
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -1
+        cards:
+
+          - type: 'custom:sankey-chart'
+            show_names: true
+            height: 250
+            min_box_height: 2
+            sections:
+              - entities:
+                  - entity_id: sensor.total_energy_use_on_fossil_fuel
+                    name: Fossil Fuel
+                    color: var(--warning-color)
+                    children:
+                      - sensor.total_energy_use
+                  - entity_id: sensor.total_energy_use_on_renewables
+                    name: Renewables
+                    color: var(--success-color)
+                    children:
+                      - sensor.total_energy_use
+              - entities:
+                  - entity_id: sensor.total_energy_use
+                    name: Est. Total
+                    children:
+                      - sensor.circuit_south_power
+                      - sensor.circuit_north_power
+                      - sensor.circuit_center_power
+                      - sensor.circuit_fridge_counter_power
+                      - sensor.circuit_living_room_lights_power
+                      - sensor.circuit_bedroom_a_c_power
+                      - sensor.circuit_living_room_projector_power
+              - entities:
+                  - entity_id: sensor.circuit_south_power
+                    name: South Circuit
+                    children:
+                      - sensor.astralplane_plug_smartenergy_metering
+                      - sensor.bedroom_devices_plug_smartenergy_metering
+                      - sensor.kitchen_aerogardens_plug_smartenergy_metering
+                      # - >-
+                      #  sensor.living_room_air_conditioner_plug_smartenergy_metering
+                      - sensor.makery_plug_smartenergy_metering
+                      - sensor.quattro_plug_smartenergy_metering
+                      - sensor.terpsichora_plug_smartenergy_metering
+                      - sensor.kitchen_sink_lights_power
+                      - sensor.kitchen_counter_accent_lights_power
+                      - sensor.living_room_hue_bowl_power
+                      - sensor.living_room_table_lights_power
+                  - entity_id: sensor.circuit_north_power
+                    name: North Circuit
+                    children:
+                      - sensor.valhalla_plug_smartenergy_metering
+                  - entity_id: sensor.circuit_center_power
+                    name: Center Circuit
+                    children:
+                      - sensor.dorothy_devices_plug_smartenergy_metering
+                      - sensor.dorothy_plug_smartenergy_metering
+                  - entity_id: sensor.circuit_fridge_counter_power
+                    name: Fridge + Counter
+                    children:
+                      - sensor.kitchen_fridge_plug_smartenergy_metering
+                      - sensor.kitchen_microwave_plug_smartenergy_metering
+                      - sensor.kitchen_counter_echo_plug_current_consumption
+                      - >-
+                        sensor.kitchen_counter_hand_blender_current_consumption
+                      - sensor.kitchen_counter_kettle_current_consumption
+                      - sensor.kitchen_counter_plug_3_current_consumption
+                      - >-
+                        sensor.kitchen_counter_rice_cooker_current_consumption
+                      - sensor.kitchen_counter_toaster_current_consumption
+                  - entity_id: sensor.circuit_living_room_lights_power
+                    name: Living Room Lights
+                    children:
+                      - sensor.living_room_chandelier_main_power
+                      - sensor.kitchen_spot_lights_power
+                      - sensor.kitchen_counter_lights_power
+                  - entity_id: sensor.circuit_bedroom_a_c_power
+                    name: Bedroom A/C Circuit
+                    children:
+                      - >-
+                        sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                  - entity_id: sensor.circuit_living_room_projector_power
+                    name: Living Room Ceiling Circuit
+                    children:
+                      - >-
+                        sensor.living_room_projector_plug_smartenergy_metering
+                      - sensor.living_room_decor_lights_power
+              - entities:
+                  - entity_id: sensor.astralplane_plug_smartenergy_metering
+                    name: Astralplane
+                  - entity_id: sensor.dorothy_plug_smartenergy_metering
+                    name: Dorothy
+                  - entity_id: sensor.makery_plug_smartenergy_metering
+                    name: Makery
+                  - entity_id: sensor.quattro_plug_smartenergy_metering
+                    name: Quattro
+                  - entity_id: sensor.dorothy_devices_plug_smartenergy_metering
+                    name: Dorothy Devices
+                  - entity_id: sensor.bedroom_devices_plug_smartenergy_metering
+                    name: Bedroom Devices
+                  - entity_id: >-
+                      sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                    name: Bedroom A/C
+                  #- entity_id: >-
+                  #    sensor.living_room_air_conditioner_plug_smartenergy_metering
+                  #  name: Living Room A/C
+                  - entity_id: sensor.terpsichora_plug_smartenergy_metering
+                    name: Terpsichora
+                  - entity_id: sensor.kitchen_sink_lights_power
+                    name: Kitchen Sink Lights
+                  - entity_id: sensor.kitchen_counter_accent_lights_power
+                    name: Kitchen Counter Accent
+                  - entity_id: sensor.living_room_hue_bowl_power
+                    name: Living Room Hue Bowl
+                  - entity_id: sensor.living_room_table_lights_power
+                    name: Living Room Table Lights
+                  - entity_id: sensor.valhalla_plug_smartenergy_metering
+                    name: Valhalla
+                  - entity_id: sensor.kitchen_aerogardens_plug_smartenergy_metering
+                    name: Aerogardens
+                  - entity_id: sensor.kitchen_fridge_plug_smartenergy_metering
+                    name: Fridge
+                  - entity_id: sensor.kitchen_microwave_plug_smartenergy_metering
+                    name: Microwave
+                  - entity_id: sensor.kitchen_counter_echo_plug_current_consumption
+                    name: Echo Plug
+                  - entity_id: >-
+                      sensor.kitchen_counter_hand_blender_current_consumption
+                    name: Hand Blender
+                  - entity_id: sensor.kitchen_counter_kettle_current_consumption
+                    name: Kettle
+                  - entity_id: sensor.kitchen_counter_plug_3_current_consumption
+                    name: Plug 3
+                  - entity_id: sensor.kitchen_counter_rice_cooker_current_consumption
+                    name: Rice Cooker
+                  - entity_id: sensor.kitchen_counter_toaster_current_consumption
+                    name: Toaster
+                  - entity_id: sensor.living_room_chandelier_main_power
+                    name: Living Room Chandelier
+                  - entity_id: sensor.kitchen_spot_lights_power
+                    name: Kitchen Spot Lights
+                  - entity_id: sensor.kitchen_counter_lights_power
+                    name: Kitchen Counter Lights
+                  - entity_id: sensor.living_room_projector_plug_smartenergy_metering
+                    name: Living Room Projector
+                  - entity_id: sensor.living_room_decor_lights_power
+                    name: Living Room Decor Lights
+            view_layout:
+              grid-column: 1/-1
+            card_mod:
+              style: >
+                ha-card { padding: 16px 16px 24px !important; margin-bottom:
+                16px; background: none; }
+
+                .connectors { left: 8px !important; right: 4px !important; }
+
+                .box div:first-child { width: 4px !important; }
+
+                .box .label { padding-left: 8px !important; font-weight:
+                500;}
+
+                .box .label span { font-weight: normal; font-style: normal
+                !important; }
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: SUMMARY
+            view_layout:
+              grid-column: 1/-1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: entity
+                entity: sensor.total_energy_use
+                name: Current Total
+                icon: 'mdi:lightning-bolt'
+              - type: history-graph
+                hours_to_show: 48
+                entities:
+                  - entity: sensor.total_energy_use
+                card_mod:
+                  style:
+                    .: |
+                      ha-card { overflow: hidden; }
+                      .content {
+                        margin: 4px -13px -8px -66px !important;
+                        padding: 0 0 12px 0 !important;
+                        overflow: hidden;
+                        filter: hue-rotate( calc( var(--hue-primary-color) - 215deg) ) saturate(2) opacity(.66)
+                      }
+                    state-history-charts$state-history-chart-line$ha-chart-base$: |
+                      .chartLegend { display: none;}
+
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: entity
+                    entity: sensor.total_energy_use_daily_max
+                    name: Yesterday
+                    icon: none
+                  - type: entity
+                    entity: sensor.total_energy_use_hourly_max
+                    name: Last Hour
+                    icon: 'mdi:home-lightning-bolt'
+              - type: 'custom:mini-graph-card'
+                name: Daily Total
+                show:
+                  graph: bar
+                  icon: false
+                height: 150
+                hours_to_show: 168
+                aggregate_func: max
+                group_by: date
+                bar_spacing: 48
+                unit: Wh
+                update_interval: 30000
+                line_color: 'rgba(var(--rgb-primary-color), .5)'
+                lower_bound: 0
+                upper_bound: ~0
+                entities:
+                  - entity: sensor.total_energy_use_daily
+                    name: Total Energy Consumption
+                card_mod:
+                  style: >
+                    ha-card {border-bottom: 1px solid
+                    rgba(var(--rgb-primary-text-color),.1);} .header {
+                      padding-bottom: 0;
+                      margin-top: -8px;
+                    } .name > span {
+                      font-size: var(--body-font-size) !important;
+                      font-weight: normal !important;
+                      max-height: none !important;
+                      opacity: 1 !important;
+                    } .states {
+                      margin-top: -8px;
+                    } .state__value {
+                      font-size: var(--h1-font-size) !important;
+                      font-weight: 100 !important;
+                      padding: 8px 0;
+                    } .state__uom {
+                      font-size: var(--h6-font-size) !important;
+                      text-transform: uppercase;
+                      margin-bottom: 2px !important;
+                      padding: 8px 0;
+                    } .state__time {
+                      font-size: var(--h6-font-size) !important;
+                      font-weight: normal !important;
+                      letter-spacing: normal !important;
+                    } .graph__legend {
+                      font-size: var(--h6-font-size) !important;
+                      font-weight: normal !important;
+                      justify-content: flex-start !important;
+                      padding-left: 8px !important;
+                      letter-spacing: normal !important;
+                    } .graph__legend__item {
+                      margin: 0 8px !important;
+                    } .icon {
+                      margin-top: 12px;
+                    }
+            in_card: true
+              
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: 'custom:apexcharts-card'
+                header:
+                  show: true
+                  title: Energy Usage Share
+                chart_type: donut
+                layout: minimal
+                update_interval: 10sec
+                series:
+                  - entity: sensor.astralplane_plug_smartenergy_metering
+                    name: Astralplane
+                  - entity: sensor.dorothy_plug_smartenergy_metering
+                    name: Dorothy
+                  - entity: sensor.dorothy_devices_plug_smartenergy_metering
+                    name: Dorothy Devices
+                  - entity: sensor.quattro_plug_smartenergy_metering
+                    name: Quattro
+                  - entity: sensor.terpsichora_plug_smartenergy_metering
+                    name: Terpsichora
+                  - entity: sensor.valhalla_plug_smartenergy_metering
+                    name: Valhalla
+                  - entity: sensor.makery_plug_smartenergy_metering
+                    name: Makery
+                  - entity: sensor.kitchen_microwave_plug_smartenergy_metering
+                    name: Kitchen Microwave
+                  - entity: sensor.kitchen_fridge_plug_smartenergy_metering
+                    name: Kitchen Fridge
+                  - entity: sensor.kitchen_aerogardens_plug_smartenergy_metering
+                    name: Kitchen Aerogardens
+                  - entity: sensor.kitchen_counter_kettle_current_consumption
+                    name: Kitchen Kettle
+                  - entity: >-
+                      sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                    name: Bedroom AC
+                  - entity: sensor.bedroom_devices_plug_smartenergy_metering
+                    name: Bedroom Devices
+                  #- entity: >-
+                  #    sensor.living_room_air_conditioner_plug_smartenergy_metering
+                  #  name: Living Room AC
+                  - entity: sensor.living_room_projector_plug_smartenergy_metering
+                    name: Living Room Projector
+                  - entity: sensor.unaccounted_lights_energy_use
+                    name: Other Lights
+                apex_config:
+                  chart:
+                    height: 500px
+                    fontFamily: 'Segoe UI, SegoeUI, sans-serif'
+                    offsetY: -20
+                    pie:
+                      donut:
+                        label:
+                          show: true
+                  title:
+                    style:
+                      fontSize: 12px
+                      color: var(--primary-text-color)
+                  legend:
+                    formatter: |
+                      EVAL:function(seriesName, opts) {
+                        return seriesName
+                      }
+                    position: right
+                    fontSize: 12
+                    fontFamily: 'Segoe UI, SegoeUI, sans-serif'
+                    fontWeight: normal
+                    markers:
+                      width: 8
+                      height: 8
+                    itemMargin:
+                      horizontal: 0
+                  dataLabels:
+                    formatter: >
+                      EVAL:function(value, { seriesIndex, dataPointIndex, w
+                      }) {
+                        return Math.round(value * 10) / 10 + '%'
+                      }
+                    style:
+                      fontSize: 10
+                      fontFamily: 'Segoe UI, SegoeUI, sans-serif'
+                      fontWeight: 500
+                    dropShadow:
+                      enabled: false
+                  tooltip:
+                    style:
+                      fontSize: 12px
+                      fontFamily: 'Segoe UI, SegoeUI, sans-serif'
+                style: |
+                  #header__title {
+                    font-size: var(--body-font-size) !important;
+                    font-weight: normal !important;
+                    color: var(--primary-text-color) !important;
+                    margin-top: 8px;
+                  }
+                  #graph-wrapper {
+                    padding-top: 32px;
+                  }
+
+
+      # [Column] Workspace
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: WORKSPACE
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            detail: 2
+            entity: sensor.astralplane_plug_smartenergy_metering
+            name: Astralplane
+            icon: 'mdi:desktop-classic'
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.quattro_plug_smartenergy_metering
+            detail: 2
+            name: Quattro
+            icon: 'mdi:television'
+          - type: sensor
+            entity: sensor.makery_plug_smartenergy_metering
+            graph: line
+            detail: 2
+            name: Makery
+            hours_to_show: 48
+          - graph: line
+            type: sensor
+            entity: sensor.workspace_lights_energy_use
+            detail: 2
+            icon: 'mdi:lightbulb-group'
+            name: Workspace Lights
+            hours_to_show: 48
+        layout:
+          grid-template-columns: 1fr
+          margin: 0
+
+
+      # [Column] Bedroom
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BEDROOM
+          - type: sensor
+            entity: sensor.bedroom_devices_plug_smartenergy_metering
+            graph: line
+            detail: 2
+            name: Bedroom Devices
+            hours_to_show: 48
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.dorothy_plug_smartenergy_metering
+            detail: 2
+            name: Dorothy
+            icon: 'mdi:server-network'
+          - type: sensor
+            entity: sensor.dorothy_devices_plug_smartenergy_metering
+            detail: 2
+            graph: line
+            name: Dorothy Devices
+            hours_to_show: 48
+          - type: sensor
+            entity: sensor.bedroom_air_conditioner_plug_smartenergy_metering
+            graph: line
+            detail: 2
+            name: Bedroom Air Conditioner
+            hours_to_show: 48
+          - graph: line
+            type: sensor
+            entity: sensor.bedroom_lights_energy_use
+            detail: 2
+            icon: 'mdi:lightbulb-group'
+            name: Bedroom Lights
+            hours_to_show: 48
+        layout:
+          grid-template-columns: 1fr
+          margin: 0
+
+
+      # [Column] Kitchen
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: KITCHEN
+          - type: sensor
+            entity: sensor.kitchen_microwave_plug_smartenergy_metering
+            graph: line
+            detail: 2
+            name: Kitchen Microwave
+            hours_to_show: 48
+          - type: sensor
+            entity: sensor.kitchen_fridge_plug_smartenergy_metering
+            graph: line
+            detail: 2
+            name: Kitchen Fridge
+            hours_to_show: 48
+          - type: sensor
+            entity: sensor.kitchen_aerogardens_plug_smartenergy_metering
+            graph: line
+            detail: 2
+            name: Kitchen Aerogardens
+            hours_to_show: 48
+          - graph: line
+            type: sensor
+            entity: sensor.kitchen_lights_energy_use
+            detail: 2
+            icon: 'mdi:lightbulb-group'
+            name: Kitchen Lights
+            hours_to_show: 48
+        layout:
+          grid-column-gap: 16px
+          margin: 0
+
+
+      # [Column] Living Room
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LIVING ROOM
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.terpsichora_plug_smartenergy_metering
+            detail: 2
+            name: Terpsichora
+            icon: 'mdi:speaker-multiple'
+          - type: sensor
+            entity: sensor.living_room_projector_plug_smartenergy_metering
+            graph: line
+            hours_to_show: 48
+            detail: 2
+            name: Living Room Projector
+          - type: sensor
+            entity: sensor.living_room_air_conditioner_plug_smartenergy_metering
+            graph: line
+            hours_to_show: 48
+            detail: 2
+            name: Living Room Air Conditioner
+          - graph: line
+            type: sensor
+            hours_to_show: 48
+            entity: sensor.living_room_lights_energy_use
+            detail: 2
+            icon: 'mdi:lightbulb-group'
+            name: Living Room Lights
+        layout:
+          grid-template-columns: 1fr
+          margin: 0
+
+
+      # [Column] Misc
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: MISC
+          - type: sensor
+            graph: line
+            entity: sensor.valhalla_plug_smartenergy_metering
+            hours_to_show: 48
+            detail: 2
+            name: Valhalla
+          - graph: line
+            type: sensor
+            entity: sensor.all_lights_energy_use
+            hours_to_show: 48
+            detail: 2
+            icon: 'mdi:lightbulb-group'
+        layout:
+          grid-template-columns: 1fr
+          margin: 0
+
+
+      # [Column] Kitchen Power Strip
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: KITCHEN POWER STRIP
+              label: Manage
+              link: /config/devices/device/c5a3a945ac7eaae21b84bb6d4650eefd
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: sensor
+            entity: sensor.kitchen_counter_kettle_current_consumption
+            graph: line
+            name: Kettle
+            detail: 2
+            hours_to_show: 48
+          - type: sensor
+            graph: line
+            entity: sensor.kitchen_counter_toaster_current_consumption
+            name: Toaster
+            detail: 2
+            hours_to_show: 48
+          - type: sensor
+            entity: sensor.kitchen_counter_rice_cooker_current_consumption
+            name: Rice Cooker
+            graph: line
+            detail: 2
+            hours_to_show: 48
+          - type: sensor
+            entity: sensor.kitchen_counter_hand_blender_current_consumption
+            name: Hand Blender
+            graph: line
+            detail: 2
+            hours_to_show: 48
+          - type: sensor
+            graph: line
+            entity: sensor.kitchen_counter_echo_plug_current_consumption
+            name: Echo Show
+            detail: 2
+            hours_to_show: 48
+          - type: sensor
+            entity: sensor.kitchen_counter_plug_3_current_consumption
+            name: Plug 3
+            graph: line
+            detail: 2
+            hours_to_show: 48
+        layout:
+          grid-template-columns: 1fr
+          margin: 0
+
+
+    # [Pop Up Card] All On Off Switches
+    popup_cards:
+      group.all_on_off:
+        title: All On Off Switches
+        card:
+          type: 'custom:auto-entities'
+          filter:
+            include:
+              - group: group.all_on_off
+                options:
+                  type: 'custom:button-card'
+                  template:
+                    - live_tile_card
+                    - require_confirmation
+                  entity: this.entity_id
+              - type: 'custom:button-card'
+                template: live_tile_card
+                entity: switch.kitchen_uv_light
+            exclude: []
+          sort:
+            method: friendly_name
+          card:
+            type: 'custom:layout-card'
+            layout_type: horizontal
+            layout_options:
+              width: 100
+              max_cols: 6
+        style:
+          .: |
+            :host .content {
+              width: 75vw;
+              height: 75vh;
+              }

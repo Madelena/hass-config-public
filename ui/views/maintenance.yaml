@@ -1,0 +1,264 @@
+# MAXIMALIST DASHBOARD
+# Maintenance View
+# Made by Madelena Mak 2022
+
+title: Maintenance
+path: maintenance
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 32px auto 32px
+  grid-template-areas: |
+    ". cc ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(max-width: 870px)':
+      grid-template-columns: 0 auto 0
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-column-gap: 32px
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+      grid-template-rows: auto
+      margin: -1px
+
+    cards:
+
+      # [Header] Summary 
+      - type: markdown
+        content: >
+          # Maintenance
+
+          Peanut Hamper is {{ states('vacuum.peanut_hamper') }}{{ iif(
+          is_state('binary_sensor.peanut_hamper_bin_full', 'on'), ' and
+          needs to be emptied. ', '. ') }} {%- set chore_done =
+          namespace(entities=[]) -%}
+
+          {%- set chore_todo = namespace(entities=[]) -%}
+
+          {%- set chore_overdue = namespace(entities=[]) -%}
+
+          {%- for chore in expand('group.chores') -%}
+            {%- if (chore.state != 'unknown') -%}
+              {%- set input = chore.entity_id|regex_replace(find='input_button', replace='input_text') -%}
+              {%- set diff = ( as_timestamp(now()) - as_timestamp(chore.state) ) / 60 / 60 / 24 %}
+              {%- set due = states(input)|float(-1) -%}
+              {%- if (diff < 1) and (as_datetime(chore.state).day == now().day) -%}{%- set chore_done.entities = chore_done.entities + [chore.entity_id] -%}{%- endif -%}
+              {%- if due > 0 -%}
+                {%- if (due < diff) -%}{%- set chore_overdue.entities = chore_overdue.entities + [chore.entity_id] -%}{%- else -%}
+                  {%- if (due < diff + (due / 4)) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif %}
+          {%- endfor -%}
+
+          There are {{ chore_done.entities|length }} chores done, {{
+          chore_todo.entities|length }} to do soon, and {{
+          chore_overdue.entities|length }} overdue.
+        style:
+          .: |
+            ha-card {
+              background: none;
+            }
+          ha-markdown$: |
+            h1 {
+              font-size: var(--title-font-size);
+              font-weight: 500;
+              line-height: 1.1;
+              margin-left: -2px;
+              margin-block-end: -8px;
+            }
+        view_layout:
+          grid-column: 1/-1
+
+
+      # [Column] My Machines
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: MY MACHINES
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: horizontal-stack
+            cards:
+              - type: 'custom:vacuum-card'
+                entity: vacuum.peanut_hamper
+                image: default
+                show_toolbar: true
+                show_status: true
+                compact_view: false
+                card_mod:
+                  style: >
+                    .preview {font-size: var(--body-font-size); font-weight:
+                    normal;} .metadata {position: absolute; top: 0;
+                    text-align: left; padding: 0 16px;} .vacuum-name
+                    {font-size: var(--card-title-font-size) !important;
+                    font-weight: 500 !important;} .status {justify-content:
+                    flex-start !important;} .status-text {margin-left: 0
+                    !important;} ha-card .header {padding-top: 0 !important;
+                    height: auto !important;} .battery {padding: 12px 16px
+                    !important;} .stats-block {text-align: left !important;
+                    padding: 8px 16px;} .vacuum {filter: invert(1);} ha-card
+                    {--vc-background: none; --vc-spacing: 16px;} .tips
+                    {flex-direction: row-reverse;} .toolbar {background:
+                    none !important;}
+          - type: entities
+            entities:
+              - entity: binary_sensor.peanut_hamper_bin_full
+                type: 'custom:template-entity-row'
+                name: Vacuum Bin
+                state: >-
+                  {{ iif( is_state('binary_sensor.peanut_hamper_bin_full',
+                  'on'), 'Full', 'Not Full') }}
+                secondary: >-
+                  Since {{
+                  states.binary_sensor.peanut_hamper_bin_full.last_changed |
+                  relative_time }} ago
+          - type: 'custom:logbook-card'
+            entity: vacuum.peanut_hamper
+            history: 5
+            max_items: 10
+            date_format: 'MMM D hh:mm'
+            show:
+              state: true
+              duration: true
+              start_date: true
+              end_date: true
+              icon: false
+              separator: false
+            collapse: 3
+            title: ' '
+          - type: entities
+            entities:
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.bedroom_humidifier_power
+                secondary_info:
+                  attribute: lackWater
+            title: Bedroom Humidifier
+          - type: entities
+            entities:
+              - entity: sensor.pure_hot_cool_link_filter_life
+            title: Bedroom Dyson Pure
+
+
+      # [Column] Chores
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: CHORES
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: 'custom:auto-entities'
+            filter:
+              include:
+                - group: group.chore_plants
+                  options:
+                    type: 'custom:button-card'
+                    template: chore_card
+              exclude: []
+            card:
+              type: entities
+              title: Plants
+          - type: 'custom:auto-entities'
+            filter:
+              include:
+                - group: group.chore_kitchen
+                  options:
+                    type: 'custom:button-card'
+                    template: chore_card
+              exclude: []
+            card:
+              type: entities
+              title: Kitchen
+          - type: 'custom:auto-entities'
+            filter:
+              include:
+                - group: group.chore_bathroom
+                  options:
+                    type: 'custom:button-card'
+                    template: chore_card
+              exclude: []
+            card:
+              type: entities
+              title: Bathroom
+          - type: 'custom:auto-entities'
+            filter:
+              include:
+                - group: group.chore_living_room
+                  options:
+                    type: 'custom:button-card'
+                    template: chore_card
+              exclude: []
+            card:
+              type: entities
+              title: Living Room
+          - type: 'custom:auto-entities'
+            filter:
+              include:
+                - group: group.chore_personal
+                  options:
+                    type: 'custom:button-card'
+                    template: chore_card
+              exclude: []
+            card:
+              type: entities
+              title: Personal
+
+      # [Column] Batteries
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BATTERIES
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: 'custom:decluttering-card'
+            template: metro_bar_card_no_icon
+            variables:
+              - entities:
+                  - entity: sensor.front_door_camera_battery
+                  - entity: sensor.kitchen_leak_sensor_power
+              - title: Crucial
+          - type: 'custom:decluttering-card'
+            template: metro_bar_card_no_icon
+            variables:
+              - entities:
+                  - entity: >-
+                      sensor.netatmo_strawberry_land_indoor_outdoor_battery_percent
+                  - entity: sensor.living_room_window_sensor_center_power
+                  - entity: sensor.living_room_window_sensor_right_power
+                  - entity: sensor.bedroom_window_sensor_center_power
+                  - entity: sensor.bedroom_hue_sensor_battery
+                  - entity: sensor.living_room_hue_sensor_battery
+                  - entity: sensor.workspace_room_hue_sensor_battery
+                  - entity: binary_sensor.kitchen_sink_motion_sensor_battery
+                  - entity: sensor.bathroom_env_sensor_power
+              - title: Sensors
+          - type: 'custom:decluttering-card'
+            template: metro_bar_card_no_icon
+            variables:
+              - entities:
+                  - entity: sensor.037_switchbot_pakkeimak_com_battery
+                  - entity: sensor.037_switchbot_pakkeimak_com_battery_2
+                  - entity: sensor.astralplane_hue_dimmer_battery_level
+                  - entity: sensor.bedroom_hue_dimmer_battery_level
+                  - entity: sensor.living_room_hue_dimmer_battery_level
+                  - entity: sensor.living_room_accents_dimmer_battery_level
+                  - entity: sensor.living_room_dining_table_dimmer_power
+                  - entity: sensor.hallway_dimmer_battery_level
+              - title: Remotes

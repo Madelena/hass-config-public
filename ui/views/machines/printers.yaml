@@ -1,0 +1,145 @@
+title: Printers
+path: printers
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+  grid-column-gap: 32px
+  margin: 0 16px 32px
+
+cards:
+
+  - view_layout:
+      grid-column: 1/-1
+    type: 'custom:button-card'
+    template: title_card_with_icon
+    name: Printers
+    icon: mdi:printer
+    entity: binary_sensor.dorothy_illinoise
+
+  - type: vertical-stack
+    cards:
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: BROTHER MFC-L2700DW
+      - type: glance
+        entities:
+          - entity: sensor.brother_mfc_l2700dw_series
+          - entity: sensor.mfc_l2700dw_status
+      - type: 'custom:decluttering-card'
+        template: metro_bar_card_no_icon
+        variables:
+          - entities:
+              - entity: sensor.mfc_l2700dw_black_toner_remaining
+                name: Black
+                color: gray
+          - title: Toner
+      - type: 'custom:decluttering-card'
+        template: metro_bar_card_no_icon
+        variables:
+          - entities:
+              - entity: sensor.mfc_l2700dw_drum_remaining_life
+                name: Drum
+          - title: Remaining Life
+        positions:
+          icon: 'off'
+          name: inside
+          value: inside
+          indicator: 'off'
+        height: 4
+        style: |-
+          bar-card-row {
+            height: 8px;
+            padding-top: 32px;
+          }
+          bar-card-background {
+            background: black;
+          }
+          bar-card-contentbar {
+            margin-top: -16px;
+          }
+          bar-card-name, bar-card-value {
+            margin: 0;
+          }
+      - type: entities
+        entities:
+          - entity: sensor.brother_mfc_l2700dw_series_uptime
+          - entity: sensor.mfc_l2700dw_page_counter
+
+  - type: vertical-stack
+    cards:
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: 'BROTHER HL-L3230CDW'
+      - type: glance
+        entities:
+          - entity: sensor.brother_hl_l3230cdw_series
+          - entity: sensor.hl_l3230cdw_status
+      - type: 'custom:decluttering-card'
+        template: metro_bar_card_no_icon
+        variables:
+          - entities:
+              - entity: sensor.brother_hl_l3230cdw_series_c
+                name: Cyan
+                color: cyan
+              - entity: sensor.brother_hl_l3230cdw_series_m
+                name: Magenta
+                color: magenta
+              - entity: sensor.brother_hl_l3230cdw_series_y
+                name: Yellow
+                color: yellow
+              - entity: sensor.brother_hl_l3230cdw_series_bk
+                name: Black
+                color: gray
+          - title: Toner
+      - type: 'custom:decluttering-card'
+        template: metro_bar_card_no_icon
+        variables:
+          - entities:
+              - entity: sensor.hl_l3230cdw_black_drum_remaining_life
+                name: Black Drum
+                color: gray
+              - entity: sensor.hl_l3230cdw_cyan_drum_remaining_life
+                name: Cyan Drum
+                color: cyan
+              - entity: sensor.hl_l3230cdw_magenta_drum_remaining_life
+                name: Magenta Drum
+                color: magenta
+              - entity: sensor.hl_l3230cdw_yellow_drum_remaining_life
+                name: Yellow Drum
+                color: yellow
+              - entity: sensor.hl_l3230cdw_fuser_remaining_life
+                name: Fuser
+              - entity: sensor.hl_l3230cdw_pf_kit_1_remaining_life
+                name: PF Kit 1
+              - entity: sensor.hl_l3230cdw_belt_unit_remaining_life
+                name: Belt Unit
+          - title: Remaining Life
+        positions:
+          icon: 'off'
+          name: inside
+          value: inside
+          indicator: 'off'
+        height: 4
+        style: |-
+          bar-card-row {
+            height: 8px;
+            padding-top: 32px;
+          }
+          bar-card-background {
+            background: black;
+          }
+          bar-card-contentbar {
+            margin-top: -16px;
+          }
+          bar-card-name, bar-card-value {
+            margin: 0;
+          }
+      - type: entities
+        entities:
+          - entity: sensor.hl_l3230cdw_page_counter
+          - entity: sensor.hl_l3230cdw_b_w_counter
+          - entity: sensor.hl_l3230cdw_color_counter
+          - entity: sensor.hl_l3230cdw_uptime

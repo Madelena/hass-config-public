@@ -1,0 +1,477 @@
+# MAXIMALIST DASHBOARD
+# Environment View
+# Made by Madelena Mak 2022
+
+title: Environment
+path: climate
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 32px auto 32px
+  grid-template-areas: |
+    ". cc ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(max-width: 870px)':
+      grid-template-columns: 0 auto 0
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-column-gap: 32px
+      grid-template-columns: 'repeat(auto-fit, [col-start] minmax(360px, 1fr) [col-end])'
+      grid-template-rows: auto
+      margin: -1px
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            '(max-width: 800px)':
+              grid-template-columns: 1fr
+            '(max-width: 1024px)':
+              grid-template-columns: auto 67%
+          margin: 0
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            content: >
+              # Environment
+
+              It is
+              {{states('sensor.netatmo_strawberry_land_indoor_temperature')}}°C
+              inside. It is {{ states('weather.valhalla_hourly') }} at {{
+              states('sensor.valhalla_apparent_temperature') }}°C and is
+              getting {{ iif
+              (states('sensor.valhalla_hourly_forecast_temperature_rising')
+              == 'Falling', 'colder', 'warmer') }} and {{ iif
+              (states('sensor.valhalla_hourly_forecast_wind_speed_increasing')
+              == 'Increasing', 'more windy', 'less windy') }} outside.
+
+              {%- set is_window_open =
+              is_state('binary_sensor.bedroom_window_sensor_center_ias_zone',
+              'on') or
+              is_state('binary_sensor.living_room_window_sensor_right_ias_zone',
+              'on') or
+              is_state('binary_sensor.living_room_window_sensor_center_ias_zone',
+              'on') -%} {{ iif( is_window_open and
+              states('sensor.valhalla_apparent_temperature')|int < 15, ' You
+              should close your windows.', '') }}
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: horizontal-stack
+            cards:
+
+              - type: 'custom:mushroom-entity-card'
+                entity: device_tracker.netatmo_personal_weather_station
+                name: Netatmo ↗
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+                tap_action:
+                  action: url
+                  url_path: 'https://my.netatmo.com/app/station'
+
+              - type: 'custom:mushroom-entity-card'
+                entity: weather.valhalla_2
+                name: Accuweather ↗
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+                tap_action:
+                  action: url
+                  url_path: !secret accuweather_url
+
+
+      # [Row] Controls
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+          grid-template-columns: 'repeat(auto-fit, [col-start] minmax(348px, 1fr) [col-end])'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: CONTROLS
+            view_layout:
+              grid-column: 1/-1
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: 'custom:mushroom-fan-card'
+                entity: fan.pure_hot_cool_link
+                icon_animation: true
+                show_oscillate_control: true
+                show_percentage_control: true
+                hold_action:
+                  action: more-info
+                icon: ''
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: 'custom:mushroom-entity-card'
+                entity: switch.bedroom_humidifier
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: 'custom:mini-climate'
+                entity: climate.pure_hot_cool_link
+                temperature:
+                  unit: °C
+                  round: 1
+        view_layout:
+          grid-column: 1/-1
+
+      # [Column] Temperature
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: TEMPERATURE
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: entity
+                    entity: >-
+                      sensor.netatmo_strawberry_land_indoor_outdoor_temperature
+                    name: Outside
+                    icon: none
+                  - type: entity
+                    entity: sensor.workspace_room_hue_sensor_temperature
+                    name: Workspace
+                    icon: none
+                  - type: entity
+                    entity: sensor.bathroom_env_sensor_temperature
+                    name: Bathroom
+              - type: 'custom:decluttering-card'
+                template: multi_graph_card
+                variables:
+                  - title: ''
+                  - lower_bound: ~100
+                  - upper_bound: ~0
+                  - animate: false
+                  - entities:
+                      - entity: sensor.netatmo_strawberry_land_indoor_temperature
+                        name: Bedroom
+                        color: red
+                        show_fill: false
+                      - entity: sensor.bedroom_hue_sensor_temperature
+                        name: Bedroom Hue
+                        color: red
+                        show_fill: false
+                      - entity: sensor.workspace_room_hue_sensor_temperature
+                        name: Workspace
+                        show_fill: false
+                      - entity: sensor.bathroom_env_sensor_temperature
+                        name: Bathroom
+                        color: blue
+                        show_fill: false
+                      - entity: sensor.living_room_air_purifier_temperature
+                        name: Living Room
+                        color: green
+                        show_fill: false
+                      - entity: sensor.living_room_hue_sensor_temperature
+                        name: Living Rm Hue
+                        color: green
+                        show_fill: false
+                      - entity: >-
+                          sensor.netatmo_strawberry_land_indoor_outdoor_temperature
+                        name: Outside
+                        color: gray
+                        show_fill: false
+                      - entity: sensor.valhalla_apparent_temperature
+                        name: Accuweather
+                        color: gray
+                        show_fill: false
+                      - entity: sensor.indoor_temperature_legal_limit
+                        show_legend: false
+                        show_fill: false
+                        show_points: false
+                        show_labels: false
+                        color: black
+                      - entity: sensor.sun_elevation
+                        show_legend: false
+                        y_axis: secondary
+                        show_line: false
+                        show_points: false
+                        show_labels: false
+                        show_labels_secondary: false
+                        color: 'rgba(255,255,255,.25)'
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - title: ''
+              - entities:
+                  - entity: sensor.valhalla_cloud_cover
+                    show_legend: false
+                  - entity: sensor.sun_elevation
+                    show_legend: false
+                    y_axis: secondary
+                    show_line: false
+                    show_points: false
+                    show_labels: false
+                    show_labels_secondary: false
+                    color: 'rgba(255,255,255,.25)'
+
+        layout:
+          margin: 0
+          max_cols: 1
+          max_width: 800
+
+      # [Column] Humidity
+      - type: 'custom:layout-card'
+        layout_type: 'custom:vertical-layout'
+        layout:
+          margin: 0
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: HUMIDITY
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: entity
+                    entity: sensor.living_room_air_purifier_humidity
+                    name: Living Room
+                    icon: none
+                    view_layout:
+                      column: 2
+                  - type: entity
+                    entity: sensor.bathroom_env_sensor_humidity
+                    name: Bathroom
+                    icon: none
+                    view_layout:
+                      column: 3
+                  - type: entity
+                    entity: sensor.netatmo_strawberry_land_indoor_outdoor_humidity
+                    name: Outside
+                    view_layout:
+                      column: 4
+              - type: 'custom:decluttering-card'
+                template: multi_graph_card
+                variables:
+                  - title: ''
+                  - lower_bound: 0
+                  - upper_bound: 100
+                  - animate: false
+                  - entities:
+                      - entity: sensor.netatmo_strawberry_land_indoor_humidity
+                        name: Bedroom
+                        color: red
+                        show_fill: false
+                      - entity: sensor.bathroom_env_sensor_humidity
+                        name: Bathroom
+                        color: blue
+                        show_fill: false
+                      - entity: sensor.living_room_air_purifier_humidity
+                        name: Living Room
+                        color: green
+                        show_fill: false
+                      - entity: >-
+                          sensor.netatmo_strawberry_land_indoor_outdoor_humidity
+                        name: Outside
+                        color: gray
+                        show_fill: false
+                      - entity: weather.valhalla_2
+                        attribute: humidity
+                        unit: null
+                        name: Accuweather
+                        color: gray
+                        show_fill: false
+                      - entity: sensor.sun_elevation
+                        show_legend: false
+                        y_axis: secondary
+                        show_line: false
+                        show_points: false
+                        show_labels: false
+                        show_labels_secondary: false
+                        color: 'rgba(255,255,255,.25)'
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - title: ''
+              - entities:
+                  - entity: sensor.netatmo_brooklyn_rain
+                    show_legend: false
+                  - entity: sensor.sun_elevation
+                    show_legend: false
+                    y_axis: secondary
+                    show_line: false
+                    show_points: false
+                    show_labels: false
+                    show_labels_secondary: false
+                    color: 'rgba(255,255,255,.25)'
+
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.netatmo_brooklyn_rain
+            detail: 2
+          - type: history-graph
+            entities:
+              - entity: sensor.bedroom_humidifier_power
+            hours_to_show: 48
+            title: Bedroom Humidifier
+            card_mod:
+              style: >
+                ha-card {overflow: hidden;}
+
+                .content {padding: 0 0 16px 0 !important; margin: 0 -10px 0
+                -16px;}
+
+                .card-header {
+                  padding: 16px !important;
+                  margin: 0 !important;
+                  font-size: var(--body-font-size);
+                  font-weight: var(--body-font-weight);
+                  line-height: var(--body-line-height);
+                }
+
+      # [Column] Air Quality
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: AIR QUALITY
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: vertical-stack
+            in_card: true
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: entity
+                    entity: sensor.waqi_new_york
+                    icon: none
+                  - type: entity
+                    entity: sensor.waqi_maspeth_new_york_usa
+                    name: WAQI Maspeth
+          - type: 'custom:button-card'
+            entity: weather.valhalla_2
+            name: Current Wind
+            icon: 'mdi:navigation'
+            color: var(--primary-color)
+            size: 24px
+            show_label: true
+            label: |
+              [[[
+                return `${entity.attributes.wind_speed}<span style="font-size: var(--h6-font-size); font-weight: 700; opacity: .8"> M/S</span>`
+              ]]]
+            custom_fields:
+              advisory: |
+                [[[
+                  var wb = entity.attributes.wind_bearing
+                  var mph = entity.attributes.wind_speed * 2.236936
+                  var wind = states['sensor.wind_direction'].state + ' &bull; ' + states['sensor.wind_strength'].state
+                  if ((wb <= 30) || (wb >= 280)) { return wind + ' blowing from exhaust' }
+                  if ((wb > 30) && (wb <= 90)) { return wind + ' blowing towards Living Room' }
+                  if ((wb > 90) && (wb <= 180)) { return wind + ' blowing towards Bedroom' }
+                  return wind
+                ]]]
+            styles:
+              grid:
+                - grid-template-columns: 1fr min-content
+                - grid-template-areas: '"n i" "l i" "advisory i"'
+              card:
+                - padding: 16px
+              name:
+                - font-size: var(--body-font-size)
+                - align-self: start
+                - justify-self: start
+              label:
+                - font-size: var(--h1-font-size)
+                - font-weight: var(--h1-font-weight)
+                - align-self: start
+                - justify-self: start
+              img_cell:
+                - transform: >-
+                    [[[ return "rotate(" + entity.attributes.wind_bearing +
+                    "deg)" ]]]
+              custom_fields:
+                advisory:
+                  - margin-top: 4px
+                  - font-size: var(--body-font-size)
+                  - align-self: start
+                  - justify-self: start
+                  - color: var(--secondary-text-color)
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.valhalla_wind
+            detail: 2
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.pure_hot_cool_link_particulates
+            detail: 2
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.pure_hot_cool_link_volatile_organic_compounds
+            detail: 2
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.netatmo_strawberry_land_indoor_co2
+            detail: 2
+
+      # [Column] Noise
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: NOISE
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - hours_to_show: 48
+            graph: line
+            type: sensor
+            entity: sensor.netatmo_strawberry_land_indoor_noise
+            detail: 2

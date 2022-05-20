@@ -1,0 +1,15 @@
+.fp-profile,.fp-line { stroke-miterlimit:10; }
+.fp-bg { fill:var(--primary-background-color); }
+.icon,.tile-text,.group-name-text { fill:var(--primary-text-color); }
+.bg-off { fill:var(--primary-text-color); opacity:.125; }
+.bg-on { fill:var(--primary-color); }
+.bg-urgent { fill: var(--error-color); }
+.group-name-text { font-size:96px; }
+.tile-text,.group-name-text { font-family:var(--font-stack);font-weight:600; }
+.tile-text { 
+    font-size:56px;
+    text-transform:uppercase;
+}
+.fp-profile,.fp-line { fill:none;stroke:var(--primary-text-color); }
+.fp-profile { stroke-width:4px; }
+.fp-line { stroke-width:2px; }

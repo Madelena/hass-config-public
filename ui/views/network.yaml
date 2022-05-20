@@ -1,0 +1,426 @@
+# MAXIMALIST DASHBOARD
+# Network View
+# Made by Madelena Mak 2022
+
+title: Network
+path: 'network'
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 32px auto 32px
+  grid-template-areas: |
+    ". cc ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(max-width: 870px)':
+      grid-template-columns: 0 auto 0
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(320px, 1fr) [col-end])'
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        '(max-width: 800px)':
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])'
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            '(max-width: 800px)':
+              grid-template-columns: 1fr
+          margin: 0
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: markdown
+            content: >
+              # Network
+
+              The Internet is {{ states('binary_sensor.ping_cloudflare') }}
+              and {{ states('sensor.asuswrt_devices_connected') }} devices
+              are connected.{%- if states('sensor.speedtest_download') !=
+              'unavailable' -%}{{ ' ' }}The speed is {{ iif(
+              states('sensor.speedtest_download')|int >= 100, 'normal',
+              'slower than usual') }}.{%- endif -%}
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 3
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_cloudflare
+                    name: WAN ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret modem_url
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: sensor.asuswrt_devices_connected
+                    name: Router ↗
+                    icon: 'mdi:router-wireless'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret router_url
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_valhalla_outlet
+                    name: Outlet ↗
+                    icon: 'mdi:power-socket-us'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret outlet_home_url
+
+
+      # [Column] Ping
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: PING
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: entities
+            entities:
+              - entity: binary_sensor.ping_cloudflare
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_google
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_my_website
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: sensor.external_ip
+              - entity: binary_sensor.ping_valhalla_modem
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_valhalla_router
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_valhalla_outlet
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_blue_cave_mesh
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+                name: Workspace Mesh Node
+              - entity: binary_sensor.ping_bedroom_mesh_repeater
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_dorothy_illinoise
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+              - entity: binary_sensor.ping_kitchen_mesh_repeater
+                type: 'custom:multiple-entity-row'
+                secondary_info: last-changed
+            state_color: true
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.speedtest_ping
+            detail: 2
+          - type: 'custom:uptime-card'
+            entity: binary_sensor.ping_cloudflare
+            color:
+              none: null
+            bar:
+              round: 0
+              height: 48
+              spacing: 4
+            init: {}
+            alias:
+              ok: Connected
+              ko: Disconnected
+            tap_action: {}
+            tooltip: {}
+            blink: {}
+
+      # [Column] Download
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: DOWNLOAD
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: sensor
+            entity: sensor.speedtest_download
+            graph: line
+            detail: 2
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.asuswrt_download_speed
+            detail: 2
+            name: Router Download Speed
+          - type: sensor
+            entity: sensor.network_throughput_out_eth0
+            graph: line
+            name: Unison Network Out
+            detail: 2
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.asuswrt_download
+            detail: 2
+            name: Router Download
+
+      # [Column] Upload
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: UPLOAD
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: sensor
+            entity: sensor.speedtest_upload
+            graph: line
+            detail: 2
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.asuswrt_upload_speed
+            detail: 2
+            name: Router Upload Speed
+          - type: sensor
+            entity: sensor.network_throughput_in_eth0
+            graph: line
+            detail: 2
+            name: Unison Network In
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.asuswrt_upload
+            detail: 2
+            name: Router Upload
+
+      # [Column] Router
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: VALHALLA ROUTER
+              label: More
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: !secret router_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: sensor
+            graph: line
+            entity: sensor.asuswrt_devices_connected
+            name: Devices Connected
+            detail: 2
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.asuswrt_load_avg_1m
+            name: Router Load
+            detail: 2
+            unit: '%'
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.asuswrt_cpu_temperature
+                    name: CPU
+                  - entity: sensor.asuswrt_2_4ghz_temperature
+                    name: 2.4GHz
+                  - entity: sensor.asuswrt_5ghz_temperature
+                    name: 5GHz
+              - title: Temperatures
+
+      # [Column] AdGuard
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: ADGUARD
+              label: Manage
+              link: /a0d7b954_adguard
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: sensor
+            graph: line
+            entity: sensor.adguard_dns_queries
+            detail: 2
+          - type: sensor
+            graph: line
+            entity: sensor.adguard_dns_queries_blocked_ratio
+            detail: 2
+          - type: sensor
+            graph: line
+            entity: sensor.adguard_average_processing_speed
+
+      # [Column] Unison
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: UNISON
+              label: More
+              link: /lovelace-machines/unison
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.unison_processor_temperature
+            detail: 2
+            name: Unison Processor Temperature
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.unison_processor_use
+            name: Unison Processor Use
+            detail: 2
+
+      # [Column] Outlet
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: VALHALLA OUTLET
+              label: Open
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: !secret outlet_home_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: entities
+            entities:
+              - entity: binary_sensor.valhalla_outlet_modem
+              - entity: binary_sensor.valhalla_outlet_router
+          - type: entities
+            entities:
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.valhalla_outlet_event
+                name: ' '
+                icon: ' '
+                show_state: false
+                secondary_info:
+                  attribute: event_0_time
+                entities:
+                  - attribute: event_0
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.valhalla_outlet_event
+                name: ' '
+                icon: ' '
+                show_state: false
+                secondary_info:
+                  attribute: event_1_time
+                entities:
+                  - attribute: event_1
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.valhalla_outlet_event
+                name: ' '
+                icon: ' '
+                show_state: false
+                secondary_info:
+                  attribute: event_2_time
+                entities:
+                  - attribute: event_2
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.valhalla_outlet_event
+                name: ' '
+                icon: ' '
+                show_state: false
+                secondary_info:
+                  attribute: event_3_time
+                entities:
+                  - attribute: event_3
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.valhalla_outlet_event
+                name: ' '
+                icon: ' '
+                show_state: false
+                secondary_info:
+                  attribute: event_4_time
+                entities:
+                  - attribute: event_4
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.valhalla_outlet_event
+                name: ' '
+                icon: ' '
+                show_state: false
+                secondary_info:
+                  attribute: event_5_time
+                entities:
+                  - attribute: event_5
+            title: Event Log
+            show_header_toggle: true
+
+      # [Column] Event Log
+      - type: 'custom:list-card'
+        entity: sensor.valhalla_outlet_eventx
+        title: Event Log
+        feed_attribute: entries
+        columns:
+          - title: Time
+            field: time
+            style:
+              - white-space: nowrap
+          - title: Event
+            field: event

@@ -1,0 +1,623 @@
+# MAXIMALIST DASHBOARD
+# Lights View
+# Made by Madelena Mak 2022
+
+title: Light
+path: lights
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 32px auto 32px
+  grid-template-areas: |
+    ". cc ."
+  grid-column-gap: 0
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(max-width: 870px)':
+      grid-template-columns: 0 auto 0
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        '(max-width: 800px)':
+          margin: -1
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: auto max-content
+          grid-template-rows: auto
+          mediaquery:
+            '(max-width: 800px)':
+              grid-template-columns: 1fr
+          margin: 0
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            content: >
+              # Light
+
+              {% set daylight = ( state_attr('sun.sun', 'next_rising') | as_timestamp(0) - state_attr('sun.sun', 'next_setting') | as_timestamp(0) ) | abs / 60 / 60 %}
+              You have {{ states.light|length }} lights and {{
+              states.light|selectattr('state','equalto','on')|list|length }}
+              of them {{ iif(
+              (states.light|selectattr('state','equalto','on')|list|length
+              == 1), 'is', 'are') }}  turned on. There are {{ daylight | round(1) }} hours of daylight and {{ 24 - daylight | round(1) }} hours of nighttime today.
+
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 2
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 2
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_valhalla_rainbow
+                    name: Rainbow Hub ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret rainbow_hub_url
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_valhalla_insteon
+                    name: Insteon Hub ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret insteon_hub_url
+
+
+      # [Column] Living Room
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LIVING ROOM
+            view_layout:
+              grid-column: 1/-1
+          - view_layout:
+              grid-column: span 2
+            type: 'custom:button-card'
+            template:
+              - light_button_card_group
+            entity: group.living_room_lights
+            name: All Main Lights
+            icon: 'mdi:ceiling-light-multiple'
+            variables:
+              aspect_ratio: 2/1
+          - type: 'custom:decluttering-card'
+            template: mini_graph_tile
+            variables:
+              - entities:
+                  - entity: sensor.living_room_hue_sensor_light_level
+              - title: Light Level
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_chandelier_main
+              - name: Chandelier Main
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_random_light
+              - name: Random Light
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_ramsele_light
+              - name: Ramsele Light
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_strala_light
+              - name: Strala Light
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.hallway_light
+              - name: Hallway
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.bathroom_light_switch
+              - name: Bathroom
+        layout:
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+          grid-template-rows: auto
+          margin: -1
+
+
+      # [Column] Living Room Accents
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LIVING ROOM ACCENTS
+            view_layout:
+              grid-column: 1/-1
+          - view_layout:
+              grid-column: span 2
+            type: 'custom:button-card'
+            template: light_button_card_group
+            entity: group.living_room_accents
+            name: All Accents Lights
+            icon: 'mdi:lightbulb-multiple'
+            variables:
+              aspect_ratio: 2/1
+            state:
+              - value: 'on'
+                label: >-
+                  [[[ return
+                  states["group.living_room_accents"].attributes.entity_id.filter(entity
+                  => states[entity].state == "on").length + " lights are on"
+                  ]]]
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_decor_lights
+              - name: Decor Lights
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_ball_light
+              - name: Ball Light
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_hue_bowl
+              - name: Hue Bowl
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.living_room_table_lights
+              - name: Dining Table
+        layout:
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+          grid-template-rows: auto
+          margin: -1
+
+
+      # [Column] Kitchen
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: KITCHEN
+            view_layout:
+              grid-column: 1/-1
+          - view_layout:
+              grid-column: span 2
+            type: 'custom:button-card'
+            template:
+              - light_button_card_group
+            entity: group.kitchen_lights
+            name: All Kitchen Lights
+            icon: 'mdi:lightbulb-multiple'
+            variables:
+              aspect_ratio: 2/1
+          - type: 'custom:decluttering-card'
+            template: mini_graph_tile
+            variables:
+              - entities:
+                  - entity: sensor.kitchen_counter_motion_sensor_light_level
+              - title: Light Level
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.kitchen_counter_lights
+              - name: Counter
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.kitchen_spot_lights
+              - name: Spot Lights
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.kitchen_sink_lights
+              - name: Kitchen Sink
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.kitchen_counter_accent_lights
+              - name: Counter Accent
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: switch.kitchen_uv_light
+              - name: UV Light
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: switch.kitchen_aerogardens_plug_on_off
+              - name: Aerogardens
+        layout:
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+          grid-template-rows: auto
+          margin: -1
+
+
+      # [Column] Bedroom
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BEDROOM
+            view_layout:
+              grid-column: 1/-1
+          - view_layout:
+              grid-column: span 2
+            type: 'custom:button-card'
+            template:
+              - light_button_card_group
+            entity: group.bedroom_lights
+            name: All Bedroom Lights
+            icon: 'mdi:lightbulb-multiple'
+            variables:
+              aspect_ratio: 2/1
+          - type: 'custom:decluttering-card'
+            template: mini_graph_tile
+            variables:
+              - entities:
+                  - entity: sensor.bedroom_hue_sensor_light_level
+              - title: Light Level
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.bedroom_ceiling_lights
+              - name: Ceiling
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.bedroom_cloud_light
+              - name: Cloud Light
+          - type: 'custom:decluttering-card'
+            template: light_card
+            variables:
+              - entity: light.bedroom_hue_bowl
+              - name: Hue Bowl
+        layout:
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+          grid-template-rows: auto
+          margin: -1
+
+
+      # [Column] Workspace Accents
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: WORKSPACE ACCENTS
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+              - view_layout:
+                  grid-column: span 2
+                type: 'custom:button-card'
+                template:
+                  - light_button_card_group
+                entity: group.workspace_accents_lights
+                name: All Accents Lights
+                icon: 'mdi:lightbulb-multiple'
+                variables:
+                  aspect_ratio: 2/1
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.workspace_room_hue_sensor_light_level
+                  - title: Light Level
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: light.workspace_back_ledge_lights
+                  - name: Back Ledge
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: light.workspace_back_shelf_lights
+                  - name: Back Shelf
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: light.workspace_desk_bottom_lights
+                  - name: Desk Bottom
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: light.workspace_bench_bottom_lights
+                  - name: Bench Bottom
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: light.workspace_bloom_left
+                  - name: Bloom Left
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: light.workspace_bloom_right
+                  - name: Bloom Right
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              grid-template-rows: auto
+              margin: -1
+          - type: 'custom:layout-card'
+            entities:
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_bright
+                variables:
+                  name: Bright
+                  color: 'rgb(250, 207, 125)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_bright_ambient
+                variables:
+                  name: Bright Ambient
+                  color: 'rgb(207, 172, 104)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_relax
+                variables:
+                  name: Relax
+                  color: 'rgb(195, 150, 71)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_nightlight
+                variables:
+                  name: Nightlight
+                  color: 'rgb(136, 89, 30)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_lights_camera_action
+                variables:
+                  name: 'Lights, Camera, Action!'
+                  color: 'rgb(141, 97, 59)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_pink_thoughts
+                variables:
+                  name: Pink Thoughts
+                  color: 'rgb(207, 50, 188)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_soho
+                variables:
+                  name: Soho
+                  color: 'rgb(107, 28, 203)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_nebula
+                variables:
+                  name: Nebula
+                  color: 'rgb(95, 101, 156)'
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_accents_arctic_aurora
+                variables:
+                  name: Arctic Aurora
+                  color: 'rgb(89, 196, 190)'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(56px, 1fr) [col-end])'
+              grid-template-rows: auto
+              margin: -1
+
+
+      # [Column] Workspace Desk
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: ASTRALPLANE
+
+          - type: 'custom:mushroom-light-card'
+            use_light_color: true
+            show_brightness_control: true
+            show_color_temp_control: true
+            show_color_control: true
+            entity: light.workspace_desk_spot_light_left
+
+          - type: 'custom:mushroom-light-card'
+            entity: light.workspace_desk_spot_light_right
+            show_brightness_control: true
+            use_light_color: true
+            show_color_temp_control: true
+            show_color_control: true
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            entities:
+
+              - type: 'custom:decluttering-card'
+                template: light_card
+                variables:
+                  - entity: switch.circadian_lighting_workspace_desk_spot_light_circadian_lighting
+                  - name: Circadian Lighting
+                view_layout:
+                  grid-column: span 2
+                  grid-row: span 2
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_energize
+                variables:
+                  name: Energize
+                  color: 'rgb(64, 64, 64)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_concentrate
+                variables:
+                  name: Concentrate
+                  color: 'rgb(251, 212, 180)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_bright
+                variables:
+                  name: Bright
+                  color: 'rgb(250, 207, 125)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_read
+                variables:
+                  name: Read
+                  color: 'rgb(248, 173, 107)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_relax
+                variables:
+                  name: Relax
+                  color: 'rgb(195, 150, 71)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_lights_camera_action
+                variables:
+                  name: 'Lights, Camera, Action!'
+                  color: 'rgb(141, 97, 59)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_dimmed
+                variables:
+                  name: Dimmed
+                  color: 'rgb(64, 47, 33)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card_mini
+                entity: scene.workspace_key_lights_nightlight
+                variables:
+                  name: Nightlight
+                  color: 'rgb(63, 46, 25)'
+
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(56px, 1fr) [col-end])'
+              grid-template-rows: auto
+              margin: -1
+
+
+      # [Column] Workbench Studio
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: MAKERY
+
+          - type: 'custom:mushroom-light-card'
+            entity: light.workspace_studio_light_left
+            show_brightness_control: true
+            show_color_temp_control: true
+            show_color_control: true
+            use_light_color: true
+
+          - type: 'custom:mushroom-light-card'
+            entity: light.workspace_studio_light_center
+            show_brightness_control: true
+            use_light_color: true
+            show_color_temp_control: true
+            show_color_control: true
+
+          - type: 'custom:mushroom-light-card'
+            entity: light.workspace_studio_light_right
+            show_brightness_control: true
+            show_color_temp_control: true
+            show_color_control: true
+            use_light_color: true
+
+          - type: entities
+            entities:
+              - entity: light.workspace_makery_lights
+
+          - type: 'custom:layout-card'
+            entities:
+
+              - type: 'custom:button-card'
+                template: hue_scene_card
+                entity: scene.workbench_studio_lights_energize
+                variables:
+                  name: Energize
+                  color: 'rgb(222,222,222)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card
+                entity: scene.workbench_studio_lights_bright
+                variables:
+                  name: Bright
+                  color: 'rgb(250, 207, 125)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card
+                entity: scene.workbench_studio_lights_relax
+                variables:
+                  name: Relax
+                  color: 'rgb(195, 150, 71)'
+
+              - type: 'custom:button-card'
+                template: hue_scene_card
+                entity: scene.workbench_studio_lights_soho
+                variables:
+                  name: Soho
+                  color: 'rgb(107, 28, 203)'
+                  
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              grid-template-rows: auto
+              margin: -1

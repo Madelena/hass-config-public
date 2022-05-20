@@ -1,0 +1,264 @@
+
+type: 'custom:layout-card'
+layout_type: 'custom:grid-layout'
+layout:
+  margin: 0 16px 32px
+
+cards:
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto max-content
+      grid-template-rows: auto
+      mediaquery:
+        '(max-width: 800px)':
+          grid-template-columns: 1fr
+      margin: 0
+    cards:
+
+      - type: 'custom:button-card'
+        name: Unison
+        template: title_card_with_icon
+        entity: binary_sensor.rpi_power_status
+        show_state: true
+        state_display: '[[[ return "RaspberryPi Power Status " + entity.state ]]]'
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:horizontal-layout'
+        view_layout:
+          place-self: center
+        cards:
+
+          - type: 'custom:swipe-card'
+            parameters:
+              breakpointBase: container
+              enabled: true
+              slidesPerView: 1.66
+              breakpoints:
+                '600':
+                  enabled: false
+                  slidesPerView: 3
+            cards:
+
+              - type: 'custom:mushroom-entity-card'
+                entity: sensor.last_boot
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+
+              - type: 'custom:mushroom-entity-card'
+                entity: >-
+                  binary_sensor.home_assistant_operating_system_update_available
+                name: HassOS
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+
+              - type: 'custom:mushroom-entity-card'
+                entity: sensor.hacs
+                name: HACS
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:horizontal-layout'
+    layout:
+      width: 328
+      max_width: 655
+      max_cols: 10
+      card_margin: 0 16px
+      margin: 0 -16px
+    cards:
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: STATUS
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.unison_processor_use
+            detail: 2
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.unison_processor_temperature
+            detail: 2
+
+          - type: sensor
+            graph: line
+            detail: 2
+            entity: sensor.memory_use_percent
+
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: STORAGE
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.influxdb_database_size
+            detail: 1
+
+          - hours_to_show: 240
+            graph: line
+            type: sensor
+            detail: 2
+            entity: sensor.mariadb_size
+
+          - hours_to_show: 240
+            graph: line
+            type: sensor
+            detail: 2
+            entity: sensor.disk_use_percent
+
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BACKUPS
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+
+              - type: sensor
+                name: Status
+                icon: mdi:cloud-upload
+                entity: sensor.backup_state
+
+              - type: entities
+                entities:
+
+                  - entity: sensor.backup_state
+                    name: Time
+                    icon: mdi:file-clock
+                    show_state: false
+                    type: 'custom:multiple-entity-row'
+                    entities:
+
+                      - entity: sensor.backup_state
+                        attribute: last_backup
+                        format: relative
+                        name: LAST BACKUP
+                        styles:
+                          text-align: right
+
+                      - entity: sensor.backup_state
+                        attribute: next_backup
+                        format: relative
+                        name: NEXT BACKUP
+                        styles:
+                          text-align: right
+
+                  - entity: sensor.backup_state
+                    icon: mdi:cloud
+                    name: On Google Drive
+                    show_state: false
+                    type: 'custom:multiple-entity-row'
+                    entities:
+
+                      - entity: sensor.backup_state
+                        attribute: backups_in_google_drive
+                        name: false
+                        unit: Backups
+
+                      - entity: sensor.backup_state
+                        attribute: size_in_google_drive
+                        name: false
+
+                  - entity: sensor.backup_state
+                    icon: mdi:harddisk
+                    name: On Local Hard Drive
+                    show_state: false
+                    type: 'custom:multiple-entity-row'
+                    entities:
+
+                      - entity: sensor.backup_state
+                        attribute: backups_in_home_assistant
+                        name: false
+                        unit: Backups
+
+                      - entity: sensor.backup_state
+                        attribute: size_in_home_assistant
+                        name: false
+
+              - type: 'custom:list-card'
+                entity: sensor.backup_state
+                feed_attribute: backups
+                columns:
+                  - field: name
+                    title: Name
+                    style:
+                      - line-height: 1.33 !important
+                  - field: state
+                    title: Status
+                    style:
+                      - width: 80px
+                  - field: size
+                    title: Size
+                    style:
+                      - width: 40px
+                card_mod:
+                  style: >
+                    ha-card {padding-top: 16px;}
+
+                    tbody tr {background-color: transparent !important;}
+
+                    td, th {padding: 4px 0 !important;}
+
+                    th {text-align: left; font-size: var(--h6-font-size)
+                    !important; font-weight: bold !important;
+                    text-transform: uppercase;}
+
+                    th:nth-child(3), td:nth-child(3) {text-align: right;}
+
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: VALHALLA UPS
+
+          - type: entities
+            entities:
+              - entity: sensor.valhalla_ups_input_voltage
+                name: Input Voltage
+              - entity: sensor.valhalla_ups_load
+                name: Load
+              - entity: sensor.valhalla_ups_output_voltage
+                name: Output Voltage
+              - entity: sensor.valhalla_ups_status
+                name: Status
+              - entity: sensor.valhalla_ups_status_data
+                name: Status Data
+              - entity: sensor.valhalla_ups_battery_runtime
+              - entity: sensor.valhalla_ups_battery_voltage
+              - entity: sensor.valhalla_ups_current_apparent_power
+
+
+  - type: vertical-stack
+    cards:
+
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: GLANCES
+
+      - type: iframe
+        url: /api/hassio_ingress/213YPKtxEPf7hL1gGIVHOTJms7EieS4TQaU7xuKZ66U/
+        aspect_ratio: 75%

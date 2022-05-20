@@ -1,0 +1,44 @@
+@font-face {
+    font-family: "SegoeUI";
+    font-weight: normal;
+    src: url("/local/segoeui.ttf");
+}
+
+@font-face {
+    font-family: "SegoeUI";
+    font-weight: 100;
+    src: url("/local/segoeuil.ttf");
+}
+
+@font-face {
+    font-family: "SegoeUI";
+    font-weight: 200;
+    src: url("/local/segoeuisl.ttf");
+}
+
+@font-face {
+    font-family: "SegoeUI";
+    font-weight: 500;
+    src: url("/local/seguisb.ttf");
+}
+
+@font-face {
+    font-family: "SegoeUI";
+    font-weight: bold;
+    src: url("/local/segoeuib.ttf");
+}
+
+@font-face {
+    font-family: "SegoeUI";
+    font-weight: 900;
+    src: url("/local/seguibl.ttf");
+}
+
+body {
+    font-family: Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, sans-serif;
+} 
+
+html {
+    font-family: Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, sans-serif;
+    --paper-font-common-base_-_font-family: Segoe UI Variable Static Text, Segoe UI, SegoeUI, -apple-system,BlinkMacSystemFont, sans-serif;
+}

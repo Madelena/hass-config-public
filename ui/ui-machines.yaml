@@ -1,0 +1,34 @@
+# Madelena + The Machines
+# Made by Madelena Mak 2022
+# https://mmak.es
+
+title: My Machines
+# Yes, it's the one by Battles ft. Gary Numan
+
+views:
+  - !include views/machines/unison.yaml
+  - !include views/machines/terpsichora.yaml
+  - !include views/machines/genesis.yaml
+  - !include views/machines/dorothy.yaml
+  - !include views/machines/astralplane.yaml
+  - !include views/machines/printers.yaml
+
+decluttering_templates: !include cards/decluttering_templates.yaml
+button_card_templates: !include cards/button_card_templates.yaml
+popup_cards: !include popups/popup_cards.yaml
+
+swipe_nav:
+  animate: swipe
+  prevent_default: true
+
+kiosk_mode:
+  user_settings:
+    - users:
+        - Strawberry
+        - Maddy
+      hide_sidebar: true
+      hide_menubutton: true
+      hide_overflow: true
+  mobile_settings:
+    hide_menubutton: true
+    hide_overflow: true

@@ -1,0 +1,10 @@
+# MADELENA + THE MACHINES
+# Genesis View
+# Made by Madelena Mak 2022
+
+title: Genesis
+path: genesis
+
+type: panel
+cards: 
+  - !include genesis-cards.yaml

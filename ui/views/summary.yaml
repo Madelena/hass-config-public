@@ -1,0 +1,1565 @@
+# MAXIMALIST DASHBOARD
+# Summary View
+# Made by Madelena Mak 2022
+
+title: Summary
+icon: 'mdi:home-circle'
+path: 'summary'
+
+# Most of the layouts are based on CSS Grids using layout-card.
+# The cards are first set inside a layout card for margins
+# and then inside another layout card for the columns for the top half,
+# while the bottom half is a layout-card in masonry layout.
+
+# Learn more about CSS Grids:
+# https://css-tricks.com/snippets/css/complete-guide-grid/
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-rows: auto 32px
+  grid-template-columns: 1fr
+  grid-template-areas: |
+    "cc" "."
+  margin: 0
+  card_margin: 0
+  mediaquery:
+    '(min-width: 1480px)':
+      grid-template-columns: auto 1440px auto
+      grid-template-areas: |
+        ". cc ." ". . ."
+    '(min-width: 1200px)':
+      grid-template-columns: 0 auto 0
+      grid-template-areas: |
+        ". cc ."
+      grid-column-gap: 32px
+
+cards:
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+
+    layout:
+      grid-template-columns: >-
+        calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
+        25% - 24px )
+      grid-column-gap: 32px
+      grid-template-areas: |
+        "h h h h"
+        "c1 fp fp c2"
+      mediaquery:
+        '(max-width: 512px)':
+          grid-template-columns: 1fr
+          grid-template-areas: |
+            "h"
+            "fp"
+            "c1"
+            "c2"
+          margin: 0
+        '(max-width: 840px)':
+          grid-template-columns: 1fr 1fr
+          grid-template-areas: |
+            "h h"
+            "fp fp"
+            "c1 c2"
+          margin: 0
+        '(max-width: 1128px)':
+          grid-template-columns: 1fr 1fr 1fr
+          grid-template-areas: |
+            "h h h"
+            "c1 fp fp"
+            "c2 none none"
+          margin: 0
+      margin: 0
+
+    view_layout:
+      grid-area: cc
+
+    cards:
+
+
+      # [Header] Greetings
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: auto min-content
+          grid-template-rows: auto
+          margin: -1px -1px -16px -1px
+          padding: 0
+        view_layout:
+          grid-area: h
+        cards:
+            
+          - type: markdown
+            content: >
+              # {% if now() > today_at('18:00') %}Good evening{% elif
+              now() > today_at('12:00') %}Good afternoon{% elif now() >
+              today_at('5:00') %}Good morning{% else %}Good night{%
+              endif %}, {{ user }}.
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                  margin-bottom: -16px;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                  margin-top: -12px !important;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            cards:
+              - type: 'custom:mushroom-person-card'
+                entity: person.madelena
+                style: 'ha-card {background: none;}'
+                use_entity_picture: true
+                view_layout: null
+            layout:
+              width: 160
+              margin: -1
+            view_layout:
+              place-self: center
+              show:
+                mediaquery: '(min-width: 800px)'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            cards:
+              - type: 'custom:mushroom-person-card'
+                entity: person.madelena
+                use_entity_picture: true
+                hide_state: true
+                hide_name: true
+                style: |
+                  ha-card {background: none;
+                    margin-top: 16px;
+                    transform: scale(1.5) translate(-8px);
+                  }
+            layout:
+              width: 72
+            view_layout:
+              place-self: start
+              show:
+                mediaquery: '(max-width: 799.99px)'
+
+
+      # [Floor Plan Diagram] USS Strawberry Fields
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+        view_layout:
+          grid-area: fp
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: U.S.S. STRAWBERRY FIELDS
+              label: Areas
+              link: /config/areas/dashboard
+
+          - type: 'custom:floorplan-card'
+            config:
+              image:
+                location: /local/uss-strawberry-fields.svg
+                cache: false
+              stylesheet: /local/ha-floorplan.css
+              defaults:
+                hover_action: hover-info
+                tap_action: more-info
+              rules:
+
+                - entity: group.bedroom_lights
+                  element: group.bedroom_lights.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: group.kitchen_lights
+                  element: group.kitchen_lights.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: group.workspace_lights
+                  element: group.workspace_lights.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: group.living_room_lights
+                  element: group.living_room_lights.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: sensor.workspace_room_hue_sensor_temperature
+                  tap_action: more-info
+                  state_action:
+                    action: call-service
+                    service: floorplan.text_set
+                    service_data: '${entity.state}'
+
+                - entities:
+                    - binary_sensor.bedroom_hue_sensor_motion
+                    - binary_sensor.kitchen_counter_motion_sensor_motion
+                    - binary_sensor.workspace_room_hue_sensor_motion
+                    - binary_sensor.living_room_hue_sensor_motion
+                  state_action:
+                    action: call-service
+                    service: floorplan.text_set
+                    service_data: '${(entity.state === "on") ? "Detected" : "Clear"}'
+
+                - entity: binary_sensor.bedroom_hue_sensor_motion
+                  element: binary_sensor.bedroom_hue_sensor_motion.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: binary_sensor.kitchen_counter_motion_sensor_motion
+                  element: >-
+                    binary_sensor.kitchen_counter_motion_sensor_motion.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: binary_sensor.workspace_room_hue_sensor_motion
+                  element: binary_sensor.workspace_room_hue_sensor_motion.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: binary_sensor.living_room_hue_sensor_motion
+                  element: binary_sensor.living_room_hue_sensor_motion.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entities:
+                    - binary_sensor.bathroom_leak_sensor_wet
+                    - binary_sensor.kitchen_leak_sensor_ias_zone
+                  state_action:
+                    action: call-service
+                    service: floorplan.text_set
+                    service_data: '${(entity.state === "on") ? "Wet" : "Dry"}'
+
+                - entity: binary_sensor.bathroom_leak_sensor_wet
+                  element: binary_sensor.bathroom_leak_sensor_wet.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${(entity.state === "on") ? "bg-urgent" :
+                        "bg-off"}
+
+                - entity: binary_sensor.kitchen_leak_sensor_ias_zone
+                  element: binary_sensor.kitchen_leak_sensor_ias_zone.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${(entity.state === "on") ? "bg-urgent" :
+                        "bg-off"}
+
+                - entities:
+                    - group.bedroom_lights
+                    - group.workspace_lights
+                    - group.living_room_lights
+                    - group.kitchen_lights
+                  state_action:
+                    action: call-service
+                    service: floorplan.text_set
+                    service_data: '${entity.state}'
+
+                - entities:
+                    - >-
+                      binary_sensor.bedroom_window_sensor_center_ias_zone
+                    - >-
+                      binary_sensor.living_room_window_sensor_center_ias_zone
+                  state_action:
+                    action: call-service
+                    service: floorplan.text_set
+                    service_data: '${(entity.state === "on") ? "Open" : "Closed"}'
+
+                - entity: binary_sensor.bedroom_window_sensor_center_ias_zone
+                  element: >-
+                    binary_sensor.bedroom_window_sensor_center_ias_zone.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entity: >-
+                    binary_sensor.living_room_window_sensor_center_ias_zone
+                  element: >-
+                    binary_sensor.living_room_window_sensor_center_ias_zone.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+
+                - entities:
+                    - sensor.bathroom_env_sensor_temperature
+                    - sensor.workspace_room_hue_sensor_temperature
+                    - sensor.bedroom_hue_sensor_temperature
+                    - sensor.living_room_hue_sensor_temperature
+                  state_action:
+                    action: call-service
+                    service: floorplan.text_set
+                    service_data: '${entity.state + " °C"}'
+
+                - element: workspace.pointer
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${((states["group.workspace_lights"].state ===
+                        "on") |
+                        (states["binary_sensor.workspace_room_hue_sensor_motion"].state
+                        === "on")) ? "bg-on" : "bg-off"}
+
+                - element: bedroom.pointer
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${((states["group.bedroom_lights"].state ===
+                        "on") |
+                        (states["binary_sensor.bedroom_hue_sensor_motion"].state
+                        === "on") |
+                        (states["binary_sensor.bedroom_window_sensor_center_ias_zone"].state
+                        === "on")) ? "bg-on" : "bg-off"}
+
+                - element: livingroom.pointer
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${((states["group.living_room_lights"].state ===
+                        "on") |
+                        (states["binary_sensor.living_room_hue_sensor_motion"].state
+                        === "on") |
+                        (states["binary_sensor.living_room_window_sensor_center_ias_zone"].state
+                        === "on")) ? "bg-on" : "bg-off"}
+
+                - element: kitchen.pointer
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${((states["group.kitchen_lights"].state ===
+                        "on") |
+                        (states["binary_sensor.kitchen_counter_motion_sensor_motion"].state
+                        === "on")) ? "bg-on" : "bg-off"}
+
+                - element: bathroom.pointer
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: >-
+                        ${((states["binary_sensor.bathroom_leak_sensor_wet"].state
+                        === "on")) ? "bg-urgent" : "bg-off"}
+
+            card_mod:
+              style: |
+                ha-card {background: none;}
+
+
+      # [Column] Energy / Security
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+          card_margin: 1px
+        view_layout:
+          grid-area: c1
+        cards:
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+              padding: 0
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: ENERGY
+                  label: More
+                  link: /ui-dashboard/energy
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  - aspect_ratio: 2/1
+                  - points_per_hour: 4
+                  - entities:
+                      - entity: sensor.total_energy_use
+                  - title: Total Energy Usage
+                  - icon: 'mdi:home-lightning-bolt'
+                  - line_width: 2
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: SECURITY
+                  label: More
+                  link: /ui-dashboard/security
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.front_door_contact_sensor_ias_zone
+                name: Front Door
+                variables:
+                  aspect_ratio: '[[[ return Math.round(this.offsetWidth / 112) ]]]'
+                view_layout:
+                  grid-column: 1/-2
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_state_countdown
+                entity: alarm_control_panel.alexa_guard
+                state:
+                  - value: armed_away
+                    color: 'rgb(var(--rgb-primary-color))'
+                  - value: disarmed
+                    color: >-
+                      [[[ return iif( person.madelena.state == "home",
+                      "none", "rgb(var(--rgb-primary-color))") ]]]
+
+              - type: 'custom:button-card'
+                template: live_tile_with_camera
+                entity: camera.front_door_camera
+                name: Front Door
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  direction: vertical
+                  autoHeight: true
+                  height: 128
+                  effect: cube
+                  cubeEffect:
+                    - slideShadows: false
+                  xautoplay:
+                    delay: 60000
+                cards: !include secret/summary-cameras.yaml
+
+
+      # [Column] Network / Lights
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        cards:
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards: &summary-column-network-cards
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: NETWORK
+                  label: More
+                  link: /ui-dashboard/1
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.ping_cloudflare
+                name: WAN
+                state:
+                  - value: 'off'
+                    styles:
+                      card:
+                        - background: var(--primary-color)
+                  - value: 'on'
+                    styles:
+                      card:
+                        - background: var(--ha-card-background)
+                        - color: var(--primary-text-color)
+                variables:
+                  aspect_ratio: '[[[ return Math.round(this.offsetWidth / 112) ]]]'
+                view_layout:
+                  grid-column: 1/-2
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.asuswrt_devices_connected
+                  - title: Devices Connected
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.speedtest_download
+                  - title: Download Speed
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.speedtest_upload
+                  - title: Upload Speed
+
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards: &summary-column-lights-cards
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: LIGHTS
+                  label: All Lights
+                  link: /ui-dashboard/lights
+                view_layout:
+                  grid-column: 1/-1
+
+              - view_layout:
+                  grid-column: span 2
+                type: 'custom:button-card'
+                template: light_button_card_group
+                entity: group.all_lights
+                name: All Lights
+                icon: 'mdi:lightbulb-multiple'
+                variables:
+                  aspect_ratio: 2/1
+                state:
+                  - value: 'on'
+                    label: >-
+                      [[[ return
+                      states["group.all_lights"].attributes.entity_id.filter(entity
+                      => states[entity].state == "on").length + " lights
+                      are on" ]]]
+                tap_action:
+                  action: navigate
+                  navigation_path: /ui-dashboard/lights/
+
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+
+        layout:
+          margin: 0
+          padding: 0
+          card_margin: 1px
+        view_layout:
+          grid-area: c2
+          show:
+            mediaquery: '(min-width: 1129px)'
+
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:horizontal-layout'
+        layout:
+          width: 256
+          max_width: 400
+          max_cols: 4
+          card_margin: 0 16px
+          margin: 0 -16px
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          # [Column] Network (Repeat)
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              margin: 0
+              card_margin: 1px
+            view_layout:
+              show:
+                mediaquery: '(max-width: 1128px)'
+            cards: *summary-column-network-cards
+
+
+          # [Column] Devices
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            view_layout:
+              min_height: 0
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card_no_link
+                variables:
+                  name: DEVICES
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_last_changed_label
+                entity: sensor.octoprint_current_state
+                name: Genesis
+                state:
+                  - value: Printing
+                    color: 'rgb(var(--rgb-primary-color))'
+                  - value: Operational
+                    color: 'rgba(var(--rgb-primary-color),.33)'
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_last_changed_label
+                entity: vacuum.peanut_hamper
+                name: Peanut Hamper
+                state:
+                  - value: docked
+                    color: 'off'
+                  - value: cleaning
+                    color: 'rgb(var(--rgb-primary-color),.33)'
+                  - value: error
+                    color: 'rgba(var(--rgb-primary-color))'
+                  - value: idle
+                    color: 'rgba(var(--rgb-primary-color))'
+                  - value: returning to dock
+                    color: 'rgb(var(--rgb-primary-color),.33)'
+                state_display: >-
+                  [[[ if (entity.state == "error") { return
+                  entity.attributes.error } ]]]
+                styles:
+                  state:
+                    - text-transform: capitalize
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.dorothy_intel_core_i5_750_load_cpu_total
+                  - title: Dorothy
+                  - icon: 'mdi:cpu-64-bit'
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.unison_processor_use
+                  - title: Unison
+
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              margin: 0
+
+
+          # [Column] Me
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: ME
+                  label: More
+                  link: /ui-dashboard/me
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:button-card'
+                template: live_tile
+                entity: sensor.anniversary_cake_day
+                state_display: >-
+                  [[[ return
+                  states["sensor.anniversary_days_on_earth"].state ]]]
+                name: >-
+                  [[[ return "Cake Day in " +
+                  states["sensor.anniversary_cake_day"].state + " Days" ]]]
+                label: >-
+                  [[[ return "Week " +
+                  -states["sensor.anniversary_days_on_earth"].attributes.weeks_remaining
+                  ]]]
+                icon: 'mdi:cake-variant'
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  aspect_ratio: 2/1
+                styles:
+                  card:
+                    - background-image: |
+                        [[[
+                          var diff = entity.state
+                          if (diff > 120) { return '' }
+                          var opacity = 1 - (diff / 120)
+                          return 'linear-gradient( rgba(var(--rgb-primary-color),' + opacity + '), rgba(var(--rgb-primary-color),' + opacity + '))'
+                        ]]]
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.withings_sleep_score_madelena
+                  - title: Sleep Score
+                  - hours_to_show: 96
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.my_twitter_followers_count
+                  - title: Twitter
+                  - icon: 'mdi:twitter'
+                  - hours_to_show: 96
+
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              margin: 0
+
+
+          # [Column] Weather
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: WEATHER
+                  label: More
+                  link: /ui-dashboard/neighborhood
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:button-card'
+                template: live_tile
+                icon: |
+                  [[[
+                    var weatherIconDict = {
+                      'partlycloudy': 'partly-cloudy',
+                      'clear-night': 'night'
+                    }
+                    var weatherIcon = weatherIconDict[entity.state]
+                    if (weatherIcon == null) {weatherIcon = entity.state}
+                    return "mdi:weather-" + weatherIcon
+                  ]]]
+                name: '[[[ return entity.state ]]]'
+                label: '[[[ return entity.attributes.humidity + "%" ]]]'
+                state_display: >-
+                  [[[ return Math.round(entity.attributes.temperature) + "°"
+                  ]]]
+                entity: weather.valhalla_2
+
+              - type: 'custom:button-card'
+                template: live_tile
+                entity: sensor.waqi_new_york
+                name: |
+                  [[[
+                    if (entity.state > 300) {
+                      return "AQI Hazardous"
+                    } else if (entity.state > 200) {
+                      return "AQI Very Unhealthy"
+                    } else if (entity.state > 150) {
+                      return "AQI Unhealthy"
+                    } else if (entity.state > 100) {
+                      return "AQI Unhealthy for Sensitive Groups"
+                    } else if (entity.state > 50) {
+                      return "AQI Moderate"
+                    } else {
+                      return "AQI Good"
+                    }
+                  ]]]
+                icon: mdi:molecule
+                show_units: false
+                styles:
+                  card:
+                    - background: |
+                        [[[
+                          if (entity.state > 300) {
+                            return "maroon"
+                          } else if (entity.state > 200) {
+                            return "purple"
+                          } else if (entity.state > 150) {
+                            return "rgba(var(--rgb-primary-color),1)"
+                          } else if (entity.state > 100) {
+                            return "rgba(var(--rgb-primary-color),.66)"
+                          } else if (entity.state > 50) {
+                            return "rgba(var(--rgb-primary-color),.33)"
+                          } else {
+                            return "var(--ha-card-background)"
+                          }
+                        ]]]
+
+              - &summary-card-nws-alerts
+                type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                entity: sensor.nws_alert_rss_feed
+                name: NWS Alerts
+                state_display: |
+                  [[[
+                    if (entity.state == 0) { return "No Alerts" }
+                    if (entity.attributes.entries[0].title.includes('no active')) { entity.state = 0; return "No Alerts" }
+                    if (entity.state > 1) { return entity.state + " Alerts" } else { return "1 Alert" }
+                  ]]]
+                label: '[[[ if ( entity.attributes.entries == undefined ) { return entity.attributes.entries[0].title } ]]]'
+                state:
+                  - value: 1
+                    operator: '>='
+                    color: var(--primary-color)
+                  - value: 0
+                    operator: ==
+                    color: var(--ha-card-background)
+                    styles:
+                      card:
+                        - color: var(--disabled-text-color)
+                view_layout:
+                  show:
+                    mediaquery: "(max-width: 1128px)"
+
+              - <<: *summary-card-nws-alerts
+                view_layout:
+                  grid-column: span 2
+                  show:
+                    mediaquery: "(min-width: 1129px)"
+                variables:
+                  aspect_ratio: 2/1
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                entity: sensor.tomorrow_io_valhalla_tree_pollen_index
+                variables:
+                  label: |
+                    [[[
+                      return "Grass - " + states['sensor.tomorrow_io_valhalla_grass_pollen_index'].state + "<br>Tree - " + states['sensor.tomorrow_io_valhalla_tree_pollen_index'].state + "<br>Weed - " + states['sensor.tomorrow_io_valhalla_weed_pollen_index'].state
+                    ]]]
+                  state: |
+                    [[[
+                      var sum = "Grass - " + states['sensor.tomorrow_io_valhalla_grass_pollen_index'].state + "<br>Tree - " + states['sensor.tomorrow_io_valhalla_tree_pollen_index'].state + "<br>Weed - " + states['sensor.tomorrow_io_valhalla_weed_pollen_index'].state
+                      if (sum.includes('very_high')) {return 'Very High' }
+                      if (sum.includes('high')) {return 'High' }
+                      if (sum.includes('medium')) {return 'Medium' }
+                      if (sum.includes('very_low')) {return 'Very Low' }
+                      if (sum.includes('low')) {return 'Low' }
+                      return 'None'
+                    ]]]
+                name: Pollen
+                state_display: '[[[ return variables.state ]]]'
+                label: '[[[ return variables.label.replace("_", " ") ]]]'
+                styles:
+                  card:
+                    - color: |
+                        [[[
+                          switch(variables.state) {
+                            case 'None': return 'var(--disabled-text-color)'
+                            case 'Very Low': return 'var(--primary-text-color)'
+                            case 'Low': return 'var(--primary-text-color)'
+                            default: return 'var(--text-accent-color)'
+                          }
+                        ]]]
+                    - background: |
+                        [[[
+                          switch(variables.state) {
+                            case 'Very High': return 'var(--accent-color)'
+                            case 'High': return 'var(--primary-color)'
+                            case 'Medium': return 'rgba(var(--rgb-primary-color), .75)'
+                            case 'Low': return 'rgba(var(--rgb-primary-color), .5)'
+                            case 'Very Low': 'rgba(var(--rgb-primary-color), .25)'
+                            default: return 'var(--ha-card-background)'
+                          }
+                        ]]]
+                  label:
+                    - text-transform: capitalize
+
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              margin: 0
+
+
+          # [Column] Neighborhood
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: NEIGHBORHOOD
+                  label: More
+                  link: /ui-dashboard/neighborhood
+                view_layout:
+                  grid-column: 1/-1
+                 
+              - type: 'custom:button-card'
+                view_layout:
+                  grid-column: span 2
+                variables:
+                  aspect_ratio: 2
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                entity: sensor.mta_subway_l_service_status
+                state_display: >-
+                  [[[ return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses.north : entity.state) ]]]
+                name: L Train Northbound
+                icon: 'mdi:train'
+                label: |-
+                  [[[ if ( entity.state == 'No Service') {
+                      return entity.attributes.service_change_summaries.both[0] 
+                    } else {
+                      return ((entity.attributes.service_change_summaries.north.length > 0) ? entity.attributes.service_change_summaries.north[0] : '') +
+                        ((entity.attributes.delay_summaries.north != null) ? entity.attributes.delay_summaries.north : '') +
+                        ((entity.attributes.service_irregularity_summaries.north != null) ? entity.attributes.service_irregularity_summaries.north : '') +
+                        ((entity.attributes.service_change_summaries.both.length > 0) ? entity.attributes.service_change_summaries.both[0] : '') }  ]]]
+                state:
+                  - value: Slow
+                    color: 'rgba(var(--rgb-primary-color), .33)'
+                  - value: 'Not Good'
+                    color: 'rgba(var(--rgb-primary-color), .5)'
+                  - value: No Service
+                    color: var(--accent-color)
+                  - value: Service Change
+                    color: var(--accent-color)
+                  - value: Delay
+                    color: var(--primary-color)
+                  - value: Good Service
+                    styles:
+                      card:
+                        - background: var(--ha-card-background)
+                        - color: var(--disabled-text-color)
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_with_picture
+                name: Traffic
+                entity: camera.bing_maps_traffic
+                show_state: false
+                variables:
+                  picture: '[[[ return entity.attributes.entity_picture ]]]'
+   
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.waze_travel_time
+                  - title: Driving Time
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  direction: vertical
+                  autoHeight: true
+                  height: 128
+                  effect: cube
+                  autoplay:
+                    delay: 15000
+                  cubeEffect:
+                    - slideShadows: false
+                cards:
+
+                  - type: 'custom:button-card'
+                    variables:
+                      aspect_ratio: 2/1
+                    template:
+                      - live_tile_card
+                      - live_tile_with_longer_state
+                    name: >-
+                      [[[ return "Notify NYC - " + new
+                      Date(entity.attributes.entries[0].published).toLocaleTimeString([],
+                      { hour12: false, hour: "2-digit", minute: "2-digit"})
+                      ]]]
+                    color: var(--ha-card-background)
+                    entity: sensor.notify_nyc
+                    state_display: >-
+                      [[[ return
+                      entity.attributes.entries[0].title.replace("Notify NYC
+                      - ", "") ]]]
+                    label: >-
+                      [[[ return
+                      entity.attributes.entries[0].summary.replace(/Notification
+                      issued .*/g, "").replace(/For more information, .*/g,
+                      "").replace(/To view this message in.*/g, "") ]]]
+                    styles:
+                      card:
+                        - color: var(--primary-text)
+
+                  - type: 'custom:button-card'
+                    variables:
+                      aspect_ratio: 2/1
+                    template:
+                      - live_tile_card
+                      - live_tile_with_longer_state
+                    name: >-
+                      [[[ return "Notify NYC - " + new
+                      Date(entity.attributes.entries[1].published).toLocaleTimeString([],
+                      { hour12: false, hour: "2-digit", minute: "2-digit"})
+                      ]]]
+                    color: var(--ha-card-background)
+                    entity: sensor.notify_nyc
+                    state_display: >-
+                      [[[ return
+                      entity.attributes.entries[1].title.replace("Notify NYC
+                      - ", "") ]]]
+                    label: >-
+                      [[[ return
+                      entity.attributes.entries[1].summary.replace(/Notification
+                      issued .*/g, "").replace(/For more information, .*/g,
+                      "").replace(/To view this message in.*/g, "") ]]]
+                    styles:
+                      card:
+                        - color: var(--primary-text)
+
+                  - type: 'custom:button-card'
+                    variables:
+                      aspect_ratio: 2/1
+                    template:
+                      - live_tile_card
+                      - live_tile_with_longer_state
+                    name: >-
+                      [[[ return "Notify NYC - " + new
+                      Date(entity.attributes.entries[2].published).toLocaleTimeString([],
+                      { hour12: false, hour: "2-digit", minute: "2-digit"})
+                      ]]]
+                    color: var(--ha-card-background)
+                    entity: sensor.notify_nyc
+                    state_display: >-
+                      [[[ return
+                      entity.attributes.entries[2].title.replace("Notify NYC
+                      - ", "") ]]]
+                    label: >-
+                      [[[ return
+                      entity.attributes.entries[2].summary.replace(/Notification
+                      issued .*/g, "").replace(/For more information, .*/g,
+                      "").replace(/To view this message in.*/g, "") ]]]
+                    styles:
+                      card:
+                        - color: var(--primary-text)
+
+                view_layout:
+                  grid-column: span 2
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.gasbuddy_average_gas_price
+                  - title: Avg Gas Price
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                name: Parking Rules
+                entity: sensor.nyc_311_alternate_side_parking_0d
+                label: |
+                  [[[ return entity.attributes.details ]]]
+                state:
+                  - value: 'In effect'
+                    styles:
+                      card:
+                        - background: var(--ha-card-background)
+                        - color: var(--disabled-text-color)
+                  - value: 'Not in effect'
+                    color: var(--primary-color)
+
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              margin: 0
+
+
+          # [Column] Lights (Repeat) / Media
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1
+            cards:
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  grid-template-columns: >-
+                    repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                    [col-end])
+                  margin: -1
+                view_layout:
+                  show:
+                    mediaquery: '(max-width: 1128px)'
+                cards: *summary-column-lights-cards
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  grid-template-columns: >-
+                    repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                    [col-end])
+                  grid-auto-flow: row dense
+                  margin: -1
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: header_card
+                    variables:
+                      name: MEDIA
+                      label: More
+                      link: /ui-machines/media
+                    view_layout:
+                      grid-column: 1/-1
+
+                  - type: 'custom:auto-entities'
+                    filter:
+                      include:
+                        - domain: media_player
+                          state: playing
+                          options:
+                            type: 'custom:button-card'
+                            template: live_tile_media_player
+                            entity: this.entity_id
+                        - domain: media_player
+                          state: paused
+                          options:
+                            type: 'custom:button-card'
+                            template: live_tile_media_player
+                            entity: this.entity_id
+                      exclude: []
+                    show_empty: false
+                    card:
+                      type: 'custom:swipe-card'
+                      xlayout_type: 'custom:grid-layout'
+                      xlayout_options:
+                        grid-template-columns: >-
+                          repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                          [col-end])
+                        margin: 0
+                      parameters:
+                        direction: vertical
+                        autoHeight: true
+                        effect: cube
+                        autoplay:
+                          delay: 5000
+                        xloop: true
+                        cubeEffect:
+                          - slideShadows: false
+                    card_param: cards
+                    view_layout:
+                      grid-column: span 2
+
+                  - type: 'custom:decluttering-card'
+                    template: mini_graph_tile
+                    variables:
+                      - entities:
+                          - entity: sensor.my_last_fm_play_count
+                      - title: Last.fm
+                      - icon: 'mdi:music'
+                      - hours_to_show: 48
+                      - lower_bound: ~100000
+
+                  - type: 'custom:button-card'
+                    variables:
+                      newest: |
+                        [[[
+                          var movieUpdate = new Date(states["sensor.dorothy_library_movies"].attributes.last_added_timestamp)
+                          var tvUpdate = new Date(states["sensor.dorothy_library_tv_shows"].attributes.last_added_timestamp)
+                          var flacUpdate = new Date(states["sensor.dorothy_library_flacs"].attributes.last_added_timestamp)
+                          if (flacUpdate > movieUpdate) {
+                            if (flacUpdate > tvUpdate) { return "flacs" } else {return "tv_shows" }
+                          } else {
+                            if (movieUpdate > tvUpdate) { return "movies" } else {return "tv_shows" }
+                          }
+                        ]]]
+                    template:
+                      - live_tile_card
+                      - live_tile_with_longer_state
+                    name: New to Plex
+                    icon: 'mdi:plex'
+                    entity: sensor.dorothy_library_flacs
+                    state_display: >-
+                      [[[ return states["sensor.dorothy_library_" +
+                      variables.newest].attributes.last_added_item ]]]
+                    label: |-
+                      [[[ 
+                        var diff = (-(new Date(states["sensor.dorothy_library_" +
+                          variables.newest].attributes.last_added_timestamp) - new Date()) /
+                          1000 / 60 / 60 / 24)
+                        if (diff > 1.5) {return Math.round(diff)  + " days ago" }
+                        if (diff < .03) {return "Just now" }
+                        if (diff <= 1.5) {return Math.round(diff * 24)  + " hours ago" }
+
+                      ]]]
+                    styles:
+                      card:
+                        - background: var(--ha-card-background)
+                        - color: var(--primary-text-color)
+                      state:
+                        - display: '-webkit-box'
+                        - '-webkit-line-clamp': 3
+                        - '-webkit-box-orient': vertical
+
+                  - type: 'custom:swipe-card'
+                    parameters:
+                      direction: vertical
+                      autoHeight: true
+                      height: 128
+                      effect: cube
+                      autoplay:
+                        delay: 60000
+                      cubeEffect:
+                        - slideShadows: false
+                    view_layout:
+                      grid-column: span 2
+                    cards:
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_long_state
+                        entity: sensor.last_fm_top_artists
+                        icon: 'mdi:album'
+                        name: >-
+                          [[[ return
+                          states["sensor.last_fm_top_artists_json"].attributes.artist[0].playcount
+                          + " plays" ]]]
+                        label: >
+                          [[[ return
+                          states["sensor.last_fm_top_artists"].attributes.artist_2
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_artists"].attributes.artist_3
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_artists"].attributes.artist_4
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_artists"].attributes.artist_5
+                          ]]]
+                        variables:
+                          aspect_ratio: 2/1
+                        styles:
+                          card:
+                            - color: white
+                            - background-size: cover
+                            - background-image: >
+                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                                  states["sensor.last_fm_top_artist_photo"].state + "')" ]]]
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_long_state
+                        entity: sensor.last_fm_top_albums
+                        icon: 'mdi:album'
+                        name: >-
+                          [[[ return
+                          states["sensor.last_fm_top_albums_json"].attributes.album[0].playcount
+                          + " plays" ]]]
+                        label: >
+                          [[[ return
+                          states["sensor.last_fm_top_albums"].attributes.album_2
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_albums"].attributes.album_3
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_albums"].attributes.album_4
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_albums"].attributes.album_5
+                          ]]]
+                        variables:
+                          aspect_ratio: 2/1
+                        styles:
+                          card:
+                            - color: white
+                            - background-size: cover
+                            - background-image: >
+                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                                  states["sensor.last_fm_top_albums"].attributes.album_1_image + "')" ]]]
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_long_state
+                        entity: sensor.last_fm_top_tracks
+                        icon: 'mdi:album'
+                        name: >-
+                          [[[ return
+                          states["sensor.last_fm_top_tracks_json"].attributes.track[0].playcount
+                          + " plays" ]]]
+                        label: >
+                          [[[ return
+                          states["sensor.last_fm_top_tracks"].attributes.track_2
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_tracks"].attributes.track_3
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_tracks"].attributes.track_4
+                          + "<br/>" + 
+                          states["sensor.last_fm_top_tracks"].attributes.track_5
+                          ]]]
+                        variables:
+                          aspect_ratio: 2/1
+                        styles:
+                          card:
+                            - color: white
+                            - background: var(--ha-card-background)
+
+
+          # [Column] Astrometrics
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: ASTROMETRICS
+                  label: More
+                  link: /ui-dashboard/astrometrics
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:mod-card'
+                card_mod:
+                  style: 'ha-card { margin: -1px !important; }'
+                card:
+
+                  type: 'custom:layout-card'
+                  layout_type: 'custom:grid-layout'
+                  layout:
+                    margin: 0
+                  cards:
+
+                    - type: 'custom:button-card'
+                      template: live_tile_card
+                      entity: sun.sun
+                      show_name: false
+                      show_icon: false
+                      color_type: icon
+                      variables:
+                        aspect_ratio: 3/1
+                      state_display: |-
+                        [[[
+                          if (entity.attributes.elevation >= 0) {
+                            var diff = -(new Date() - new Date(entity.attributes.next_setting)) / 1000 / 60 / 60
+                            if (diff > 1.5) {
+                              return Math.round(diff) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> HR</span>"
+                            } else {
+                              return Math.round(diff * 60) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> MIN</span>"
+                            }
+                          } else {
+                            var diff = -(new Date() - new Date(entity.attributes.next_rising)) / 1000 / 60 / 60
+                            if (diff > 1.5) {
+                              return Math.round(diff) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> HR</span>"
+                            } else {
+                              return Math.round(diff * 60) + "<span style='font-size: var(--h6-font-size); font-weight: 500; opacity: .5;'> MIN</span>"
+                            }
+                          }
+                        ]]]
+
+                    - type: 'custom:sun-card'
+                      style: >
+                        ha-card { aspect-ratio: 3/1; margin-top: -2px; }
+
+                        .sun-card {padding: 0 !important; }
+
+                        .sun-card-header, .sun-card-footer {display: none
+                        !important; }
+
+                        .sun-card-body { padding-top: 0 !important;}
+
+                    - type: 'custom:button-card'
+                      template: live_tile
+                      entity: sun.sun
+                      show_state: false
+                      show_icon: false
+                      variables:
+                        aspect_ratio: 3/1
+                      name: |-
+                        [[[
+                          if (entity.attributes.elevation >= 0) {
+                            return "To Sunset"
+                          } else {
+                            return "To Sunrise"
+                          }
+                        ]]]
+                      label: |-
+                        [[[
+                          if (entity.attributes.elevation >= 0) {
+                            var time = new Date(entity.attributes.next_setting)
+                            return time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
+                          } else {
+                            var time = new Date(entity.attributes.next_rising)
+                            return time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
+                          }
+                        ]]]
+                      styles:
+                        card:
+                          - margin-top: '-2px'
+
+              - type: 'custom:button-card'
+                template: live_tile
+                entity: sensor.moon
+                name: '[[[ return entity.state.replace("_", " ") ]]]'
+                show_state: false
+
+            layout:
+              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+              margin: 0
+
+
+
+# [Pop Up Cards]
+popup_cards:
+  sensor.octoprint_current_state:
+    title: Genesis
+    card: !include machines/genesis-cards.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; height: 75vh; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; height: 100vh; } }
+
+  media_player.terpsichora:
+    title: Terpsichora
+    card: !include machines/terpsichora-cards.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; height: 75vh; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; height: 100vh; } }
+
+  sensor.dorothy_intel_core_i5_750_load_cpu_total:
+    title: Dorothy
+    card: !include machines/dorothy-cards.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; height: 75vh; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; height: 100vh; } }
+
+  sensor.unison_processor_use:
+    title: Unison
+    card: !include machines/unison-cards.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; height: 75vh; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; height: 100vh; } }
+
+  sensor.dorothy_library_flacs:
+    title: Plex Library
+    card:   
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: 17px
+      cards:
+        - !include machines/dorothy-plex-library.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; height: 75vh; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; height: 100vh; } }
+
+  sensor.mta_subway_l_service_status:
+    title: Transit
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 'repeat(auto-fill, [col-start] minmax(352px, 1fr) [col-end])'
+        grid-template-rows: auto
+        grid-column-gap: 32px
+        margin: 0
+        padding: 0
+        card_margin: 1px
+      cards: !include secret/neighborhood-transit.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; padding: 0 32px 32px; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; padding: 0 32px 32px; } }
+
+  sensor.nws_alert_rss_feed:
+    title: NWS Alerts
+    card: !include cards/nws-alerts.yaml
+    style:
+      .: |
+        :host .content { width: 75vw; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; } }
+
+  xtraffic_map:
+    title: Traffic
+    card:       
+      type: picture
+      image: !secret virtualearth_image_path
+      tap_action:
+        action: url
+        url_path: !secret googlemaps_path
+    style:
+      .: |
+        :host .content { width: 75vw; }
+        @media (max-width: 1100px) { :host .content { width: 100vw; } }
