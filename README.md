@@ -85,6 +85,15 @@ TBD
 - Corsair 128GB SSD
 - ConBee
 
+## Tools Used
+
+- Code Server Add-On for HA
+- Visual Studio Code
+  - Bookmarks extension
+- Inkscape / Adobe Illustrator
+- SketchUp
+- [Psychometry Chart](https://drajmarsh.bitbucket.io/psychro-chart2d.html) by [Dr. Andrew J. Marsh](http://andrewmarsh.com/)
+
 ## Credits
 
 ![Creative Commons License](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
