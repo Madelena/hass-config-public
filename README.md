@@ -6,29 +6,41 @@
 
 This is a redacted version of the dashboard configuration for my personal instance of Home Assistant.
 
-The design is based on the principle that *data is beautiful*. The dashboard is information dense - it is designed to maximize the amount of information displayed without additional user interactions. It uses Metro design system to reduce visual clutter, create a sense of visual hierarchy, and focus on the data.
+## Design Principles
+
+The design is based on the principle that *data is beautiful*. The dashboard is information dense - it is designed to maximize the amount of information displayed without additional user interactions. Information is not hidden or tucked away from view, but is shown in its full glory for those who like to read data.
+
+It uses Metro design system to reduce visual clutter, create a sense of visual hierarchy, and focus on the data.
 
 This also acts as a demo and example of what the Metrology theme is capable of.
 
 ## Features
 
+- Data Visualizations
+  - Data is beautiful! Data in HA is used to render some unique, eyecatching, and informative graphs as the visual focus of each page.
 - Responsive Design
   - Grid reflows depending on screen width and device type
 - Live Tiles
   - Animated to display multiple pieces of information
   - Variations based on states
+- Summary Sentences for NUI
+  - Intelligible sentences composed by aggregating data for use on page summaries and voice assistants
 
-## Views
+## Views and Cards
 
 ### Main Dashboard
 - Summary
   - USS Strawberry Fields
 - Network
+  - Network Rail Map
 - Energy
   - Sankey Chart
 - Light
 - Maintenance
+  - Chore List
 - Environment
+  - Psychrometry Chart
+  - Climate + Forecast Chart
 - Neighborhood
   - Transit
   - Traffic
@@ -46,6 +58,26 @@ This also acts as a demo and example of what the Metrology theme is capable of.
 
 ## How to install
 
+The code is not meant to be installed as sensitive information had been redacted from the configuration. It is meant to be used as a reference to do some pretty wonderful things using lots of clever or ugly codes, tips, tricks, and hacks. Copy and paste stuff to your own dashboard config as you see fit.
+
+A few requisities will help you use these codes:
+
+### Major HACS frontend mods
+
+- button-card
+- card-mod
+- layout-mod
+- mini-graph-card
+- apexcharts-card
+
+### Template libraries
+
+Include these lines in your dashboard YAML to use most of the templates defined in the config:
+
+```
+TBD
+
+```
 
 ## Hardware
 
