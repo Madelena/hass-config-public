@@ -118,71 +118,203 @@ cards:
                       url_path: !secret outlet_home_url
 
 
-      # [Column] Ping
+      # [Column] Network Map
       - type: vertical-stack
+        # view_layout:
+        #   grid-column: 1/-1
+        # card_mod:
+        #   style: |
+        #     :host {max-height: 320px;}
+        #     ha-card {max-height: 320px; overflow: visible;}
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
-              name: PING
+              name: MAP
             view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
+              grid-column: 1/-1
+
           - type: entities
+            card_mod:
+              style: |
+                #states > * {margin: 0 !important;}
+                #states {
+                  padding-top: 0 !important;
+                  xtransform: rotate(90deg) translateY(-100%);
+                  xtransform-origin: top left;
+                }
+                ha-card {background: none; xmax-height: 320px;}
             entities:
+
               - entity: binary_sensor.ping_cloudflare
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_cloudflare
+                  station_rail: 0
+                  terminate_at: top terminal
+                label: 1.1.1.1
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: binary_sensor.ping_google
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_cloudflare
+                  rail1_entity: binary_sensor.ping_google
+                  station_rail: 1
+                  terminate_at: top
+                label: '[[[ entity.last_changed ]]]'
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: binary_sensor.ping_my_website
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_cloudflare
+                  rail1_entity: binary_sensor.ping_google
+                  rail2_entity: binary_sensor.ping_my_website
+                  station_rail: 2
+                  terminate_at: top
+                label: '[[[ entity.last_changed ]]]'
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: sensor.external_ip
+                type: 'custom:button-card'
+                template: rail_interchange_row
+                variables:
+                  rail0_top_entity: binary_sensor.ping_cloudflare
+                  rail1_top_entity: binary_sensor.ping_google
+                  rail2_top_entity: binary_sensor.ping_my_website
+                  rail3_bottom_entity: binary_sensor.ping_valhalla_modem
+                  station_size_from: 0
+                  station_size_to: 3
+                label: '[[[ return entity.state ]]]'
+                state_display: ' '
+                styles:
+                  custom_fields:
+                    station:
+                      - background-color: '[[[ return entity.state != "unavailable" ? "var(--primary-color)" : "var(--disabled-color)" ]]]'
+
               - entity: binary_sensor.ping_valhalla_modem
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail3_entity: binary_sensor.ping_valhalla_modem
+                  station_rail: 3
+                name: Modem
+                label: !secret modem_ip
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
+              - type: 'custom:button-card'
+                template: rail_section_row
+                variables:
+                  rail3_entity: binary_sensor.ping_valhalla_modem
+                name: Firewall
+
+              - entity: switch.adguard_protection
+                type: 'custom:button-card'
+                template: rail_section_row
+                variables:
+                  rail3_entity: binary_sensor.ping_valhalla_modem
+                  station_rail: 3
+                name: AdGuard DNS
+                styles:
+                  custom_fields:
+                    station:
+                      - --station-color: '[[[ return entity.state == "on" ? "var(--primary-color)" : "var(--disabled-color)" ]]]'
+
               - entity: binary_sensor.ping_valhalla_router
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_interchange_row
+                variables:
+                  rail0_bottom_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail1_bottom_entity: binary_sensor.ping_blue_cave_mesh
+                  rail2_bottom_entity: binary_sensor.ping_valhalla_outlet
+                  rail3_bottom_entity: binary_sensor.ping_valhalla_router
+                  rail3_top_entity: binary_sensor.ping_valhalla_modem
+                  station_size_from: 0
+                  station_size_to: 3
+                name: Router
+                label: !secret router_ip
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: binary_sensor.ping_valhalla_outlet
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail1_entity: binary_sensor.ping_blue_cave_mesh
+                  rail2_entity: binary_sensor.ping_valhalla_outlet
+                  rail3_entity: binary_sensor.ping_valhalla_router
+                  station_rail: 2
+                  terminate_at: bottom
+                name: Outlet
+                label: !secret outlet_ip
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
+              - entity: binary_sensor.ping_valhalla_router
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail1_entity: binary_sensor.ping_blue_cave_mesh
+                  rail3_entity: binary_sensor.ping_valhalla_router
+                  station_rail: 3
+                  terminate_at: bottom
+                name: Unison
+                label: !secret unison_ip
+                state_display: '-'
+
               - entity: binary_sensor.ping_blue_cave_mesh
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_interchange_row
+                variables:
+                  rail0_top_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail0_bottom_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail1_top_entity: binary_sensor.ping_blue_cave_mesh
+                  rail1_bottom_entity: binary_sensor.ping_bedroom_mesh_repeater
+                  rail2_bottom_entity: binary_sensor.ping_dorothy_illinoise
+                  station_size_from: 1
+                  station_size_to: 2
                 name: Workspace Mesh Node
+                label: '[[[ entity.last_changed ]]]'
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: binary_sensor.ping_bedroom_mesh_repeater
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail1_entity: binary_sensor.ping_bedroom_mesh_repeater
+                  rail2_entity: binary_sensor.ping_dorothy_illinoise
+                  station_rail: 1
+                  terminate_at: bottom
+                label: '[[[ entity.last_changed ]]]'
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: binary_sensor.ping_dorothy_illinoise
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  rail2_entity: binary_sensor.ping_dorothy_illinoise
+                  station_rail: 2
+                  terminate_at: bottom
+                label: !secret dorothy_ip
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
               - entity: binary_sensor.ping_kitchen_mesh_repeater
-                type: 'custom:multiple-entity-row'
-                secondary_info: last-changed
-            state_color: true
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.speedtest_ping
-            detail: 2
-          - type: 'custom:uptime-card'
-            entity: binary_sensor.ping_cloudflare
-            color:
-              none: null
-            bar:
-              round: 0
-              height: 48
-              spacing: 4
-            init: {}
-            alias:
-              ok: Connected
-              ko: Disconnected
-            tap_action: {}
-            tooltip: {}
-            blink: {}
+                type: 'custom:button-card'
+                template: rail_station_row
+                variables:
+                  rail0_entity: binary_sensor.ping_kitchen_mesh_repeater
+                  station_rail: 0
+                  terminate_at: bottom terminal
+                label: '[[[ entity.last_changed ]]]'
+                state_display: '[[[ return entity.attributes.round_trip_time_avg ? (Math.round(entity.attributes.round_trip_time_avg)) + "ms" : "Off" ]]]'
+
 
       # [Column] Download
       - type: vertical-stack
@@ -216,6 +348,7 @@ cards:
             detail: 2
             name: Router Download
 
+
       # [Column] Upload
       - type: vertical-stack
         cards:
@@ -247,6 +380,41 @@ cards:
             entity: sensor.asuswrt_upload
             detail: 2
             name: Router Upload
+
+
+      # [Column] T'Ping
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: PING
+            view_layout:
+              grid-column: 1/-1
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.speedtest_ping
+            detail: 2
+
+          - type: 'custom:uptime-card'
+            entity: binary_sensor.ping_cloudflare
+            color:
+              none: null
+            bar:
+              round: 0
+              height: 48
+              spacing: 4
+            init: {}
+            alias:
+              ok: Connected
+              ko: Disconnected
+            tap_action: {}
+            tooltip: {}
+            blink: {}
+
 
       # [Column] Router
       - type: vertical-stack
@@ -355,72 +523,40 @@ cards:
               - entity: binary_sensor.valhalla_outlet_router
           - type: entities
             entities:
-              - type: 'custom:multiple-entity-row'
+              - &network-event-log
+                type: 'custom:button-card'
                 entity: sensor.valhalla_outlet_event
-                name: ' '
-                icon: ' '
-                show_state: false
-                secondary_info:
-                  attribute: event_0_time
-                entities:
-                  - attribute: event_0
-              - type: 'custom:multiple-entity-row'
-                entity: sensor.valhalla_outlet_event
-                name: ' '
-                icon: ' '
-                show_state: false
-                secondary_info:
-                  attribute: event_1_time
-                entities:
-                  - attribute: event_1
-              - type: 'custom:multiple-entity-row'
-                entity: sensor.valhalla_outlet_event
-                name: ' '
-                icon: ' '
-                show_state: false
-                secondary_info:
-                  attribute: event_2_time
-                entities:
-                  - attribute: event_2
-              - type: 'custom:multiple-entity-row'
-                entity: sensor.valhalla_outlet_event
-                name: ' '
-                icon: ' '
-                show_state: false
-                secondary_info:
-                  attribute: event_3_time
-                entities:
-                  - attribute: event_3
-              - type: 'custom:multiple-entity-row'
-                entity: sensor.valhalla_outlet_event
-                name: ' '
-                icon: ' '
-                show_state: false
-                secondary_info:
-                  attribute: event_4_time
-                entities:
-                  - attribute: event_4
-              - type: 'custom:multiple-entity-row'
-                entity: sensor.valhalla_outlet_event
-                name: ' '
-                icon: ' '
-                show_state: false
-                secondary_info:
-                  attribute: event_5_time
-                entities:
-                  - attribute: event_5
+                show_icon: false
+                show_state: true
+                name: '[[[ return entity.attributes.event_0_time ]]]'
+                state_display: '[[[ return entity.attributes.event_0 ]]]'
+                tap_action:
+                  action: none
+                styles:
+                  card:
+                    - background: none
+                    - padding: 8px 0
+                  grid:
+                    - grid-template-areas: '"n" "s"'
+                  name:
+                    - font-size: var(--h6-font-size)
+                    - place-self: center start
+                  state:
+                    - font-size: var(--body-font-size)
+                    - place-self: center start
+              - <<: *network-event-log
+                name: '[[[ return entity.attributes.event_1_time ]]]'
+                state_display: '[[[ return entity.attributes.event_1 ]]]'
+              - <<: *network-event-log
+                name: '[[[ return entity.attributes.event_2_time ]]]'
+                state_display: '[[[ return entity.attributes.event_2 ]]]'
+              - <<: *network-event-log
+                name: '[[[ return entity.attributes.event_3_time ]]]'
+                state_display: '[[[ return entity.attributes.event_3 ]]]'
+              - <<: *network-event-log
+                name: '[[[ return entity.attributes.event_4_time ]]]'
+                state_display: '[[[ return entity.attributes.event_4 ]]]'
+              - <<: *network-event-log
+                name: '[[[ return entity.attributes.event_5_time ]]]'
+                state_display: '[[[ return entity.attributes.event_5 ]]]'
             title: Event Log
-            show_header_toggle: true
-
-      # [Column] Event Log
-      - type: 'custom:list-card'
-        entity: sensor.valhalla_outlet_eventx
-        title: Event Log
-        feed_attribute: entries
-        columns:
-          - title: Time
-            field: time
-            style:
-              - white-space: nowrap
-          - title: Event
-            field: event

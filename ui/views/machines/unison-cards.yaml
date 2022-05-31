@@ -134,10 +134,15 @@ cards:
             in_card: true
             cards:
 
-              - type: sensor
-                name: Status
-                icon: mdi:cloud-upload
-                entity: sensor.backup_state
+              - type: 'custom:card-templater'
+                card:
+                  type: sensor
+                  name: Status
+                  icon: mdi:cloud-upload
+                  entity: sensor.backup_state
+                entities:
+                  - entity: sensor.backup_state
+                    state_template: '{{ states("sensor.backup_state")|regex_replace(find="_", replace=" ")|title }}'
 
               - type: entities
                 entities:

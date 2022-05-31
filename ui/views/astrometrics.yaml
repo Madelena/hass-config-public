@@ -129,21 +129,6 @@ cards:
 
               - type: vertical-stack
                 cards:
-                  - type: markdown
-                    content: '### Coronal Mass Ejections (CMEs)'
-                    style: 'ha-card {background: none;}'
-
-                  - type: picture
-                    image: https://services.swpc.noaa.gov/images/animations/lasco-c3/latest.jpg
-                    tap_action:
-                      action: none
-                    hold_action:
-                      action: none
-                    card_mod:
-                      style: >
-                        :host {margin-bottom: 16px !important;}
-                        ha-card {border-radius: 50%; filter:grayscale(1) brightness(.85)
-                        contrast(2.5); border: 2px solid rgba(255,255,255,.1); height: auto !important; }
 
                   - type: 'custom:layout-card'
                     layout_type: 'custom:grid-layout'
@@ -152,6 +137,45 @@ cards:
                       grid-template-rows: auto
                       margin: -1
                     cards:
+
+                      - type: custom:button-card
+                        template:
+                          - live_tile_card
+                          - live_tile_with_picture
+                        name: CMEs
+                        color_type: icon
+                        variables:
+                          picture: https://services.swpc.noaa.gov/images/animations/lasco-c3/latest.jpg
+                        styles:
+                          custom_fields:
+                            picture:
+                              - background-size: 110% 110%
+                              - filter: grayscale(1) brightness(.85) contrast(2.5)
+                        tap_action:
+                          action: none
+                        view_layout:
+                          grid-column: span 2
+                          grid-row: span 2
+                          margin: 0
+
+                      - type: vertical-stack
+                        view_layout:
+                          grid-row: span 2
+                        cards:
+
+                          - type: 'custom:decluttering-card'
+                            template: mini_graph_tile
+                            variables:
+                              - entities:
+                                - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bt
+                              - title: Magnetic Fields - Bt
+
+                          - type: 'custom:decluttering-card'
+                            template: mini_graph_tile
+                            variables:
+                              - entities:
+                                - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bz
+                              - title: Magnetic Fields - Bz
 
                       - type: 'custom:decluttering-card'
                         template: mini_graph_tile
@@ -167,22 +191,106 @@ cards:
                         template: mini_graph_tile
                         variables:
                           - entities:
-                            - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bt
-                          - title: Magnetic Fields - Bt
-
-                      - type: 'custom:decluttering-card'
-                        template: mini_graph_tile
-                        variables:
-                          - entities:
-                            - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bz
-                          - title: Magnetic Fields - Bz
-
-                      - type: 'custom:decluttering-card'
-                        template: mini_graph_tile
-                        variables:
-                          - entities:
                             - entity: sensor.noaa_space_weather_noon_10_7cm_radio_flux
                           - title: 10.7cm Radio Flux
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+                      grid-template-rows: 'repeat(3, [row-start] minmax(112px, 1fr) [row-end])'
+                      grid-auto-flow: column
+                      margin: -1
+                    cards:
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Radio Blackout
+                        icon: mdi:alpha-r-box
+                        entity: sensor.noaa_space_weather_r_24hr
+                        variables:
+                          aspect_ratio: 2
+                        view_layout:
+                          grid-column: span 2
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Solar Radiation Storm
+                        icon: mdi:alpha-s-box
+                        entity: sensor.noaa_space_weather_s_24hr
+                        variables:
+                          aspect_ratio: 2
+                        view_layout:
+                          grid-column: span 2
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Geomagnetic Storm
+                        icon: mdi:alpha-g-box
+                        entity: sensor.noaa_space_weather_g_24hr
+                        variables:
+                          aspect_ratio: 2
+                        view_layout:
+                          grid-column: span 2
+
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: None
+                        icon: mdi:alpha-r-box
+                        entity: sensor.noaa_space_weather_r_latest
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: None
+                        icon: mdi:alpha-s-box
+                        entity: sensor.noaa_space_weather_s_latest
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: None
+                        icon: mdi:alpha-g-box
+                        entity: sensor.noaa_space_weather_g_latest
+
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Minor
+                        icon: mdi:alpha-r-box
+                        entity: sensor.noaa_space_weather_r_majorprob_1day
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Minor
+                        icon: mdi:alpha-s-box
+                        entity: sensor.noaa_space_weather_s_1day
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Minor
+                        icon: mdi:alpha-g-box
+                        entity: sensor.noaa_space_weather_g_1day
+
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Minor
+                        icon: mdi:alpha-r-box
+                        entity: sensor.noaa_space_weather_r_majorprob_2day
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Minor
+                        icon: mdi:alpha-s-box
+                        entity: sensor.noaa_space_weather_s_2day
+
+                      - type: custom:button-card
+                        template: live_tile
+                        name: Minor
+                        icon: mdi:alpha-g-box
+                        entity: sensor.noaa_space_weather_g_2day
+
+
 
               - type: vertical-stack
                 cards:
@@ -266,8 +374,9 @@ cards:
                     style: 'ha-card {background: none;}'
 
                   - type: iframe
-                    url: >-
-                      https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=0&cz=7500&fov=45
+                    url: https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=-400&cz=200&fov=45
+                    # url: >-
+                      # https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=0&cz=7500&fov=45
                     aspect_ratio: 100%
                     card_mod:
                       style: >

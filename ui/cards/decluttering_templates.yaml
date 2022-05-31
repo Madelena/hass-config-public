@@ -1,111 +1,8 @@
 
-title_card:
-  card:
-    type: markdown
-    content: '[[content]]'
-    style:
-      .: |
-        ha-card {
-          background: none;
-        }
-      ha-markdown$: |
-        h1 {
-          font-size: var(--h1-font-size);
-          font-weight: 500;
-          margin-block-end: -4px;
-        }
+# GRAPH CARDS
 
-# header_card:
-#   default:
-#     - arrow: 'mdi:arrow-right'
-#     - action: navigate
-#   card:
-#     type: 'custom:layout-card'
-#     layout_type: 'custom:grid-layout'
-#     layout:
-#       grid-template-columns: auto min-content
-#       margin: 0
-#     cards:
-#       - type: 'custom:button-card'
-#         name: '[[name]]'
-#         show_state: false
-#         show_label: true
-#         tap_action:
-#           action: none
-#         styles:
-#           grid:
-#             - grid-template-columns: auto
-#             - grid-template-areas: '"n"'
-#           card:
-#             - padding: 32px 16px 16px 16px
-#             - background: none
-#             - cursor: default
-#           name:
-#             - text-align: left
-#             - align-self: center
-#             - justify-self: start
-#             - font-size: var(--subtitle-font-size)
-#             - font-weight: 500
-#             - color: var(--secondary-text-color)
-#       - type: 'custom:button-card'
-#         name: '[[label]]'
-#         icon: '[[arrow]]'
-#         show_state: false
-#         tap_action:
-#           action: '[[action]]'
-#           navigation_path: '[[link]]'
-#           url_path: '[[link]]'
-#           entity: '[[link]]'
-#         styles:
-#           grid:
-#             - grid-template-columns: min-content min-content
-#             - grid-template-areas: '"n i"'
-#           card:
-#             - padding: 28px 16px 8px 0
-#             - background: none
-#           img_cell:
-#             - width: 16px
-#             - background: var(--ha-card-background)
-#             - border-radius: 0 4px 4px 0
-#             - padding-right: 8px
-#           icon:
-#             - width: 100%
-#             - padding-bottom: 2px
-#           name:
-#             - background: var(--ha-card-background)
-#             - border-radius: 4px 0 0 4px
-#             - padding: 4px 8px 8px
-#             - font-size: var(--subtitle-font-size)
-#     view_layout:
-#       grid-column-start: 1
-#       grid-column-end: -1
-
-# header_card_no_link:
-#   card:
-#     type: 'custom:button-card'
-#     name: '[[name]]'
-#     show_state: false
-#     show_label: true
-#     tap_action:
-#       action: none
-#     styles:
-#       grid:
-#         - grid-template-columns: auto
-#         - grid-template-areas: '"n"'
-#       card:
-#         - padding: 32px 16px 16px 16px
-#         - background: none
-#         - cursor: default
-#       name:
-#         - text-align: left
-#         - align-self: center
-#         - justify-self: start
-#         - font-size: var(--body-font-size)
-#         - font-weight: 500
-#         - color: var(--secondary-text-color)
-#     view_layout:
-#       grid-column-start: 1
-#       grid-column-end: -1
+# Mini Graph Tile
+# Uses the mini-graph-card module.
 
 mini_graph_tile:
   default:
@@ -213,6 +110,9 @@ mini_graph_tile:
           --mdc-icon-size: 20px;
         }
 
+
+# Multi Graph Card
+# Uses the mini-graph-card module.
 multi_graph_card:
   default:
     - title: ''
@@ -282,6 +182,8 @@ multi_graph_card:
           margin-top: 12px;
         }
 
+
+# History Graph Card
 history_graph_card:
   default:
     - name: ''
@@ -315,6 +217,12 @@ history_graph_card:
             state-history-charts$state-history-chart-line$ha-chart-base$: |
               .chartLegend { display: none;}
 
+
+# BAR CARDS
+
+# Metro Bar Card
+# Uses the bar-card module.
+
 metro_bar_card:
   card:
     type: 'custom:bar-card'
@@ -341,6 +249,7 @@ metro_bar_card:
     title:
       - '[[title]]'
 
+# Metro Bar Card (No Icon)
 metro_bar_card_no_icon:
   card:
     type: 'custom:bar-card'
@@ -367,6 +276,12 @@ metro_bar_card_no_icon:
       }
     title:
       - '[[title]]'
+
+
+# LIGHT CARD
+
+# Light Card
+# Uses the slider-button-card module.
 
 light_card:
   default:
@@ -435,6 +350,10 @@ light_card:
         background: var(--slider-thumb-color) !important;
       }
 
+
+# OTHER CARDS
+
+# Metro Media Player Page
 metro_media_player_page:
   card:
     type: vertical-stack

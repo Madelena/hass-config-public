@@ -1,56 +1,6 @@
 {
 	"files": [
 		{
-			"path": "ui/views/energy.yaml",
-			"bookmarks": [
-				{
-					"line": 36,
-					"column": 20,
-					"label": ""
-				},
-				{
-					"line": 120,
-					"column": 26,
-					"label": ""
-				},
-				{
-					"line": 498,
-					"column": 0,
-					"label": ""
-				},
-				{
-					"line": 538,
-					"column": 18,
-					"label": ""
-				},
-				{
-					"line": 583,
-					"column": 16,
-					"label": ""
-				},
-				{
-					"line": 621,
-					"column": 14,
-					"label": ""
-				},
-				{
-					"line": 660,
-					"column": 12,
-					"label": ""
-				},
-				{
-					"line": 685,
-					"column": 22,
-					"label": ""
-				},
-				{
-					"line": 739,
-					"column": 35,
-					"label": ""
-				}
-			]
-		},
-		{
 			"path": "ui/views/neighborhood.yaml",
 			"bookmarks": [
 				{
@@ -94,12 +44,12 @@
 					"label": ""
 				},
 				{
-					"line": 157,
+					"line": 167,
 					"column": 15,
 					"label": ""
 				},
 				{
-					"line": 214,
+					"line": 321,
 					"column": 16,
 					"label": ""
 				}
@@ -209,33 +159,28 @@
 					"label": ""
 				},
 				{
-					"line": 171,
-					"column": 23,
-					"label": ""
-				},
-				{
-					"line": 222,
+					"line": 246,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 283,
+					"line": 319,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 329,
+					"line": 377,
 					"column": 30,
 					"label": ""
 				},
 				{
-					"line": 451,
-					"column": 27,
+					"line": 549,
+					"column": 24,
 					"label": ""
 				},
 				{
-					"line": 526,
-					"column": 24,
+					"line": 180,
+					"column": 1,
 					"label": ""
 				}
 			]
@@ -249,37 +194,32 @@
 					"label": ""
 				},
 				{
-					"line": 140,
-					"column": 17,
-					"label": ""
-				},
-				{
-					"line": 206,
+					"line": 370,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 238,
+					"line": 404,
 					"column": 19,
 					"label": ""
 				},
 				{
-					"line": 270,
+					"line": 438,
 					"column": 19,
 					"label": ""
 				},
 				{
-					"line": 308,
+					"line": 476,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 332,
+					"line": 500,
 					"column": 17,
 					"label": ""
 				},
 				{
-					"line": 357,
+					"line": 525,
 					"column": 19,
 					"label": ""
 				}
@@ -311,36 +251,6 @@
 			]
 		},
 		{
-			"path": "ui/views/environment.yaml",
-			"bookmarks": [
-				{
-					"line": 33,
-					"column": 16,
-					"label": ""
-				},
-				{
-					"line": 152,
-					"column": 23,
-					"label": ""
-				},
-				{
-					"line": 236,
-					"column": 21,
-					"label": ""
-				},
-				{
-					"line": 330,
-					"column": 17,
-					"label": ""
-				},
-				{
-					"line": 420,
-					"column": 16,
-					"label": ""
-				}
-			]
-		},
-		{
 			"path": "ui/cards/button_card_templates.yaml",
 			"bookmarks": [
 				{
@@ -364,82 +274,82 @@
 					"label": ""
 				},
 				{
-					"line": 136,
+					"line": 137,
 					"column": 8,
 					"label": ""
 				},
 				{
-					"line": 169,
+					"line": 170,
 					"column": 8,
 					"label": ""
 				},
 				{
-					"line": 246,
+					"line": 247,
 					"column": 11,
 					"label": ""
 				},
 				{
-					"line": 291,
+					"line": 292,
 					"column": 23,
 					"label": ""
 				},
 				{
-					"line": 312,
+					"line": 313,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 355,
+					"line": 356,
 					"column": 2,
 					"label": ""
 				},
 				{
-					"line": 373,
+					"line": 374,
 					"column": 33,
 					"label": ""
 				},
 				{
-					"line": 394,
+					"line": 395,
 					"column": 28,
 					"label": ""
 				},
 				{
-					"line": 407,
+					"line": 408,
 					"column": 2,
 					"label": ""
 				},
 				{
-					"line": 420,
+					"line": 421,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 433,
+					"line": 434,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 498,
+					"line": 504,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 522,
+					"line": 528,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 572,
+					"line": 578,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 600,
+					"line": 626,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 611,
+					"line": 640,
 					"column": 0,
 					"label": ""
 				}

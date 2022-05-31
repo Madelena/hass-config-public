@@ -19,6 +19,7 @@ views:
 
 decluttering_templates: !include cards/decluttering_templates.yaml
 button_card_templates: !include cards/button_card_templates.yaml
+apexcharts_card_templates: !include cards/apexcharts_card_templates.yaml
 popup_cards: !include popups/popup_cards.yaml
 
 swipe_nav:

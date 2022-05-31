@@ -156,6 +156,7 @@ cards:
                       - sensor.circuit_living_room_lights_power
                       - sensor.circuit_bedroom_a_c_power
                       - sensor.circuit_living_room_projector_power
+                      - sensor.bedroom_ceiling_lights_power
               - entities:
                   - entity_id: sensor.circuit_south_power
                     name: South Circuit
@@ -211,72 +212,146 @@ cards:
                       - >-
                         sensor.living_room_projector_plug_smartenergy_metering
                       - sensor.living_room_decor_lights_power
+                  - entity_id: sensor.bedroom_ceiling_lights_power
+                    name: Bedroom Ceiling Circuit
+                    children:
+                      - sensor.bedroom_ceiling_lights_power
               - entities:
                   - entity_id: sensor.astralplane_plug_smartenergy_metering
                     name: Astralplane
+                    children:
+                      - sensor.all_computers_energy_use
                   - entity_id: sensor.dorothy_plug_smartenergy_metering
                     name: Dorothy
+                    children:
+                      - sensor.all_computers_energy_use
                   - entity_id: sensor.makery_plug_smartenergy_metering
                     name: Makery
+                    children:
+                      - sensor.all_computers_energy_use
                   - entity_id: sensor.quattro_plug_smartenergy_metering
                     name: Quattro
-                  - entity_id: sensor.dorothy_devices_plug_smartenergy_metering
-                    name: Dorothy Devices
-                  - entity_id: sensor.bedroom_devices_plug_smartenergy_metering
-                    name: Bedroom Devices
-                  - entity_id: >-
-                      sensor.bedroom_air_conditioner_plug_smartenergy_metering
-                    name: Bedroom A/C
-                  #- entity_id: >-
-                  #    sensor.living_room_air_conditioner_plug_smartenergy_metering
-                  #  name: Living Room A/C
-                  - entity_id: sensor.terpsichora_plug_smartenergy_metering
-                    name: Terpsichora
-                  - entity_id: sensor.kitchen_sink_lights_power
-                    name: Kitchen Sink Lights
-                  - entity_id: sensor.kitchen_counter_accent_lights_power
-                    name: Kitchen Counter Accent
-                  - entity_id: sensor.living_room_hue_bowl_power
-                    name: Living Room Hue Bowl
-                  - entity_id: sensor.living_room_table_lights_power
-                    name: Living Room Table Lights
+                    children:
+                      - sensor.all_computers_energy_use
                   - entity_id: sensor.valhalla_plug_smartenergy_metering
                     name: Valhalla
-                  - entity_id: sensor.kitchen_aerogardens_plug_smartenergy_metering
-                    name: Aerogardens
-                  - entity_id: sensor.kitchen_fridge_plug_smartenergy_metering
-                    name: Fridge
-                  - entity_id: sensor.kitchen_microwave_plug_smartenergy_metering
-                    name: Microwave
-                  - entity_id: sensor.kitchen_counter_echo_plug_current_consumption
-                    name: Echo Plug
-                  - entity_id: >-
-                      sensor.kitchen_counter_hand_blender_current_consumption
-                    name: Hand Blender
-                  - entity_id: sensor.kitchen_counter_kettle_current_consumption
-                    name: Kettle
-                  - entity_id: sensor.kitchen_counter_plug_3_current_consumption
-                    name: Plug 3
-                  - entity_id: sensor.kitchen_counter_rice_cooker_current_consumption
-                    name: Rice Cooker
-                  - entity_id: sensor.kitchen_counter_toaster_current_consumption
-                    name: Toaster
-                  - entity_id: sensor.living_room_chandelier_main_power
-                    name: Living Room Chandelier
-                  - entity_id: sensor.kitchen_spot_lights_power
-                    name: Kitchen Spot Lights
-                  - entity_id: sensor.kitchen_counter_lights_power
-                    name: Kitchen Counter Lights
+                    children:
+                      - sensor.all_computers_energy_use
+                  - entity_id: sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                    name: Bedroom A/C
+                    children:
+                      - sensor.all_climate_energy_use
+                  #- entity_id: sensor.living_room_air_conditioner_plug_smartenergy_metering
+                  #  name: Living Room A/C
+                    # children:
+                    #   - sensor.all_climate_energy_use
+                  - entity_id: sensor.dorothy_devices_plug_smartenergy_metering
+                    name: Dorothy Devices
+                    children:
+                      - sensor.all_entertainment_energy_use
+                  - entity_id: sensor.terpsichora_plug_smartenergy_metering
+                    name: Terpsichora
+                    children:
+                      - sensor.all_entertainment_energy_use
                   - entity_id: sensor.living_room_projector_plug_smartenergy_metering
                     name: Living Room Projector
+                    children:
+                      - sensor.all_entertainment_energy_use
+                  - entity_id: sensor.kitchen_aerogardens_plug_smartenergy_metering
+                    name: Aerogardens
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_fridge_plug_smartenergy_metering
+                    name: Fridge
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_microwave_plug_smartenergy_metering
+                    name: Microwave
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_counter_echo_plug_current_consumption
+                    name: Echo Plug
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_counter_hand_blender_current_consumption
+                    name: Hand Blender
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_counter_kettle_current_consumption
+                    name: Kettle
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_counter_plug_3_current_consumption
+                    name: Plug 3
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_counter_rice_cooker_current_consumption
+                    name: Rice Cooker
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_counter_toaster_current_consumption
+                    name: Toaster
+                    children:
+                      - sensor.all_kitchen_energy_use
+                  - entity_id: sensor.kitchen_sink_lights_power
+                    name: Kitchen Sink Lights
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.kitchen_counter_accent_lights_power
+                    name: Kitchen Counter Accent
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.living_room_hue_bowl_power
+                    name: Living Room Hue Bowl
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.living_room_table_lights_power
+                    name: Living Room Table Lights
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.living_room_chandelier_main_power
+                    name: Living Room Chandelier
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.kitchen_spot_lights_power
+                    name: Kitchen Spot Lights
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.kitchen_counter_lights_power
+                    name: Kitchen Counter Lights
+                    children:
+                      - sensor.all_lights_energy_use
                   - entity_id: sensor.living_room_decor_lights_power
                     name: Living Room Decor Lights
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.bedroom_ceiling_lights_power
+                    name: Bedroom Ceiling Lights
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.bedroom_devices_plug_smartenergy_metering
+                    name: Bedroom Devices
+              - entities:
+                  - entity_id: sensor.all_computers_energy_use
+                    name: Computers
+                    color: maroon
+                  - entity_id: sensor.all_climate_energy_use
+                    name: Climate
+                    color: green
+                  - entity_id: sensor.all_entertainment_energy_use
+                    name: Entertainment
+                    color: teal
+                  - entity_id: sensor.all_kitchen_energy_use
+                    name: Kitchen
+                    color: purple
+                  - entity_id: sensor.all_lights_energy_use
+                    name: Lights
+                    color: yellow
             view_layout:
               grid-column: 1/-1
             card_mod:
               style: >
-                ha-card { padding: 16px 16px 24px !important; margin-bottom:
-                16px; background: none; }
+                ha-card { background: none; }
 
                 .connectors { left: 8px !important; right: 4px !important; }
 
@@ -287,6 +362,9 @@ cards:
 
                 .box .label span { font-weight: normal; font-style: normal
                 !important; }
+                .box .label span.state { font-weight: 500; }
+                .box .label span.name { font-size: inherit; }
+                .section:last-child { flex-grow: .667 !important; flex-shrink: 2 !important; }
 
           - type: 'custom:button-card'
             template: header_card_no_link

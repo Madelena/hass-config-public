@@ -475,17 +475,18 @@ cards:
 
               - type: 'custom:button-card'
                 template:
-                  - live_tile_card
-                  - live_tile_with_long_state
-                  - live_tile_with_state_countdown
+                  - live_tile
                 entity: alarm_control_panel.alexa_guard
+                show_state: false
                 state:
                   - value: armed_away
                     color: 'rgb(var(--rgb-primary-color))'
+                    icon: mdi:shield-home
                   - value: disarmed
                     color: >-
                       [[[ return iif( person.madelena.state == "home",
                       "none", "rgb(var(--rgb-primary-color))") ]]]
+                    icon: mdi:shield-off
 
               - type: 'custom:button-card'
                 template: live_tile_with_camera
@@ -589,7 +590,9 @@ cards:
               - view_layout:
                   grid-column: span 2
                 type: 'custom:button-card'
-                template: light_button_card_group
+                template:
+                  - light_button_card_group
+                  - require_confirmation
                 entity: group.all_lights
                 name: All Lights
                 icon: 'mdi:lightbulb-multiple'
@@ -602,9 +605,6 @@ cards:
                       states["group.all_lights"].attributes.entity_id.filter(entity
                       => states[entity].state == "on").length + " lights
                       are on" ]]]
-                tap_action:
-                  action: navigate
-                  navigation_path: /ui-dashboard/lights/
 
             layout:
               grid-template-columns: >-
@@ -623,11 +623,13 @@ cards:
             mediaquery: '(min-width: 1129px)'
 
 
+      # Begin Masonry Layout here.
+
       - type: 'custom:layout-card'
         layout_type: 'custom:horizontal-layout'
         layout:
           width: 256
-          max_width: 400
+          max_width: 512
           max_cols: 4
           card_margin: 0 16px
           margin: 0 -16px
@@ -815,12 +817,108 @@ cards:
                     if (weatherIcon == null) {weatherIcon = entity.state}
                     return "mdi:weather-" + weatherIcon
                   ]]]
-                name: '[[[ return entity.state ]]]'
-                label: '[[[ return entity.attributes.humidity + "%" ]]]'
+                name: |
+                  [[[ 
+                    var weatherNameDict = {
+                      'partlycloudy': 'Partly Cloudy',
+                      'clear-night': 'Clear Night'
+                    }
+                    var weatherName = weatherNameDict[entity.state]
+                    if (weatherName == null) {weatherName = entity.state}
+                    return weatherName
+                  ]]]
+                label: |
+                  [[[
+                    var tempForecast = entity.attributes.forecast.map((item) => { return item.temperature }).slice(0, 4)
+                    if (states['sensor.valhalla_hourly_forecast_temperature_rising'] == 'Rising') {
+                      return '↗ ' + Math.max(...tempForecast) + '°'                      
+                    } else {
+                      return '↘ ' + Math.min(...tempForecast) + '°'
+                    }
+                  ]]]
                 state_display: >-
                   [[[ return Math.round(entity.attributes.temperature) + "°"
                   ]]]
+                entity: weather.valhalla_hourly
+                styles:
+                  name:
+                    - width: 50%
+
+              - type: 'custom:button-card'
+                template: live_tile
+                variables:
+                  day: |
+                    [[[
+                      var hour = new Date
+                      hour = parseInt( hour.getHours() )
+                      if (hour < 4) { return 1 }
+                      if (hour < 21) { return 0 } else { return 1 }
+                    ]]]
                 entity: weather.valhalla_2
+                name: Precipitation
+                state_display: '[[[ return entity.attributes.forecast[variables.day].precipitation_probability + "%" ]]]'
+                icon: '[[[ return (entity.attributes.forecast[variables.day].precipitation_probability >= 33) ? "mdi:water" : "mdi:water-outline" ]]]'
+                label: '[[[ return entity.attributes.forecast[variables.day].precipitation ]]]'
+                show_units: false
+                styles:
+                  grid:
+                    - background: '[[[ return "rgba(var(--rgb-primary-color)," + (parseInt(entity.attributes.forecast[variables.day].precipitation_probability)/100) + ")" ]]]'
+                  card:
+                    - background: var(--ha-card-background)
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  direction: vertical
+                  autoHeight: true
+                  height: 128
+                  effect: cube
+                  autoplay:
+                    delay: 15000
+                  cubeEffect:
+                    - slideShadows: false
+                view_layout:
+                  show:
+                    mediaquery: "(max-width: 1128px)"
+                cards:
+
+                  - &summary-card-nws-alerts
+                    type: 'custom:button-card'
+                    variables:
+                      slide: 0
+                    template:
+                      - live_tile_card
+                      - live_tile_with_long_state
+                    entity: sensor.nws_alert_rss_feed
+                    name: |
+                      [[[
+                        if (entity.state == 0) { return "NWS Alerts" }
+                        if (entity.attributes.entries[0].title.includes('no active')) { entity.state = 0; return "NWS Alerts" }
+                        if (entity.state > 1) { return entity.state + " NWS Alerts" } else { return "1 NWS Alert" }
+                      ]]]
+                    icon: mdi:weather-sunny-alert
+                    state_display: '[[[
+                        if (entity.state == 0) { return "No Active Alerts" }
+                        if ( entity.state > variables.slide ) { return entity.attributes.entries[variables.slide].title.replace(/ issue.*/g, "") }
+                        return " "
+                      ]]]'
+                    state:
+                      - value: 1
+                        operator: '>='
+                        color: var(--primary-color)
+                      - value: 0
+                        operator: ==
+                        color: var(--ha-card-background)
+                        styles:
+                          card:
+                            - color: var(--disabled-text-color)
+
+                  - <<: *summary-card-nws-alerts
+                    variables:
+                      slide: 1
+
+                  - <<: *summary-card-nws-alerts
+                    variables:
+                      slide: 2
 
               - type: 'custom:button-card'
                 template: live_tile
@@ -861,42 +959,9 @@ cards:
                             return "var(--ha-card-background)"
                           }
                         ]]]
-
-              - &summary-card-nws-alerts
-                type: 'custom:button-card'
-                template:
-                  - live_tile_card
-                  - live_tile_with_long_state
-                entity: sensor.nws_alert_rss_feed
-                name: NWS Alerts
-                state_display: |
-                  [[[
-                    if (entity.state == 0) { return "No Alerts" }
-                    if (entity.attributes.entries[0].title.includes('no active')) { entity.state = 0; return "No Alerts" }
-                    if (entity.state > 1) { return entity.state + " Alerts" } else { return "1 Alert" }
-                  ]]]
-                label: '[[[ if ( entity.attributes.entries == undefined ) { return entity.attributes.entries[0].title } ]]]'
-                state:
-                  - value: 1
-                    operator: '>='
-                    color: var(--primary-color)
-                  - value: 0
-                    operator: ==
-                    color: var(--ha-card-background)
-                    styles:
-                      card:
-                        - color: var(--disabled-text-color)
                 view_layout:
-                  show:
-                    mediaquery: "(max-width: 1128px)"
-
-              - <<: *summary-card-nws-alerts
-                view_layout:
-                  grid-column: span 2
                   show:
                     mediaquery: "(min-width: 1129px)"
-                variables:
-                  aspect_ratio: 2/1
 
               - type: 'custom:button-card'
                 template:
@@ -945,6 +1010,42 @@ cards:
                         ]]]
                   label:
                     - text-transform: capitalize
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  direction: vertical
+                  autoHeight: true
+                  height: 128
+                  effect: cube
+                  autoplay:
+                    delay: 15000
+                  cubeEffect:
+                    - slideShadows: false
+                view_layout:
+                  grid-column: span 2
+                  show:
+                    mediaquery: "(min-width: 1129px)"
+                cards:
+
+                  - &summary-card-nws-alerts-wide
+                    <<: *summary-card-nws-alerts
+                    variables:
+                      aspect_ratio: 2/1
+                      slide: 0
+                    template:
+                      - live_tile_card
+                      - live_tile_with_long_state
+                    label: '[[[ if ( entity.state > variables.slide ) { return entity.attributes.entries[variables.slide].summary.replace(/\.\.\..*\.\.\. /g, "") } ]]]'
+
+                  - <<: *summary-card-nws-alerts-wide
+                    variables:
+                      aspect_ratio: 2/1
+                      slide: 1
+
+                  - <<: *summary-card-nws-alerts-wide
+                    variables:
+                      aspect_ratio: 2/1
+                      slide: 2
 
             layout:
               grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
@@ -1032,83 +1133,44 @@ cards:
                     - slideShadows: false
                 cards:
 
-                  - type: 'custom:button-card'
+                  - &summary-card-notify-nyc
+                    type: 'custom:button-card'
                     variables:
                       aspect_ratio: 2/1
+                      slide: 0
                     template:
                       - live_tile_card
                       - live_tile_with_longer_state
                     name: >-
                       [[[ return "Notify NYC - " + new
-                      Date(entity.attributes.entries[0].published).toLocaleTimeString([],
+                      Date(entity.attributes.entries[variables.slide].published).toLocaleTimeString([],
                       { hour12: false, hour: "2-digit", minute: "2-digit"})
                       ]]]
                     color: var(--ha-card-background)
                     entity: sensor.notify_nyc
                     state_display: >-
                       [[[ return
-                      entity.attributes.entries[0].title.replace("Notify NYC
+                      entity.attributes.entries[variables.slide].title.replace("Notify NYC
                       - ", "") ]]]
                     label: >-
                       [[[ return
-                      entity.attributes.entries[0].summary.replace(/Notification
+                      entity.attributes.entries[variables.slide].summary.replace(/Notification
                       issued .*/g, "").replace(/For more information, .*/g,
                       "").replace(/To view this message in.*/g, "") ]]]
                     styles:
                       card:
                         - color: var(--primary-text)
 
-                  - type: 'custom:button-card'
+                  # This is so fucking clever I have to pat myself in the back here.
+                  - <<: *summary-card-notify-nyc
                     variables:
                       aspect_ratio: 2/1
-                    template:
-                      - live_tile_card
-                      - live_tile_with_longer_state
-                    name: >-
-                      [[[ return "Notify NYC - " + new
-                      Date(entity.attributes.entries[1].published).toLocaleTimeString([],
-                      { hour12: false, hour: "2-digit", minute: "2-digit"})
-                      ]]]
-                    color: var(--ha-card-background)
-                    entity: sensor.notify_nyc
-                    state_display: >-
-                      [[[ return
-                      entity.attributes.entries[1].title.replace("Notify NYC
-                      - ", "") ]]]
-                    label: >-
-                      [[[ return
-                      entity.attributes.entries[1].summary.replace(/Notification
-                      issued .*/g, "").replace(/For more information, .*/g,
-                      "").replace(/To view this message in.*/g, "") ]]]
-                    styles:
-                      card:
-                        - color: var(--primary-text)
+                      slide: 1
 
-                  - type: 'custom:button-card'
+                  - <<: *summary-card-notify-nyc
                     variables:
                       aspect_ratio: 2/1
-                    template:
-                      - live_tile_card
-                      - live_tile_with_longer_state
-                    name: >-
-                      [[[ return "Notify NYC - " + new
-                      Date(entity.attributes.entries[2].published).toLocaleTimeString([],
-                      { hour12: false, hour: "2-digit", minute: "2-digit"})
-                      ]]]
-                    color: var(--ha-card-background)
-                    entity: sensor.notify_nyc
-                    state_display: >-
-                      [[[ return
-                      entity.attributes.entries[2].title.replace("Notify NYC
-                      - ", "") ]]]
-                    label: >-
-                      [[[ return
-                      entity.attributes.entries[2].summary.replace(/Notification
-                      issued .*/g, "").replace(/For more information, .*/g,
-                      "").replace(/To view this message in.*/g, "") ]]]
-                    styles:
-                      card:
-                        - color: var(--primary-text)
+                      slide: 2
 
                 view_layout:
                   grid-column: span 2
@@ -1126,6 +1188,8 @@ cards:
                   - live_tile_with_long_state
                 name: Parking Rules
                 entity: sensor.nyc_311_alternate_side_parking_0d
+                icon: mdi:car
+                color: var(--primary-color)
                 label: |
                   [[[ return entity.attributes.details ]]]
                 state:

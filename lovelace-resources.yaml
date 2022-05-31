@@ -58,8 +58,8 @@
   type: module
 - url: /hacsfiles/list-card/list-card.js?hacstag=145479324011
   type: module
-- url: /hacsfiles/config-template-card/config-template-card.js?hacstag=172177543136
-  type: module
+# - url: /hacsfiles/config-template-card/config-template-card.js?hacstag=172177543136
+#   type: module
 - url: /hacsfiles/home-assistant-sun-card/home-assistant-sun-card.js?hacstag=123456
   type: module
 - url: /hacsfiles/weather-chart-card/weather-chart-card.js?hacstag=163941792120
@@ -79,4 +79,6 @@
 - url: /hacsfiles/lovelace-home-feed-card/lovelace-home-feed-card.js
   type: module
 - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
+  type: module
+- url: /hacsfiles/lovelace-card-templater/lovelace-card-templater.js
   type: module
