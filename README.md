@@ -75,7 +75,9 @@ A few requisities will help you use these codes:
 Include these lines in your dashboard YAML to use most of the templates defined in the config:
 
 ```
-TBD
+decluttering_templates: !include cards/decluttering_templates.yaml
+button_card_templates: !include cards/button_card_templates.yaml
+apexcharts_card_templates: !include cards/apexcharts_card_templates.yaml
 
 ```
 
