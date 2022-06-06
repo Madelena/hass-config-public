@@ -2,9 +2,9 @@
 
 ## Maximalist Dashboard
 
-[Home Assistant](https://www.home-assistant.io/) is an open source home automation server that integrates nearly 2000 existing IoT services into one powerful, private, and unified user interface.
-
 This is a redacted version of the dashboard configuration for my personal instance of Home Assistant.
+
+[Home Assistant](https://www.home-assistant.io/) is an open source home automation server that integrates nearly 2000 existing IoT services into one powerful, private, and unified user interface.
 
 ## Design Principles
 
