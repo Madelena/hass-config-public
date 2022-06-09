@@ -6,33 +6,22 @@ title: Maintenance
 path: maintenance
 
 type: 'custom:grid-layout'
-layout:
-  grid-template-rows: auto 32px
-  grid-template-columns: 32px auto 32px
-  grid-template-areas: |
-    ". cc ."
-  grid-column-gap: 0
-  margin: 0
-  card_margin: 0
-  mediaquery:
-    '(max-width: 870px)':
-      grid-template-columns: 0 auto 0
+layout: !include snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
     layout_type: 'custom:grid-layout'
+    layout: !include snippets/layout-page-columns.yaml
     view_layout:
       grid-area: cc
-    layout:
-      grid-column-gap: 32px
-      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
-      grid-template-rows: auto
-      margin: -1px
 
     cards:
 
       # [Header] Summary 
       - type: markdown
+        style: !include snippets/style-markdown-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
         content: >
           # Maintenance
 
@@ -62,24 +51,10 @@ cards:
           There are {{ chore_done.entities|length }} chores done, {{
           chore_todo.entities|length }} to do soon, and {{
           chore_overdue.entities|length }} overdue.
-        style:
-          .: |
-            ha-card {
-              background: none;
-            }
-          ha-markdown$: |
-            h1 {
-              font-size: var(--title-font-size);
-              font-weight: 500;
-              line-height: 1.1;
-              margin-left: -2px;
-              margin-block-end: -8px;
-            }
-        view_layout:
-          grid-column: 1/-1
 
 
       # [Column] My Machines
+
       - type: vertical-stack
         cards:
           - type: 'custom:button-card'
@@ -87,10 +62,11 @@ cards:
             variables:
               name: MY MACHINES
             view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
+              grid-column: 1/-1
+
           - type: horizontal-stack
             cards:
+
               - type: 'custom:vacuum-card'
                 entity: vacuum.peanut_hamper
                 image: default
@@ -112,6 +88,7 @@ cards:
                     {--vc-background: none; --vc-spacing: 16px;} .tips
                     {flex-direction: row-reverse;} .toolbar {background:
                     none !important;}
+
           - type: entities
             entities:
               - entity: binary_sensor.peanut_hamper_bin_full
@@ -124,6 +101,7 @@ cards:
                   Since {{
                   states.binary_sensor.peanut_hamper_bin_full.last_changed |
                   relative_time }} ago
+
           - type: 'custom:logbook-card'
             entity: vacuum.peanut_hamper
             history: 5
@@ -138,6 +116,7 @@ cards:
               separator: false
             collapse: 3
             title: ' '
+
           - type: entities
             entities:
               - type: 'custom:multiple-entity-row'
@@ -145,6 +124,7 @@ cards:
                 secondary_info:
                   attribute: lackWater
             title: Bedroom Humidifier
+
           - type: entities
             entities:
               - entity: sensor.pure_hot_cool_link_filter_life
@@ -152,6 +132,7 @@ cards:
 
 
       # [Column] Chores
+
       - type: vertical-stack
         cards:
           - type: 'custom:button-card'
@@ -159,8 +140,8 @@ cards:
             variables:
               name: CHORES
             view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
+              grid-column: 1/-1
+
           - type: 'custom:auto-entities'
             filter:
               include:
@@ -168,10 +149,10 @@ cards:
                   options:
                     type: 'custom:button-card'
                     template: chore_card
-              exclude: []
             card:
               type: entities
               title: Plants
+
           - type: 'custom:auto-entities'
             filter:
               include:
@@ -179,10 +160,10 @@ cards:
                   options:
                     type: 'custom:button-card'
                     template: chore_card
-              exclude: []
             card:
               type: entities
               title: Kitchen
+
           - type: 'custom:auto-entities'
             filter:
               include:
@@ -190,10 +171,10 @@ cards:
                   options:
                     type: 'custom:button-card'
                     template: chore_card
-              exclude: []
             card:
               type: entities
               title: Bathroom
+
           - type: 'custom:auto-entities'
             filter:
               include:
@@ -201,10 +182,10 @@ cards:
                   options:
                     type: 'custom:button-card'
                     template: chore_card
-              exclude: []
             card:
               type: entities
               title: Living Room
+
           - type: 'custom:auto-entities'
             filter:
               include:
@@ -212,21 +193,23 @@ cards:
                   options:
                     type: 'custom:button-card'
                     template: chore_card
-              exclude: []
             card:
               type: entities
               title: Personal
 
+
       # [Column] Batteries
+
       - type: vertical-stack
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: BATTERIES
             view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
+              grid-column: 1/-1
+
           - type: 'custom:decluttering-card'
             template: metro_bar_card_no_icon
             variables:
@@ -234,6 +217,7 @@ cards:
                   - entity: sensor.front_door_camera_battery
                   - entity: sensor.kitchen_leak_sensor_power
               - title: Crucial
+
           - type: 'custom:decluttering-card'
             template: metro_bar_card_no_icon
             variables:
@@ -249,6 +233,7 @@ cards:
                   - entity: sensor.kitchen_leak_sensor_power
                   - entity: sensor.bathroom_env_sensor_power
               - title: Sensors
+
           - type: 'custom:decluttering-card'
             template: metro_bar_card_no_icon
             variables:

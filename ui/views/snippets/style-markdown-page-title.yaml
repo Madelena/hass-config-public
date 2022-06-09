@@ -1,0 +1,12 @@
+.: |
+  ha-card {
+    background: none;
+  }
+ha-markdown$: |
+  h1 {
+    font-size: var(--title-font-size);
+    font-weight: 500;
+    line-height: 1.1;
+    margin-left: -2px;
+    margin-block-end: -8px;
+  }

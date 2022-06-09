@@ -1,0 +1,160 @@
+# METROLOGY FOR HOME ASSISTANT
+# Button Card Templates
+# Made by Madelena Mak 2022
+
+
+# ROWS
+# For use in Entities Card usually
+
+# Chore Row
+
+chore_card:
+  variables:
+    now: '[[[ return new Date() ]]]'
+    last_done: '[[[ return new Date(entity.state) ]]]'
+    diff: >-
+      [[[ return Math.round((new Date() - new Date(entity.state)) / 1000 /
+      60 / 60 / 24 ) ]]]
+    due: >-
+      [[[ return states[entity.entity_id.replace("input_button",
+      "input_text")].state ]]]
+  triggers_update: all
+  show_label: true
+  layout: icon_name_state2nd
+  size: 24px
+  label: |
+    [[[
+      var doneStr
+      if (variables.diff < 2) {
+        if (variables.last_done.getDay() == variables.now.getDay()) { doneStr = 'today' } else { doneStr = 'yesterday' }
+      } else if (isNaN(variables.diff)) {
+        doneStr = 'unknown'
+      } else {
+        doneStr = variables.diff + ' days ago'
+      }
+      if (variables.due > 0) {
+        return 'Every ' + variables.due + ' days &bull; Last done ' + doneStr
+      } else { return 'As needed &bull; Last done ' + doneStr }
+    ]]]
+  custom_fields:
+    badge: &field-chore-badge |
+      [[[
+        if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'Done' }
+        if (variables.due > 0) {
+          if (variables.due < variables.diff) { return 'Overdue' }
+          if (variables.due < variables.diff + (variables.due / 4)) { return 'To do soon' }
+        }
+      ]]]
+  styles:
+    card:
+      - margin: 4px 0
+      - padding: 4px 12px
+      - background-color: |
+          [[[
+            if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'rgba(var(--rgb-success-color), .33)' }
+            if ((variables.due > 0) && (variables.due < variables.diff)) { return 'rgba(var(--rgb-error-color), .33)' } else {return 'transparent'}
+          ]]]
+    grid:
+      - grid-template-columns: min-content 1fr min-content
+      - grid-template-areas: '"i n badge" "i s badge" "i l badge"'
+    img_cell:
+      - align-self: middle
+      - text-align: start
+      - padding: 8px 24px 8px 4px
+    icon:
+      - color: |
+          [[[
+            if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--success-color)' }
+            if (variables.due > 0) {
+              if (variables.due < variables.diff) { return 'var(--error-color)' }
+              if (variables.due < variables.diff + (variables.due / 4)) { return 'var(--warning-color)' }
+            } else { return 'var(--primary-text-color)' }
+          ]]]
+    name:
+      - align-self: middle
+      - justify-self: start
+      - font-size: var(--body-font-size)
+    label:
+      - align-self: middle
+      - justify-self: start
+      - font-size: var(--body-font-size)
+      - opacity: 0.66
+    custom_fields:
+      badge:
+        - background: |
+            [[[
+              if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--success-color)' }
+              if (variables.due < variables.diff) { return 'var(--error-color)' } else { return 'var(--warning-color)' }
+            ]]]
+        - padding: 2px
+        - line-height: 1
+        - font-size: var(--h6-font-size)
+        - font-weight: 900
+        - text-transform: uppercase
+        - border-radius: 2px
+        - color: var(--accent-text-color)
+  tap_action:
+    action: call-service
+    service: input_button.press
+    service_data:
+      entity_id: entity
+  hold_action:
+    action: more-info
+    entity: >-
+      [[[ return entity.entity_id.replace("input_button", "input_text")
+      ]]]
+
+
+chore_tile:
+  template:
+    - chore_card
+    - live_tile_card
+    - live_tile_with_long_state
+  styles:
+    card:
+      - margin: 0
+      - background-color: |
+          [[[
+            if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--success-color)' }
+            if (variables.due > 0) {
+              if (variables.due < variables.diff) { return 'var(--error-color)' }
+              if (variables.due < variables.diff + (variables.due / 4)) { return 'var(--primary-color)' }
+            } else { return 'var(--ha-card-background)'}
+          ]]]
+      - color: |
+          [[[
+            if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'white' }
+            if ((variables.due > 0) && (variables.due < variables.diff)) { return 'white' } else {return 'var(--disabled-text-color'}
+          ]]]
+    name:
+      - color: white
+    icon:
+      - color: white
+    state:
+      - white-space: nowrap
+    custom_fields:
+      badge:
+        - display: none
+  state_display: |
+      [[[
+        if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'Done' }
+        if (variables.due > 0) {
+          if (variables.due < variables.diff) { return 'Overdue' }
+          if (variables.due < variables.diff + (variables.due / 4)) { return 'To do soon' }
+        }
+        return ' '
+      ]]]
+  label: |
+    [[[
+      var doneStr
+      if (variables.diff < 2) {
+        if (variables.last_done.getDay() == variables.now.getDay()) { doneStr = 'today' } else { doneStr = 'yesterday' }
+      } else if (isNaN(variables.diff)) {
+        doneStr = 'unknown'
+      } else {
+        doneStr = variables.diff + 'd ago'
+      }
+      if (variables.due > 0) {
+        return 'Done ' + doneStr
+      } else { return 'Done ' + doneStr }
+    ]]]

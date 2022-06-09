@@ -1,0 +1,30 @@
+- hours_to_show: 48
+  graph: line
+  type: sensor
+  detail: 2
+  entity: sensor.astralplane_plug_smartenergy_metering
+  name: Astralplane
+  icon: 'mdi:desktop-classic'
+
+- hours_to_show: 48
+  graph: line
+  type: sensor
+  entity: sensor.quattro_plug_smartenergy_metering
+  detail: 2
+  name: Quattro
+  icon: 'mdi:television'
+
+- type: sensor
+  entity: sensor.makery_plug_smartenergy_metering
+  graph: line
+  detail: 2
+  name: Makery
+  hours_to_show: 48
+
+- graph: line
+  type: sensor
+  entity: sensor.workspace_lights_energy_use
+  detail: 2
+  icon: 'mdi:lightbulb-group'
+  name: Workspace Lights
+  hours_to_show: 48

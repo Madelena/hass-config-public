@@ -1,0 +1,41 @@
+- type: sensor
+  entity: sensor.kitchen_counter_kettle_current_consumption
+  graph: line
+  name: Kettle
+  detail: 2
+  hours_to_show: 48
+
+- type: sensor
+  graph: line
+  entity: sensor.kitchen_counter_toaster_current_consumption
+  name: Toaster
+  detail: 2
+  hours_to_show: 48
+
+- type: sensor
+  entity: sensor.kitchen_counter_rice_cooker_current_consumption
+  name: Rice Cooker
+  graph: line
+  detail: 2
+  hours_to_show: 48
+
+- type: sensor
+  entity: sensor.kitchen_counter_hand_blender_current_consumption
+  name: Hand Blender
+  graph: line
+  detail: 2
+  hours_to_show: 48
+
+- type: sensor
+  graph: line
+  entity: sensor.kitchen_counter_echo_plug_current_consumption
+  name: Echo Show
+  detail: 2
+  hours_to_show: 48
+
+- type: sensor
+  entity: sensor.kitchen_counter_plug_3_current_consumption
+  name: Plug 3
+  graph: line
+  detail: 2
+  hours_to_show: 48

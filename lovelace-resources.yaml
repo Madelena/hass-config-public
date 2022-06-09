@@ -1,5 +1,7 @@
 # LOVELACE RESOURCES
 
+- url: https://unpkg.com/moment@2.29.3/min/moment.min.js
+  type: js
 - url: /hacsfiles/lovelace-mushroom/mushroom.js?hacstag=44435037518022
   type: module
 - url: /local/style.css?version=20220406
@@ -81,4 +83,6 @@
 - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
   type: module
 - url: /hacsfiles/lovelace-card-templater/lovelace-card-templater.js
+  type: module
+- url: /hacsfiles/history-explorer-card/history-explorer-card.js
   type: module

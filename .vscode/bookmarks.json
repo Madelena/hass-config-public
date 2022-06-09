@@ -44,12 +44,12 @@
 					"label": ""
 				},
 				{
-					"line": 167,
+					"line": 156,
 					"column": 15,
 					"label": ""
 				},
 				{
-					"line": 321,
+					"line": 385,
 					"column": 16,
 					"label": ""
 				}
@@ -59,38 +59,38 @@
 			"path": "ui/views/security.yaml",
 			"bookmarks": [
 				{
-					"line": 38,
+					"line": 21,
 					"column": 14,
 					"label": ""
 				},
 				{
-					"line": 108,
-					"column": 22,
-					"label": ""
-				},
-				{
-					"line": 223,
+					"line": 198,
 					"column": 24,
 					"label": ""
 				},
 				{
-					"line": 286,
+					"line": 217,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 353,
+					"line": 237,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 389,
+					"line": 281,
 					"column": 21,
 					"label": ""
 				},
 				{
-					"line": 408,
+					"line": 301,
 					"column": 32,
+					"label": ""
+				},
+				{
+					"line": 74,
+					"column": 1,
 					"label": ""
 				}
 			]
@@ -124,23 +124,23 @@
 			"path": "ui/views/maintenance.yaml",
 			"bookmarks": [
 				{
-					"line": 33,
+					"line": 19,
 					"column": 21,
 					"label": ""
 				},
 				{
-					"line": 81,
+					"line": 55,
 					"column": 24,
 					"label": ""
 				},
 				{
-					"line": 153,
-					"column": 19,
+					"line": 199,
+					"column": 22,
 					"label": ""
 				},
 				{
-					"line": 219,
-					"column": 22,
+					"line": 134,
+					"column": 1,
 					"label": ""
 				}
 			]
@@ -149,38 +149,18 @@
 			"path": "ui/views/lights.yaml",
 			"bookmarks": [
 				{
-					"line": 36,
+					"line": 18,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 110,
+					"line": 73,
 					"column": 18,
 					"label": ""
 				},
 				{
-					"line": 246,
+					"line": 116,
 					"column": 20,
-					"label": ""
-				},
-				{
-					"line": 319,
-					"column": 20,
-					"label": ""
-				},
-				{
-					"line": 377,
-					"column": 30,
-					"label": ""
-				},
-				{
-					"line": 549,
-					"column": 24,
-					"label": ""
-				},
-				{
-					"line": 180,
-					"column": 1,
 					"label": ""
 				}
 			]
@@ -189,7 +169,7 @@
 			"path": "ui/views/network.yaml",
 			"bookmarks": [
 				{
-					"line": 65,
+					"line": 627,
 					"column": 14,
 					"label": ""
 				},

@@ -23,7 +23,7 @@ layout:
   margin: 0
   card_margin: 0
   mediaquery:
-    '(min-width: 1480px)':
+    '(min-width: 1544px)':
       grid-template-columns: auto 1440px auto
       grid-template-areas: |
         ". cc ." ". . ."
@@ -335,6 +335,56 @@ cards:
                     action: call-service
                     service: floorplan.text_set
                     service_data: '${entity.state + " °C"}'
+
+                - entity: >-
+                    sensor.bathroom_env_sensor_temperature
+                  element: >-
+                    sensor.bathroom_env_sensor_temperature.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state > 27) || (entity.state < 20) ? "bg-on" : "bg-off"}'
+
+                - entity: >-
+                    sensor.workspace_room_hue_sensor_temperature
+                  element: >-
+                    sensor.workspace_room_hue_sensor_temperature.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state > 27) || (entity.state < 20) ? "bg-on" : "bg-off"}'
+
+                - entity: >-
+                    sensor.bedroom_hue_sensor_temperature
+                  element: >-
+                    sensor.bedroom_hue_sensor_temperature.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state > 27) || (entity.state < 20) ? "bg-on" : "bg-off"}'
+
+                - entity: >-
+                    sensor.living_room_hue_sensor_temperature
+                  element: >-
+                    sensor.living_room_hue_sensor_temperature.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state > 27) || (entity.state < 20) ? "bg-on" : "bg-off"}'
+
+                - entity: >-
+                    sensor.workspace_room_hue_sensor_temperature
+                  element: >-
+                    sensor.workspace_room_hue_sensor_temperature.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state > 27) || (entity.state < 20) ? "bg-on" : "bg-off"}'
 
                 - element: workspace.pointer
                   state_action:
@@ -657,8 +707,7 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            view_layout:
-              min_height: 0
+            layout: !include snippets/layout-live-tile.yaml
             cards:
 
               - type: 'custom:button-card'
@@ -697,8 +746,10 @@ cards:
                     color: 'rgba(var(--rgb-primary-color))'
                   - value: idle
                     color: 'rgba(var(--rgb-primary-color))'
-                  - value: returning to dock
+                  - value: returning
                     color: 'rgb(var(--rgb-primary-color),.33)'
+                  - operator: default
+                    color: 'var(--primary-color)'
                 state_display: >-
                   [[[ if (entity.state == "error") { return
                   entity.attributes.error } ]]]
@@ -721,80 +772,92 @@ cards:
                       - entity: sensor.unison_processor_use
                   - title: Unison
 
-            layout:
-              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
-              margin: 0
 
-
-          # [Column] Me
+          # [Column] Light (Repeat) / Me
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1
             cards:
 
-              - type: 'custom:button-card'
-                template: header_card
-                variables:
-                  name: ME
-                  label: More
-                  link: /ui-dashboard/me
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  grid-template-columns: >-
+                    repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                    [col-end])
+                  margin: -1
                 view_layout:
-                  grid-column: 1/-1
+                  show:
+                    mediaquery: '(max-width: 1128px)'
+                cards: *summary-column-lights-cards
 
-              - type: 'custom:button-card'
-                template: live_tile
-                entity: sensor.anniversary_cake_day
-                state_display: >-
-                  [[[ return
-                  states["sensor.anniversary_days_on_earth"].state ]]]
-                name: >-
-                  [[[ return "Cake Day in " +
-                  states["sensor.anniversary_cake_day"].state + " Days" ]]]
-                label: >-
-                  [[[ return "Week " +
-                  -states["sensor.anniversary_days_on_earth"].attributes.weeks_remaining
-                  ]]]
-                icon: 'mdi:cake-variant'
-                view_layout:
-                  grid-column: span 2
-                variables:
-                  aspect_ratio: 2/1
-                styles:
-                  card:
-                    - background-image: |
-                        [[[
-                          var diff = entity.state
-                          if (diff > 120) { return '' }
-                          var opacity = 1 - (diff / 120)
-                          return 'linear-gradient( rgba(var(--rgb-primary-color),' + opacity + '), rgba(var(--rgb-primary-color),' + opacity + '))'
-                        ]]]
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout: !include snippets/layout-live-tile.yaml
+                cards:
 
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                      - entity: sensor.withings_sleep_score_madelena
-                  - title: Sleep Score
-                  - hours_to_show: 96
+                  - type: 'custom:button-card'
+                    template: header_card
+                    variables:
+                      name: ME
+                      label: More
+                      link: /ui-dashboard/me
+                    view_layout:
+                      grid-column: 1/-1
 
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                      - entity: sensor.my_twitter_followers_count
-                  - title: Twitter
-                  - icon: 'mdi:twitter'
-                  - hours_to_show: 96
+                  - type: 'custom:button-card'
+                    template: live_tile
+                    entity: sensor.anniversary_cake_day
+                    state_display: >-
+                      [[[ return
+                      states["sensor.anniversary_days_on_earth"].state ]]]
+                    name: >-
+                      [[[ return "Cake Day in " +
+                      states["sensor.anniversary_cake_day"].state + " Days" ]]]
+                    label: >-
+                      [[[ return "Week " +
+                      -states["sensor.anniversary_days_on_earth"].attributes.weeks_remaining
+                      ]]]
+                    icon: 'mdi:cake-variant'
+                    view_layout:
+                      grid-column: span 2
+                    variables:
+                      aspect_ratio: 2/1
+                    styles:
+                      card:
+                        - background-image: |
+                            [[[
+                              var diff = entity.state
+                              if (diff > 120) { return '' }
+                              var opacity = 1 - (diff / 120)
+                              return 'linear-gradient( rgba(var(--rgb-primary-color),' + opacity + '), rgba(var(--rgb-primary-color),' + opacity + '))'
+                            ]]]
 
-            layout:
-              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
-              margin: 0
+                  # - type: 'custom:decluttering-card'
+                  #   template: mini_graph_tile
+                  #   variables:
+                  #     - entities:
+                  #         - entity: sensor.withings_sleep_score_madelena
+                  #     - title: Sleep Score
+                  #     - hours_to_show: 96
+
+                  - type: 'custom:decluttering-card'
+                    template: mini_graph_tile
+                    variables:
+                      - entities:
+                          - entity: sensor.my_twitter_followers_count
+                      - title: Twitter
+                      - icon: 'mdi:twitter'
+                      - hours_to_show: 96
 
 
           # [Column] Weather
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
             cards:
               - type: 'custom:button-card'
                 template: header_card
@@ -843,6 +906,20 @@ cards:
                 styles:
                   name:
                     - width: 50%
+                  grid:
+                    - background: var(--ha-card-background)
+                  card:
+                    - background: |
+                        [[[
+                          var temp = parseFloat(entity.attributes.temperature)
+                          if (temp >= 25) {
+                            return "rgba(var(--rgb-primary-color)," + ((temp - 25) / 7) + ")"
+                          }
+                          if (temp <= 20) {
+                            return "rgba(var(--rgb-primary-color)," + ((20 - temp) / 14) + ")"
+                          }
+                          return "transparent"
+                        ]]]
 
               - type: 'custom:button-card'
                 template: live_tile
@@ -866,80 +943,31 @@ cards:
                   card:
                     - background: var(--ha-card-background)
 
-              - type: 'custom:swipe-card'
-                parameters:
-                  direction: vertical
-                  autoHeight: true
-                  height: 128
-                  effect: cube
-                  autoplay:
-                    delay: 15000
-                  cubeEffect:
-                    - slideShadows: false
-                view_layout:
-                  show:
-                    mediaquery: "(max-width: 1128px)"
-                cards:
-
-                  - &summary-card-nws-alerts
-                    type: 'custom:button-card'
-                    variables:
-                      slide: 0
-                    template:
-                      - live_tile_card
-                      - live_tile_with_long_state
-                    entity: sensor.nws_alert_rss_feed
-                    name: |
-                      [[[
-                        if (entity.state == 0) { return "NWS Alerts" }
-                        if (entity.attributes.entries[0].title.includes('no active')) { entity.state = 0; return "NWS Alerts" }
-                        if (entity.state > 1) { return entity.state + " NWS Alerts" } else { return "1 NWS Alert" }
-                      ]]]
-                    icon: mdi:weather-sunny-alert
-                    state_display: '[[[
-                        if (entity.state == 0) { return "No Active Alerts" }
-                        if ( entity.state > variables.slide ) { return entity.attributes.entries[variables.slide].title.replace(/ issue.*/g, "") }
-                        return " "
-                      ]]]'
-                    state:
-                      - value: 1
-                        operator: '>='
-                        color: var(--primary-color)
-                      - value: 0
-                        operator: ==
-                        color: var(--ha-card-background)
-                        styles:
-                          card:
-                            - color: var(--disabled-text-color)
-
-                  - <<: *summary-card-nws-alerts
-                    variables:
-                      slide: 1
-
-                  - <<: *summary-card-nws-alerts
-                    variables:
-                      slide: 2
-
               - type: 'custom:button-card'
                 template: live_tile
-                entity: sensor.waqi_new_york
-                name: |
-                  [[[
-                    if (entity.state > 300) {
-                      return "AQI Hazardous"
-                    } else if (entity.state > 200) {
-                      return "AQI Very Unhealthy"
-                    } else if (entity.state > 150) {
-                      return "AQI Unhealthy"
-                    } else if (entity.state > 100) {
-                      return "AQI Unhealthy for Sensitive Groups"
-                    } else if (entity.state > 50) {
-                      return "AQI Moderate"
-                    } else {
-                      return "AQI Good"
-                    }
-                  ]]]
+                entity: sensor.waqi_newyork_air_quality_index
+                state_display: |
+                  [[[ return Math.round(entity.state) ]]]
+                variables:
+                  level: |
+                    [[[
+                      if (entity.state > 300) {
+                        return "Hazardous"
+                      } else if (entity.state > 200) {
+                        return "Very Unhealthy"
+                      } else if (entity.state > 150) {
+                        return "Unhealthy"
+                      } else if (entity.state > 100) {
+                        return "Unhealthy for Sensitive Groups"
+                      } else if (entity.state > 50) {
+                        return "Moderate"
+                      } else {
+                        return "Good"
+                      }
+                    ]]]
+                name: AQI
                 icon: mdi:molecule
+                label: '[[[ return variables.level ]]]'
                 show_units: false
                 styles:
                   card:
@@ -1011,45 +1039,128 @@ cards:
                   label:
                     - text-transform: capitalize
 
-              - type: 'custom:swipe-card'
-                parameters:
-                  direction: vertical
-                  autoHeight: true
-                  height: 128
-                  effect: cube
-                  autoplay:
-                    delay: 15000
-                  cubeEffect:
-                    - slideShadows: false
+              - type: 'custom:button-card'
+                template: live_tile
+                entity: sensor.valhalla_uv_index
+                name: UV
+                icon: mdi:sun-wireless-outline
+                label: '[[[ return entity.attributes.level ]]]'
+                state_display: '[[[ return entity.state.split(" ") ]]]'
+                styles:
+                  card:
+                    - color: |
+                        [[[
+                          if (entity.state == 0) { return 'var(--disabled-text-color)' }
+                          switch(entity.attributes.level) {
+                            case 'Low': return 'var(--primary-text-color)'
+                            default: return 'var(--text-accent-color)'
+                          }
+                        ]]]
+                    - background: |
+                        [[[
+                          if (entity.state == 0) { return 'var(--ha-card-background)' }
+                          switch(entity.attributes.level) {
+                            case 'Very High': return 'var(--accent-color)'
+                            case 'High': return 'var(--primary-color)'
+                            case 'Moderate': return 'rgba(var(--rgb-primary-color), .5)'
+                            case 'Low': return 'rgba(var(--rgb-primary-color), .25)'
+                            default: return 'var(--ha-card-background)'
+                          }
+                        ]]]
+
+              - type: 'custom:button-card'
+                template: live_tile_with_unit
+                entity: sensor.valhalla_wind
+                name: '[[[ return states["sensor.wind_strength"].state ]]]'
+                icon: 'mdi:navigation'
+                label: '[[[ return states["sensor.wind_direction"].state ]]]'
+                state_display: '[[[ return entity.state.split(" ") ]]]'
+                custom_fields:
+                  unit: '[[[ return entity.attributes.unit_of_measurement ]]]'
+                styles:
+                  grid:
+                    - background: var(--ha-card-background)
+                  card:
+                    - background: |
+                        [[[
+                          var wind_speed_mph = parseFloat(states["sensor.valhalla_wind"].state) * 0.6213712
+                          if (wind_speed_mph <= 30) { return "transparent" }
+                          if (wind_speed_mph <= 54) {
+                            return "rgba(var(--rgb-primary-color)," + (wind_speed_mph / 54) + ")"
+                          } else {
+                            return "var(--accent-color)"
+                          }
+                        ]]]
+                  icon:
+                    - transform: '[[[ return "rotate(" + parseFloat(states["weather.valhalla_hourly"].attributes.wind_bearing) + "deg)" ]]]'
+
+
+              - type: 'custom:auto-entities'
+                filter:
+                  template: |
+                    {% for alert in range(0,states('sensor.nws_alert_rss_feed')|int) -%}
+                      {{
+                        { 'entity': 'sensor.nws_alert_rss_feed',
+                          'type': 'custom:button-card',
+                          'template': ['live_tile_card', 'live_tile_with_long_state', 'nws_alerts'],
+                          'variables': {
+                            'slide': alert
+                          },
+                        }
+                      }},
+                    {%- endfor %}
+                show_empty: false
+                card:
+                  type: 'custom:swipe-card'
+                  parameters:
+                    direction: vertical
+                    autoHeight: true
+                    height: 128
+                    effect: cube
+                    autoplay:
+                      delay: 5000
+                    loop: true
+                    cubeEffect:
+                      - slideShadows: false
+                card_param: cards
+                view_layout:
+                  show:
+                    mediaquery: "(max-width: 1128px)"
+
+              - type: 'custom:auto-entities'
+                filter:
+                  template: |
+                    {% for alert in range(0,states('sensor.nws_alert_rss_feed')|int) -%}
+                      {{
+                        { 'entity': 'sensor.nws_alert_rss_feed',
+                          'type': 'custom:button-card',
+                          'template': ['live_tile_card', 'live_tile_with_long_state', 'nws_alerts'],
+                          'variables': {
+                            'slide': alert,
+                            'aspect_ratio': 2
+                          },
+                        }
+                      }},
+                    {%- endfor %} 
+                show_empty: false
+                card:
+                  type: 'custom:swipe-card'
+                  parameters:
+                    direction: vertical
+                    autoHeight: true
+                    height: 128
+                    effect: cube
+                    autoplay:
+                      delay: 5000
+                    loop: true
+                    cubeEffect:
+                      - slideShadows: false
+                card_param: cards
                 view_layout:
                   grid-column: span 2
                   show:
-                    mediaquery: "(min-width: 1129px)"
-                cards:
+                    mediaquery: "(min-width: 1128px)"
 
-                  - &summary-card-nws-alerts-wide
-                    <<: *summary-card-nws-alerts
-                    variables:
-                      aspect_ratio: 2/1
-                      slide: 0
-                    template:
-                      - live_tile_card
-                      - live_tile_with_long_state
-                    label: '[[[ if ( entity.state > variables.slide ) { return entity.attributes.entries[variables.slide].summary.replace(/\.\.\..*\.\.\. /g, "") } ]]]'
-
-                  - <<: *summary-card-nws-alerts-wide
-                    variables:
-                      aspect_ratio: 2/1
-                      slide: 1
-
-                  - <<: *summary-card-nws-alerts-wide
-                    variables:
-                      aspect_ratio: 2/1
-                      slide: 2
-
-            layout:
-              grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
-              margin: 0
 
 
           # [Column] Neighborhood
@@ -1066,7 +1177,7 @@ cards:
                   link: /ui-dashboard/neighborhood
                 view_layout:
                   grid-column: 1/-1
-                 
+
               - type: 'custom:button-card'
                 view_layout:
                   grid-column: span 2
@@ -1077,17 +1188,24 @@ cards:
                   - live_tile_with_long_state
                 entity: sensor.mta_subway_l_service_status
                 state_display: >-
-                  [[[ return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses.north : entity.state) ]]]
+                  [[[ 
+                    if (( entity.state == 'No Data' ) || ( entity.state == 'unavailable')) { return 'No Data' }
+                    return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses.north : entity.state)
+                  ]]]
                 name: L Train Northbound
                 icon: 'mdi:train'
                 label: |-
-                  [[[ if ( entity.state == 'No Service') {
-                      return entity.attributes.service_change_summaries.both[0] 
+                  [[[ 
+                    if (( entity.state == 'No Data' ) || ( entity.state == 'unavailable')) { return '' }
+                    if ( entity.state == 'No Service') {
+                      var label = entity.attributes.service_change_summaries.both[0] 
                     } else {
-                      return ((entity.attributes.service_change_summaries.north.length > 0) ? entity.attributes.service_change_summaries.north[0] : '') +
+                      var label = ((entity.attributes.service_change_summaries.north.length > 0) ? entity.attributes.service_change_summaries.north[0] : '') +
                         ((entity.attributes.delay_summaries.north != null) ? entity.attributes.delay_summaries.north : '') +
                         ((entity.attributes.service_irregularity_summaries.north != null) ? entity.attributes.service_irregularity_summaries.north : '') +
-                        ((entity.attributes.service_change_summaries.both.length > 0) ? entity.attributes.service_change_summaries.both[0] : '') }  ]]]
+                        ((entity.attributes.service_change_summaries.both.length > 0) ? entity.attributes.service_change_summaries.both[0] : '') }
+                    if ((label !== undefined) || (label !== null)) { return label.charAt(0).toUpperCase() + label.slice(1) }
+                  ]]]
                 state:
                   - value: Slow
                     color: 'rgba(var(--rgb-primary-color), .33)'
@@ -1099,27 +1217,13 @@ cards:
                     color: var(--accent-color)
                   - value: Delay
                     color: var(--primary-color)
+                  - value: No Data
+                    color: var(--primary-color)
                   - value: Good Service
                     styles:
                       card:
                         - background: var(--ha-card-background)
                         - color: var(--disabled-text-color)
-
-              - type: 'custom:button-card'
-                template:
-                  - live_tile_with_picture
-                name: Traffic
-                entity: camera.bing_maps_traffic
-                show_state: false
-                variables:
-                  picture: '[[[ return entity.attributes.entity_picture ]]]'
-   
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                      - entity: sensor.waze_travel_time
-                  - title: Driving Time
 
               - type: 'custom:swipe-card'
                 parameters:
@@ -1140,14 +1244,12 @@ cards:
                       slide: 0
                     template:
                       - live_tile_card
-                      - live_tile_with_longer_state
+                      - live_tile_with_long_state
                     name: >-
-                      [[[ return "Notify NYC - " + new
-                      Date(entity.attributes.entries[variables.slide].published).toLocaleTimeString([],
-                      { hour12: false, hour: "2-digit", minute: "2-digit"})
+                      [[[ return "Notify NYC - " + moment(entity.attributes.entries[variables.slide].published).fromNow()
                       ]]]
-                    color: var(--ha-card-background)
                     entity: sensor.notify_nyc
+                    color: var(--ha-card-background)
                     state_display: >-
                       [[[ return
                       entity.attributes.entries[variables.slide].title.replace("Notify NYC
@@ -1160,6 +1262,13 @@ cards:
                     styles:
                       card:
                         - color: var(--primary-text)
+                        - background-image: |
+                            [[[
+                              var diff = (new Date() - new Date(entity.attributes.entries[variables.slide].published)) / 1000
+                              var opacity = 1 - (diff / 10800)
+                              if (diff > 10800) { return '' }
+                              return 'linear-gradient( to top, rgba(var(--rgb-primary-color),' + opacity + ') 0%, rgba(var(--rgb-primary-color),' + opacity + ') 100%)'
+                            ]]]
 
                   # This is so fucking clever I have to pat myself in the back here.
                   - <<: *summary-card-notify-nyc
@@ -1172,8 +1281,45 @@ cards:
                       aspect_ratio: 2/1
                       slide: 2
 
+                  - <<: *summary-card-notify-nyc
+                    variables:
+                      aspect_ratio: 2/1
+                      slide: 3
+
+                  - <<: *summary-card-notify-nyc
+                    variables:
+                      aspect_ratio: 2/1
+                      slide: 4
+
                 view_layout:
-                  grid-column: span 2
+                  grid-column: 1/3
+                  grid-row: 3/4
+
+              # Force fix for the height of the swipe card tile above.
+              - type: 'custom:button-card'
+                template: live_tile
+                styles:
+                  card:
+                    - background: none
+                view_layout:
+                  grid-column: 1/1
+                  grid-row: 3/4
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.waze_travel_time
+                  - title: Driving Time
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_with_camera
+                name: Traffic
+                entity: camera.bing_maps_traffic
+                show_state: false
+                variables:
+                  picture: '[[[ return entity.attributes.entity_picture ]]]'
 
               - type: 'custom:decluttering-card'
                 template: mini_graph_tile
@@ -1189,16 +1335,16 @@ cards:
                 name: Parking Rules
                 entity: sensor.nyc_311_alternate_side_parking_0d
                 icon: mdi:car
-                color: var(--primary-color)
                 label: |
                   [[[ return entity.attributes.details ]]]
                 state:
-                  - value: 'In effect'
+                  - value: 'In Effect'
+                    color: var(--ha-card-background)
                     styles:
                       card:
                         - background: var(--ha-card-background)
                         - color: var(--disabled-text-color)
-                  - value: 'Not in effect'
+                  - operator: 'default'
                     color: var(--primary-color)
 
             layout:
@@ -1206,235 +1352,227 @@ cards:
               margin: 0
 
 
-          # [Column] Lights (Repeat) / Media
+          # [Column] Media
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
             layout:
+              grid-template-columns: >-
+                repeat(auto-fill, [col-start] minmax(112px, 1fr)
+                [col-end])
+              grid-auto-flow: row dense
               margin: -1
             cards:
 
-              - type: 'custom:layout-card'
-                layout_type: 'custom:grid-layout'
-                layout:
-                  grid-template-columns: >-
-                    repeat(auto-fill, [col-start] minmax(112px, 1fr)
-                    [col-end])
-                  margin: -1
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: MEDIA
+                  label: More
+                  link: /ui-machines/media
                 view_layout:
-                  show:
-                    mediaquery: '(max-width: 1128px)'
-                cards: *summary-column-lights-cards
+                  grid-column: 1/-1
 
+              - type: 'custom:auto-entities'
+                filter:
+                  include:
+                    - domain: media_player
+                      state: playing
+                      options:
+                        type: 'custom:button-card'
+                        template: live_tile_media_player
+                        entity: this.entity_id
+                    - domain: media_player
+                      state: paused
+                      options:
+                        type: 'custom:button-card'
+                        template: live_tile_media_player
+                        entity: this.entity_id
+                show_empty: false
+                card:
+                  type: 'custom:swipe-card'
+                  parameters:
+                    direction: vertical
+                    autoHeight: true
+                    height: 128
+                    effect: cube
+                    autoplay:
+                      delay: 5000
+                    cubeEffect:
+                      - slideShadows: false
+                card_param: cards
+                view_layout:
+                  grid-column: 1/-1
+                  grid-row: 2/3
 
-              - type: 'custom:layout-card'
-                layout_type: 'custom:grid-layout'
-                layout:
-                  grid-template-columns: >-
-                    repeat(auto-fill, [col-start] minmax(112px, 1fr)
-                    [col-end])
-                  grid-auto-flow: row dense
-                  margin: -1
+              # Force fix for the height of the swipe card tile above. Even harder than the previous one.
+              - type: 'custom:button-card'
+                template: live_tile
+                triggers_update: all
+                styles:
+                  card:
+                    - display: >-
+                        [[[
+                          var mediaPlaying = Object.keys(states).filter(e => e.includes("media") && (states[e].state == "playing")).length
+                          var mediaPaused = Object.keys(states).filter(e => e.includes("media") && (states[e].state == "paused")).length
+                          if (mediaPlaying + mediaPaused > 0) { return 'block' } else { return 'none' }
+                        ]]]
+                    - background: none
+                view_layout:
+                  grid-column: 1/1
+                  grid-row: 2/3
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.my_last_fm_play_count
+                  - title: Last.fm
+                  - icon: 'mdi:music'
+                  - hours_to_show: 48
+                  - lower_bound: ~100000
+
+              - type: 'custom:button-card'
+                variables:
+                  newest: |
+                    [[[
+                      var movieUpdate = new Date(states["sensor.dorothy_library_movies"].attributes.last_added_timestamp)
+                      var tvUpdate = new Date(states["sensor.dorothy_library_tv_shows"].attributes.last_added_timestamp)
+                      var flacUpdate = new Date(states["sensor.dorothy_library_flacs"].attributes.last_added_timestamp)
+                      if (flacUpdate > movieUpdate) {
+                        if (flacUpdate > tvUpdate) { return "flacs" } else {return "tv_shows" }
+                      } else {
+                        if (movieUpdate > tvUpdate) { return "movies" } else {return "tv_shows" }
+                      }
+                    ]]]
+                template:
+                  - live_tile_card
+                  - live_tile_with_longer_state
+                name: New to Plex
+                icon: 'mdi:plex'
+                entity: sensor.dorothy_library_flacs
+                state_display: >-
+                  [[[ return states["sensor.dorothy_library_" +
+                  variables.newest].attributes.last_added_item ]]]
+                label: |-
+                  [[[ 
+                    var diff = (-(new Date(states["sensor.dorothy_library_" +
+                      variables.newest].attributes.last_added_timestamp) - new Date()) /
+                      1000 / 60 / 60 / 24)
+                    if (diff > 1.5) {return Math.round(diff)  + " days ago" }
+                    if (diff < .03) {return "Just now" }
+                    if (diff <= 1.5) {return Math.round(diff * 24)  + " hours ago" }
+
+                  ]]]
+                styles:
+                  card:
+                    - background: var(--ha-card-background)
+                    - color: var(--primary-text-color)
+                  state:
+                    - display: '-webkit-box'
+                    - '-webkit-line-clamp': 3
+                    - '-webkit-box-orient': vertical
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  direction: vertical
+                  autoHeight: true
+                  height: 128
+                  effect: cube
+                  autoplay:
+                    delay: 60000
+                  cubeEffect:
+                    - slideShadows: false
+                view_layout:
+                  grid-column: span 2
                 cards:
 
                   - type: 'custom:button-card'
-                    template: header_card
-                    variables:
-                      name: MEDIA
-                      label: More
-                      link: /ui-machines/media
-                    view_layout:
-                      grid-column: 1/-1
-
-                  - type: 'custom:auto-entities'
-                    filter:
-                      include:
-                        - domain: media_player
-                          state: playing
-                          options:
-                            type: 'custom:button-card'
-                            template: live_tile_media_player
-                            entity: this.entity_id
-                        - domain: media_player
-                          state: paused
-                          options:
-                            type: 'custom:button-card'
-                            template: live_tile_media_player
-                            entity: this.entity_id
-                      exclude: []
-                    show_empty: false
-                    card:
-                      type: 'custom:swipe-card'
-                      xlayout_type: 'custom:grid-layout'
-                      xlayout_options:
-                        grid-template-columns: >-
-                          repeat(auto-fill, [col-start] minmax(112px, 1fr)
-                          [col-end])
-                        margin: 0
-                      parameters:
-                        direction: vertical
-                        autoHeight: true
-                        effect: cube
-                        autoplay:
-                          delay: 5000
-                        xloop: true
-                        cubeEffect:
-                          - slideShadows: false
-                    card_param: cards
-                    view_layout:
-                      grid-column: span 2
-
-                  - type: 'custom:decluttering-card'
-                    template: mini_graph_tile
-                    variables:
-                      - entities:
-                          - entity: sensor.my_last_fm_play_count
-                      - title: Last.fm
-                      - icon: 'mdi:music'
-                      - hours_to_show: 48
-                      - lower_bound: ~100000
-
-                  - type: 'custom:button-card'
-                    variables:
-                      newest: |
-                        [[[
-                          var movieUpdate = new Date(states["sensor.dorothy_library_movies"].attributes.last_added_timestamp)
-                          var tvUpdate = new Date(states["sensor.dorothy_library_tv_shows"].attributes.last_added_timestamp)
-                          var flacUpdate = new Date(states["sensor.dorothy_library_flacs"].attributes.last_added_timestamp)
-                          if (flacUpdate > movieUpdate) {
-                            if (flacUpdate > tvUpdate) { return "flacs" } else {return "tv_shows" }
-                          } else {
-                            if (movieUpdate > tvUpdate) { return "movies" } else {return "tv_shows" }
-                          }
-                        ]]]
                     template:
                       - live_tile_card
-                      - live_tile_with_longer_state
-                    name: New to Plex
-                    icon: 'mdi:plex'
-                    entity: sensor.dorothy_library_flacs
-                    state_display: >-
-                      [[[ return states["sensor.dorothy_library_" +
-                      variables.newest].attributes.last_added_item ]]]
-                    label: |-
-                      [[[ 
-                        var diff = (-(new Date(states["sensor.dorothy_library_" +
-                          variables.newest].attributes.last_added_timestamp) - new Date()) /
-                          1000 / 60 / 60 / 24)
-                        if (diff > 1.5) {return Math.round(diff)  + " days ago" }
-                        if (diff < .03) {return "Just now" }
-                        if (diff <= 1.5) {return Math.round(diff * 24)  + " hours ago" }
-
+                      - live_tile_with_long_state
+                    entity: sensor.last_fm_top_artists
+                    icon: 'mdi:album'
+                    name: >-
+                      [[[ return
+                      states["sensor.last_fm_top_artists_json"].attributes.artist[0].playcount
+                      + " plays" ]]]
+                    label: >
+                      [[[ return
+                      states["sensor.last_fm_top_artists"].attributes.artist_2
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_artists"].attributes.artist_3
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_artists"].attributes.artist_4
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_artists"].attributes.artist_5
                       ]]]
+                    variables:
+                      aspect_ratio: 2/1
                     styles:
                       card:
+                        - color: white
+                        - background-size: cover
+                        - background-image: >
+                            [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                              states["sensor.last_fm_top_artist_photo"].state + "')" ]]]
+
+                  - type: 'custom:button-card'
+                    template:
+                      - live_tile_card
+                      - live_tile_with_long_state
+                    entity: sensor.last_fm_top_albums
+                    icon: 'mdi:album'
+                    name: >-
+                      [[[ return
+                      states["sensor.last_fm_top_albums_json"].attributes.album[0].playcount
+                      + " plays" ]]]
+                    label: >
+                      [[[ return
+                      states["sensor.last_fm_top_albums"].attributes.album_2
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_albums"].attributes.album_3
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_albums"].attributes.album_4
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_albums"].attributes.album_5
+                      ]]]
+                    variables:
+                      aspect_ratio: 2/1
+                    styles:
+                      card:
+                        - color: white
+                        - background-size: cover
+                        - background-image: >
+                            [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
+                              states["sensor.last_fm_top_albums"].attributes.album_1_image + "')" ]]]
+
+                  - type: 'custom:button-card'
+                    template:
+                      - live_tile_card
+                      - live_tile_with_long_state
+                    entity: sensor.last_fm_top_tracks
+                    icon: 'mdi:album'
+                    name: >-
+                      [[[ return
+                      states["sensor.last_fm_top_tracks_json"].attributes.track[0].playcount
+                      + " plays" ]]]
+                    label: >
+                      [[[ return
+                      states["sensor.last_fm_top_tracks"].attributes.track_2
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_tracks"].attributes.track_3
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_tracks"].attributes.track_4
+                      + "<br/>" + 
+                      states["sensor.last_fm_top_tracks"].attributes.track_5
+                      ]]]
+                    variables:
+                      aspect_ratio: 2/1
+                    styles:
+                      card:
+                        - color: white
                         - background: var(--ha-card-background)
-                        - color: var(--primary-text-color)
-                      state:
-                        - display: '-webkit-box'
-                        - '-webkit-line-clamp': 3
-                        - '-webkit-box-orient': vertical
-
-                  - type: 'custom:swipe-card'
-                    parameters:
-                      direction: vertical
-                      autoHeight: true
-                      height: 128
-                      effect: cube
-                      autoplay:
-                        delay: 60000
-                      cubeEffect:
-                        - slideShadows: false
-                    view_layout:
-                      grid-column: span 2
-                    cards:
-
-                      - type: 'custom:button-card'
-                        template:
-                          - live_tile_card
-                          - live_tile_with_long_state
-                        entity: sensor.last_fm_top_artists
-                        icon: 'mdi:album'
-                        name: >-
-                          [[[ return
-                          states["sensor.last_fm_top_artists_json"].attributes.artist[0].playcount
-                          + " plays" ]]]
-                        label: >
-                          [[[ return
-                          states["sensor.last_fm_top_artists"].attributes.artist_2
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_artists"].attributes.artist_3
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_artists"].attributes.artist_4
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_artists"].attributes.artist_5
-                          ]]]
-                        variables:
-                          aspect_ratio: 2/1
-                        styles:
-                          card:
-                            - color: white
-                            - background-size: cover
-                            - background-image: >
-                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
-                                  states["sensor.last_fm_top_artist_photo"].state + "')" ]]]
-
-                      - type: 'custom:button-card'
-                        template:
-                          - live_tile_card
-                          - live_tile_with_long_state
-                        entity: sensor.last_fm_top_albums
-                        icon: 'mdi:album'
-                        name: >-
-                          [[[ return
-                          states["sensor.last_fm_top_albums_json"].attributes.album[0].playcount
-                          + " plays" ]]]
-                        label: >
-                          [[[ return
-                          states["sensor.last_fm_top_albums"].attributes.album_2
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_albums"].attributes.album_3
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_albums"].attributes.album_4
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_albums"].attributes.album_5
-                          ]]]
-                        variables:
-                          aspect_ratio: 2/1
-                        styles:
-                          card:
-                            - color: white
-                            - background-size: cover
-                            - background-image: >
-                                [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
-                                  states["sensor.last_fm_top_albums"].attributes.album_1_image + "')" ]]]
-
-                      - type: 'custom:button-card'
-                        template:
-                          - live_tile_card
-                          - live_tile_with_long_state
-                        entity: sensor.last_fm_top_tracks
-                        icon: 'mdi:album'
-                        name: >-
-                          [[[ return
-                          states["sensor.last_fm_top_tracks_json"].attributes.track[0].playcount
-                          + " plays" ]]]
-                        label: >
-                          [[[ return
-                          states["sensor.last_fm_top_tracks"].attributes.track_2
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_tracks"].attributes.track_3
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_tracks"].attributes.track_4
-                          + "<br/>" + 
-                          states["sensor.last_fm_top_tracks"].attributes.track_5
-                          ]]]
-                        variables:
-                          aspect_ratio: 2/1
-                        styles:
-                          card:
-                            - color: white
-                            - background: var(--ha-card-background)
 
 
           # [Column] Astrometrics

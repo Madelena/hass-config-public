@@ -307,6 +307,16 @@ cards:
                   <td>{{ states('sensor.thermal_comfort_netatmo_bedroom_perception') | regex_replace(find='_', replace=' ') | title }}</td>
                 </tr>
                 <tr>
+                  <td>Workspace</td>
+                  <td>{{ states('sensor.thermal_comfort_workspace_simmerzone') | regex_replace(find='_', replace=' ') | title }}</td>
+                  <td>{{ states('sensor.thermal_comfort_workspace_perception') | regex_replace(find='_', replace=' ') | title }}</td>
+                </tr>
+                <tr>
+                  <td>Living Room</td>
+                  <td>{{ states('sensor.thermal_comfort_living_room_simmerzone') | regex_replace(find='_', replace=' ') | title }}</td>
+                  <td>{{ states('sensor.thermal_comfort_living_room_perception') | regex_replace(find='_', replace=' ') | title }}</td>
+                </tr>
+                <tr>
                   <td>Bathroom</td>
                   <td>{{ states('sensor.thermal_comfort_bathroom_simmerzone') | regex_replace(find='_', replace=' ') | title }}</td>
                   <td>{{ states('sensor.thermal_comfort_bathroom_perception') | regex_replace(find='_', replace=' ') | title }}</td>
@@ -315,9 +325,10 @@ cards:
             card_mod:
               style:
                 ha-markdown$: |
-                  th, td:last-child { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.1) !important; }
                   th, td { padding: 4px 0 8px; border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.05); }
                   th { font-size: var(--h6-font-size); text-align: left; text-transform: uppercase; padding-top: 0 !important; }
+                  th, td:first-child { color: rgba(var(--rgb-primary-text-color), .5); }
+                  xth, xtr:last-child td { border-bottom: 1px solid rgba(var(--rgb-primary-text-color),.5) !important; }
 
 
       # [Column] Temperature
@@ -786,11 +797,47 @@ cards:
               - type: horizontal-stack
                 cards:
                   - type: entity
-                    entity: sensor.waqi_new_york
+                    entity: sensor.waqi_newyork_air_quality_index
                     icon: none
+                    name: WAQI New York
                   - type: entity
-                    entity: sensor.waqi_maspeth_new_york_usa
+                    entity: sensor.waqi_maspeth_air_quality_index
                     name: WAQI Maspeth
+
+              - type: custom:apexcharts-card
+                config_templates: environment_chart
+                series:
+                  - entity: sensor.waqi_newyork_air_quality_index
+                    name: WAQI
+                    yaxis_id: second
+                    show:
+                      datalabels: true
+                  - entity: sensor.waqi_newyork_carbon_monoxide_co
+                    name: Carbon Monoxide (CO)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                  - entity: sensor.waqi_newyork_ozone_o3
+                    name: Ozone (O₃)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                  - entity: sensor.waqi_newyork_nitrogen_dioxide_no2
+                    name: Nitrogen Dioxide (NO₂)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                  - entity: sensor.waqi_newyork_particulate_matter_pm25
+                    name: Particulate Matter (PM25)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                yaxis:
+                  - id: main
+                  - id: second
+                apex_config:
+                  chart:
+                    height: 240px
 
           - type: 'custom:button-card'
             entity: weather.valhalla_2
@@ -801,7 +848,8 @@ cards:
             show_label: true
             label: |
               [[[
-                return `${entity.attributes.wind_speed}<span style="font-size: var(--h6-font-size); font-weight: 700; opacity: .8"> M/S</span>`
+                var mph = Math.round(entity.attributes.wind_speed * 2.236936 * 10) / 10
+                return `${mph}<span style="font-size: var(--h6-font-size); font-weight: 700; opacity: .8"> MPH</span>`
               ]]]
             custom_fields:
               advisory: |
@@ -927,6 +975,7 @@ cards:
                   chart:
                     height: 240px
 
+
           - type: history-graph
             entities:
               - entity: fan.pure_hot_cool_link
@@ -958,8 +1007,24 @@ cards:
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
-          - hours_to_show: 36
-            graph: line
-            type: sensor
-            entity: sensor.netatmo_strawberry_land_indoor_noise
-            detail: 2
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+
+              - type: sensor
+                entity: sensor.netatmo_strawberry_land_indoor_noise
+
+              - type: custom:apexcharts-card
+                config_templates: environment_chart
+                series:
+                  - entity: sensor.netatmo_strawberry_land_indoor_noise
+                    yaxis_id: main
+                    color: 'var(--primary-color)'
+                    show:
+                      datalabels: true
+                yaxis:
+                  - id: main
+                apex_config:
+                  chart:
+                    height: 160px

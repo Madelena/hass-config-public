@@ -19,9 +19,18 @@ ui-machines:
   mode: yaml
   filename: ui/ui-machines.yaml
 
+# Rooms + Areas
+ui-rooms:
+  show_in_sidebar: true
+  icon: mdi:sofa
+  title: Rooms
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-rooms.yaml
+
 # Dashboard for Smart Displays
 ui-smart-displays:
-  show_in_sidebar: true
+  show_in_sidebar: false
   icon: mdi:devices
   title: For Smart Displays
   require_admin: false
@@ -30,7 +39,7 @@ ui-smart-displays:
 
 # Experiments
 ui-experiments:
-  show_in_sidebar: true
+  show_in_sidebar: false
   title: Experiments
   require_admin: false
   mode: yaml

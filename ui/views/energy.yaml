@@ -6,17 +6,7 @@ title: Energy
 path: 'energy'
 
 type: 'custom:grid-layout'
-layout:
-  grid-template-rows: auto 32px
-  grid-template-columns: 32px auto 32px
-  grid-template-areas: |
-    ". cc ."
-  grid-column-gap: 0
-  margin: 0
-  card_margin: 0
-  mediaquery:
-    '(max-width: 870px)':
-      grid-template-columns: 0 auto 0
+layout: !include snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
@@ -37,18 +27,13 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout:
-          grid-template-columns: auto max-content
-          grid-template-rows: auto
-          mediaquery:
-            '(max-width: 800px)':
-              grid-template-columns: 1fr
-          margin: 0
+        layout: !include snippets/layout-page-title.yaml
         view_layout:
           grid-column: 1/-1
         cards:
 
           - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
             content: >
               # Energy
 
@@ -56,19 +41,6 @@ cards:
               {{
               expand('group.all_on_off')|selectattr('state','equalto','on')|list|length
               }} of them are turned on.
-            style:
-              .: |
-                ha-card {
-                  background: none;
-                }
-              ha-markdown$: |
-                h1 {
-                  font-size: var(--title-font-size);
-                  font-weight: 500;
-                  line-height: 1.1;
-                  margin-left: -2px;
-                  margin-block-end: -8px;
-                }
 
           - type: 'custom:layout-card'
             layout_type: 'custom:horizontal-layout'
@@ -182,6 +154,7 @@ cards:
                     children:
                       - sensor.dorothy_devices_plug_smartenergy_metering
                       - sensor.dorothy_plug_smartenergy_metering
+                      - sensor.living_room_strala_light_power
                   - entity_id: sensor.circuit_fridge_counter_power
                     name: Fridge + Counter
                     children:
@@ -212,6 +185,8 @@ cards:
                       - >-
                         sensor.living_room_projector_plug_smartenergy_metering
                       - sensor.living_room_decor_lights_power
+                      - sensor.living_room_ramsele_light_power
+                      - sensor.living_room_random_light_power
                   - entity_id: sensor.bedroom_ceiling_lights_power
                     name: Bedroom Ceiling Circuit
                     children:
@@ -299,6 +274,18 @@ cards:
                       - sensor.all_lights_energy_use
                   - entity_id: sensor.kitchen_counter_accent_lights_power
                     name: Kitchen Counter Accent
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.living_room_random_light_power
+                    name: Living Room Random Light
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.living_room_ramsele_light_power
+                    name: Living Room Ramsele Light
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.living_room_strala_light_power
+                    name: Living Room Strala Light
                     children:
                       - sensor.all_lights_energy_use
                   - entity_id: sensor.living_room_hue_bowl_power
@@ -567,276 +554,255 @@ cards:
 
 
       # [Column] Workspace
+
       - type: 'custom:layout-card'
-        layout_type: 'custom:vertical-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: WORKSPACE
-          - hours_to_show: 48
-            graph: line
-            type: sensor
-            detail: 2
-            entity: sensor.astralplane_plug_smartenergy_metering
-            name: Astralplane
-            icon: 'mdi:desktop-classic'
-          - hours_to_show: 48
-            graph: line
-            type: sensor
-            entity: sensor.quattro_plug_smartenergy_metering
-            detail: 2
-            name: Quattro
-            icon: 'mdi:television'
-          - type: sensor
-            entity: sensor.makery_plug_smartenergy_metering
-            graph: line
-            detail: 2
-            name: Makery
-            hours_to_show: 48
-          - graph: line
-            type: sensor
-            entity: sensor.workspace_lights_energy_use
-            detail: 2
-            icon: 'mdi:lightbulb-group'
-            name: Workspace Lights
-            hours_to_show: 48
-        layout:
-          grid-template-columns: 1fr
-          margin: 0
+
+          - type: 'custom:auto-entities'
+            filter:
+              template: |
+                {% for sensor in expand('group.energy_workspace') -%}
+                  {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                  {{
+                    { 'entity': sensor.entity_id,
+                      'type': 'custom:decluttering-card',
+                      'template': 'multi_graph_card',
+                      'name': name,
+                      'variables': [
+                        {'hours_to_show': 48},
+                        {'entities': [sensor.entity_id]},
+                        {'title': name},
+                        {'lower_bound': 0},
+                        {'upper_bound': '~200'},
+                        {'height': 128}
+                      ],
+                    }
+                  }},
+                {%- endfor %}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+            card:
+              type: 'custom:layout-card'
+              layout_type: 'custom:grid-layout'
+              layout_options:
+                margin: -1
 
 
       # [Column] Bedroom
+
       - type: 'custom:layout-card'
-        layout_type: 'custom:vertical-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: BEDROOM
-          - type: sensor
-            entity: sensor.bedroom_devices_plug_smartenergy_metering
-            graph: line
-            detail: 2
-            name: Bedroom Devices
-            hours_to_show: 48
-          - hours_to_show: 48
-            graph: line
-            type: sensor
-            entity: sensor.dorothy_plug_smartenergy_metering
-            detail: 2
-            name: Dorothy
-            icon: 'mdi:server-network'
-          - type: sensor
-            entity: sensor.dorothy_devices_plug_smartenergy_metering
-            detail: 2
-            graph: line
-            name: Dorothy Devices
-            hours_to_show: 48
-          - type: sensor
-            entity: sensor.bedroom_air_conditioner_plug_smartenergy_metering
-            graph: line
-            detail: 2
-            name: Bedroom Air Conditioner
-            hours_to_show: 48
-          - graph: line
-            type: sensor
-            entity: sensor.bedroom_lights_energy_use
-            detail: 2
-            icon: 'mdi:lightbulb-group'
-            name: Bedroom Lights
-            hours_to_show: 48
-        layout:
-          grid-template-columns: 1fr
-          margin: 0
+
+          - type: 'custom:auto-entities'
+            filter:
+              template: |
+                {% for sensor in expand('group.energy_bedroom') -%}
+                  {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                  {{
+                    { 'entity': sensor.entity_id,
+                      'type': 'custom:decluttering-card',
+                      'template': 'multi_graph_card',
+                      'name': name,
+                      'variables': [
+                        {'hours_to_show': 48},
+                        {'entities': [sensor.entity_id]},
+                        {'title': name},
+                        {'lower_bound': 0},
+                        {'upper_bound': '~200'},
+                        {'height': 128}
+                      ],
+                    }
+                  }},
+                {%- endfor %}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+            card:
+              type: 'custom:layout-card'
+              layout_type: 'custom:grid-layout'
+              layout_options:
+                margin: -1
 
 
       # [Column] Kitchen
+
       - type: 'custom:layout-card'
-        layout_type: 'custom:vertical-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: KITCHEN
-          - type: sensor
-            entity: sensor.kitchen_microwave_plug_smartenergy_metering
-            graph: line
-            detail: 2
-            name: Kitchen Microwave
-            hours_to_show: 48
-          - type: sensor
-            entity: sensor.kitchen_fridge_plug_smartenergy_metering
-            graph: line
-            detail: 2
-            name: Kitchen Fridge
-            hours_to_show: 48
-          - type: sensor
-            entity: sensor.kitchen_aerogardens_plug_smartenergy_metering
-            graph: line
-            detail: 2
-            name: Kitchen Aerogardens
-            hours_to_show: 48
-          - graph: line
-            type: sensor
-            entity: sensor.kitchen_lights_energy_use
-            detail: 2
-            icon: 'mdi:lightbulb-group'
-            name: Kitchen Lights
-            hours_to_show: 48
-        layout:
-          grid-column-gap: 16px
-          margin: 0
+
+          - type: 'custom:auto-entities'
+            filter:
+              template: |
+                {% for sensor in expand('group.energy_kitchen') -%}
+                  {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                  {{
+                    { 'entity': sensor.entity_id,
+                      'type': 'custom:decluttering-card',
+                      'template': 'multi_graph_card',
+                      'name': name,
+                      'variables': [
+                        {'hours_to_show': 48},
+                        {'entities': [sensor.entity_id]},
+                        {'title': name},
+                        {'lower_bound': 0},
+                        {'upper_bound': '~200'},
+                        {'height': 128}
+                      ],
+                    }
+                  }},
+                {%- endfor %}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+            card:
+              type: 'custom:layout-card'
+              layout_type: 'custom:grid-layout'
+              layout_options:
+                margin: -1
 
 
       # [Column] Living Room
+
       - type: 'custom:layout-card'
-        layout_type: 'custom:vertical-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: LIVING ROOM
-          - hours_to_show: 48
-            graph: line
-            type: sensor
-            entity: sensor.terpsichora_plug_smartenergy_metering
-            detail: 2
-            name: Terpsichora
-            icon: 'mdi:speaker-multiple'
-          - type: sensor
-            entity: sensor.living_room_projector_plug_smartenergy_metering
-            graph: line
-            hours_to_show: 48
-            detail: 2
-            name: Living Room Projector
-          - type: sensor
-            entity: sensor.living_room_air_conditioner_plug_smartenergy_metering
-            graph: line
-            hours_to_show: 48
-            detail: 2
-            name: Living Room Air Conditioner
-          - graph: line
-            type: sensor
-            hours_to_show: 48
-            entity: sensor.living_room_lights_energy_use
-            detail: 2
-            icon: 'mdi:lightbulb-group'
-            name: Living Room Lights
-        layout:
-          grid-template-columns: 1fr
-          margin: 0
+
+          - type: 'custom:auto-entities'
+            filter:
+              template: |
+                {% for sensor in expand('group.energy_living_room') -%}
+                  {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                  {{
+                    { 'entity': sensor.entity_id,
+                      'type': 'custom:decluttering-card',
+                      'template': 'multi_graph_card',
+                      'name': name,
+                      'variables': [
+                        {'hours_to_show': 48},
+                        {'entities': [sensor.entity_id]},
+                        {'title': name},
+                        {'lower_bound': 0},
+                        {'upper_bound': '~200'},
+                        {'height': 128}
+                      ],
+                    }
+                  }},
+                {%- endfor %}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+            card:
+              type: 'custom:layout-card'
+              layout_type: 'custom:grid-layout'
+              layout_options:
+                margin: -1
 
 
       # [Column] Misc
+
       - type: 'custom:layout-card'
-        layout_type: 'custom:vertical-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: MISC
+
           - type: sensor
             graph: line
             entity: sensor.valhalla_plug_smartenergy_metering
             hours_to_show: 48
             detail: 2
             name: Valhalla
+
           - graph: line
             type: sensor
             entity: sensor.all_lights_energy_use
             hours_to_show: 48
             detail: 2
             icon: 'mdi:lightbulb-group'
-        layout:
-          grid-template-columns: 1fr
-          margin: 0
 
 
       # [Column] Kitchen Power Strip
+
       - type: 'custom:layout-card'
-        layout_type: 'custom:vertical-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
         cards:
+
           - type: 'custom:button-card'
             template: header_card
             variables:
               name: KITCHEN POWER STRIP
               label: Manage
               link: /config/devices/device/c5a3a945ac7eaae21b84bb6d4650eefd
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
-          - type: sensor
-            entity: sensor.kitchen_counter_kettle_current_consumption
-            graph: line
-            name: Kettle
-            detail: 2
-            hours_to_show: 48
-          - type: sensor
-            graph: line
-            entity: sensor.kitchen_counter_toaster_current_consumption
-            name: Toaster
-            detail: 2
-            hours_to_show: 48
-          - type: sensor
-            entity: sensor.kitchen_counter_rice_cooker_current_consumption
-            name: Rice Cooker
-            graph: line
-            detail: 2
-            hours_to_show: 48
-          - type: sensor
-            entity: sensor.kitchen_counter_hand_blender_current_consumption
-            name: Hand Blender
-            graph: line
-            detail: 2
-            hours_to_show: 48
-          - type: sensor
-            graph: line
-            entity: sensor.kitchen_counter_echo_plug_current_consumption
-            name: Echo Show
-            detail: 2
-            hours_to_show: 48
-          - type: sensor
-            entity: sensor.kitchen_counter_plug_3_current_consumption
-            name: Plug 3
-            graph: line
-            detail: 2
-            hours_to_show: 48
-        layout:
-          grid-template-columns: 1fr
-          margin: 0
 
-
-    # [Pop Up Card] All On Off Switches
-    popup_cards:
-      group.all_on_off:
-        title: All On Off Switches
-        card:
-          type: 'custom:auto-entities'
-          filter:
-            include:
-              - group: group.all_on_off
-                options:
-                  type: 'custom:button-card'
-                  template:
-                    - live_tile_card
-                    - require_confirmation
-                  entity: this.entity_id
-              - type: 'custom:button-card'
-                template: live_tile_card
-                entity: switch.kitchen_uv_light
-            exclude: []
-          sort:
-            method: friendly_name
-          card:
-            type: 'custom:layout-card'
-            layout_type: horizontal
-            layout_options:
-              width: 100
-              max_cols: 6
-        style:
-          .: |
-            :host .content {
-              width: 75vw;
-              height: 75vh;
-              }
+          - type: 'custom:auto-entities'
+            filter:
+              template: |
+                {% for sensor in expand('group.energy_kitchen_power_strip') -%}
+                  {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='Current Consumption', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                  {{
+                    { 'entity': sensor.entity_id,
+                      'type': 'custom:decluttering-card',
+                      'template': 'multi_graph_card',
+                      'name': name,
+                      'variables': [
+                        {'hours_to_show': 48},
+                        {'entities': [sensor.entity_id]},
+                        {'title': name},
+                        {'lower_bound': 0},
+                        {'upper_bound': '~200'},
+                        {'height': 128}
+                      ],
+                    }
+                  }},
+                {%- endfor %}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+            card:
+              type: 'custom:layout-card'
+              layout_type: 'custom:grid-layout'
+              layout_options:
+                margin: -1

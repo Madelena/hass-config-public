@@ -1,0 +1,495 @@
+# METROLOGY FOR HOME ASSISTANT
+# Button Card Templates
+# Made by Madelena Mak 2022
+
+
+# LIVE TILES
+
+# Live Tile Card
+# This is the base of various tiles.
+
+live_tile_card:
+  variables:
+    aspect_ratio: 1/1
+  color_type: card
+  size: 20px
+  show_state: true
+  show_label: true
+  state:
+    - value: 'off'
+      styles:
+        card:
+          - background-color: var(--ha-card-background)
+        state:
+          - color: var(--primary-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+    - value: unavailable
+      styles:
+        card:
+          - background-color: var(--ha-card-background)
+        state:
+          - color: var(--disabled-text-color)
+        name:
+          - color: var(--disabled-text-color)
+        label:
+          - color: var(--disabled-text-color)
+          - opacity: 0.67
+  hold_action:
+    action: more-info
+  styles:
+    grid:
+      - grid-template-areas: |
+          "s s"
+          "l l"
+          "n i"
+      - grid-template-columns: 1fr min-content
+      - grid-template-rows: min-content auto min-content
+    card:
+      - aspect-ratio: '[[[ return variables.aspect_ratio ]]]'
+      - padding: 0
+    name:
+      - font-size: var(--body-font-size)
+      - padding: 4px 4px 12px 12px
+      - white-space: normal
+      - text-align: left
+      - justify-self: start
+      - align-self: end
+    state:
+      - font-size: var(--h3-font-size)
+      - justify-self: start
+      - padding: 2px 0 2px 12px
+      - font-weight: var(--h3-font-weight)
+      - align-self: start
+      - text-overflow: clip
+    img_cell:
+      - align-self: end
+      - text-align: right
+      - padding: 4px 8px 8px 8px
+      - height: 28px
+    label:
+      - font-size: var(--body-font-size)
+      - justify-self: start
+      - padding: 0px 12px
+      - align-self: start
+      - opacity: 0.67
+      - white-space: normal
+      - text-align: left
+      - height: 100%
+
+
+# Live Tile
+
+live_tile:
+  template: live_tile_card
+  styles:
+    grid:
+      - grid-template-areas: '". i s ." "n n l l"'
+      - grid-template-columns: auto min-content min-content auto
+      - grid-template-rows: auto 16px 0
+    card:
+      - background: var(--ha-card-background)
+    icon:
+      - color: var(--primary-text-color)
+      - width: 40px
+      - height: 40px
+      - margin: 0
+    img_cell:
+      - height: 40px
+      - align-self: center
+      - justify-self: end
+      - padding: 8px 0 0 0
+    state:
+      - color: var(--primary-text-color)
+      - font-size: var(--h2-font-size)
+      - font-weight: var(--h2-font-weight)
+      - align-self: center
+      - justify-self: start
+      - padding: 4px 0px 2px 8px
+    name:
+      - color: var(--primary-text-color)
+      - text-transform: capitalize
+      - position: absolute
+    label:
+      - line-height: 16px
+      - position: absolute
+      - right: 8px
+      - top: calc( 100% - 28px )
+      - text-align: right
+      - color: var(--primary-text-color)
+      - opacity: 0.5
+      - padding: 0 0 12px 0
+      - justify-self: end
+      - align-self: end
+
+
+# Live Tile with Unit
+
+live_tile_with_unit:
+  template:
+    - live_tile
+  custom_fields:
+    unit: ''
+  styles:
+    grid:
+      - grid-template-areas: '". i s ." ". i unit ." "n n l l"'
+      - grid-template-rows: auto auto 16px 0
+    state:
+      - align-self: end
+      - padding: 4px 0 0 8px
+    custom_fields:
+      unit:
+        - font-size: var(--h6-font-size)
+        - font-weight: var(--h6-font-weight)
+        - text-transform: uppercase
+        - place-self: start start
+        - padding: 0 0 0 8px
+        - margin-top: -4px
+        - color: var(--primary-text-color)
+        - opacity: .6
+
+
+# Live Tile (with Camera)
+# Uses the entire tile background for image.
+
+live_tile_with_camera:
+  variables:
+    camera: '[[[ return entity.attributes.entity_picture ]]]'
+  template:
+    - live_tile_card
+    - live_tile_with_long_state
+  styles:
+    name:
+      - color: var(--text-accent-color)
+    state:
+      - color: var(--text-accent-color)
+    card:
+      - background: '[[[ return "url(" + variables.camera + ")" ]]]'
+      - background-size: cover
+      - background-position: center center
+      - color: var(--text-accent-color)
+
+
+# Live Tile (with Round Picture)
+# Places the image inside a circle. Good for things like displaying a person.
+
+live_tile_with_picture:
+  variables:
+    picture: '[[[ return entity.attributes.entity_picture ]]]'
+  template: live_tile_card
+  show_icon: false
+  custom_fields:
+    picture: ''
+  state:
+    - value: 'idle'
+      color: 'off'
+  styles:
+    grid:
+      - grid-template-areas: '"picture picture" "n s"'
+      - grid-template-columns: auto min-content
+      - grid-template-rows: auto 16px 0
+    name:
+      - z-index: 1
+    state:
+      - place-self: end end
+      - z-index: 1
+      - padding: 4px 12px 12px 4px
+      - font-size: var(--body-font-size)
+      - font-weight: var(--body-font-weight)
+      - opacity: .667
+    custom_fields:
+      picture:
+        - position: absolute
+        - top: 12px
+        - left: 12px
+        - width: calc( 100% - 32px )
+        - height: calc( 100% - 32px )
+        - padding: 0
+        - aspect-ratio: 1/1
+        - border-radius: 50%
+        - border: '4px solid rgba(0,0,0,.25)'
+        - background: '[[[ return "url(" + variables.picture + ")" ]]]'
+        - background-size: cover
+        - background-position: center center
+
+
+# Live Tile (with Last Changed Label)
+
+live_tile_with_last_changed_label:
+  show_label: true
+  triggers_update: all
+  label: |
+    [[[
+      var diff = (new Date() - new Date(entity.last_changed)) / 1000 / 60
+      if (isNaN(diff)) { return 'Unknown' }
+      if (diff <= 0.05) { return 'Just now' }
+      else if (diff <= 1) { return Math.round(diff * 60) + ' seconds ago' }
+      else { return moment(entity.last_changed).fromNow() }
+    ]]]
+
+
+# Live Tile (with State Countdown)
+
+live_tile_with_state_countdown:
+  variables:
+    duration: 60
+  template: live_tile_with_last_changed_label
+  state:
+    - value: 'off'
+      styles:
+        card: null
+  styles:
+    card:
+      - background-image: |
+          [[[
+            var diff = (new Date() - new Date(entity.last_changed)) / 1000
+            var opacity = 1 - (diff / variables.duration)
+            if (diff > variables.duration) { return '' }
+            return 'linear-gradient( to top, rgba(var(--rgb-primary-color),' + opacity + ') 0%, rgba(var(--rgb-primary-color),' + opacity + ') 100%)'
+          ]]]
+
+
+# Live Tile (with Long State)
+
+live_tile_with_long_state:
+  styles:
+    state:
+      - font-size: var(--h4-font-size)
+      - font-weight: 100
+      - padding: 6px 12px 2px 12px
+      - white-space: normal
+      - text-align: left
+      - line-height: 24px
+
+
+# Live Tile (with Longer State)
+
+live_tile_with_longer_state:
+  styles:
+    state:
+      - font-size: var(--h5-font-size)
+      - font-weight: 400
+      - padding: 8px 12px 2px 12px
+      - white-space: normal
+      - text-align: left
+      - line-height: 20px
+
+
+# Live Tile (with Percent Bar)
+
+live_tile_with_percent_bar:
+  color: var(--primary-background-color)
+  styles:
+    card:
+      - background-color: var(--ha-card-background)
+      - background-repeat: no-repeat
+      - background-size: '[[[ return entity.state + "% 4px" ]]]'
+      - background-position: left bottom
+      - background-image: 'linear-gradient( var(--primary-color), var(--accent-color) )'
+
+
+# Media Player Live Tile
+
+live_tile_media_player:
+  template:
+    - live_tile_card
+    - live_tile_with_long_state
+  variables:
+    aspect_ratio: 2/1
+  icon: >-
+    [[[ if (entity.state == "playing") { return "mdi:play" } else if
+    (entity.state == "paused") { return "mdi:pause" } else { return
+    entity.attributes.icon } ]]]
+  state_display: '[[[ return entity.attributes.media_title ]]]'
+  label: |-
+    [[[
+      if (entity.attributes.media_content_type != undefined) {
+        if (entity.attributes.media_content_type == "music") {
+          if (entity.attributes.media_artist && entity.attributes.media_album_name) {
+            return entity.attributes.media_artist + "<br>" + entity.attributes.media_album_name
+            }
+        } else if (entity.attributes.media_content_type == "tvshow") {
+          if (entity.attributes.media_series_title) { return entity.attributes.media_series_title }
+        }
+      }
+    ]]]
+  custom_fields:
+    picture: ''
+  color: var(--primary-color)
+  state:
+    - value: paused
+      styles:
+        card:
+          - background: var(--ha-card-background)
+        state:
+          - color: var(--disabled-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+  styles:
+    grid:
+      - grid-template-areas: '"s picture" "l picture" "n i"'
+      - grid-template-columns: auto 50%
+    state:
+      - padding-right: 0
+    label:
+      - padding-right: 0
+    img_cell:
+      - place-self: end end
+      - width: 24px
+    custom_fields:
+      picture:
+        - background: |-
+            [[[ 
+              if (entity.attributes.entity_picture != '') {
+                return "url(" + entity.attributes.entity_picture + ")"
+              } else if (entity.attributes.entity_picture_local != '') {
+                return "url(" + entity.attributes.entity_picture_local + ")"
+              }
+            ]]]
+        - background-size: cover
+        - background-position: center center
+        - position: absolute
+        - right: 16px
+        - width: calc( 50% - 32px )
+        - border-radius: 50%
+        - aspect-ratio: 1/1
+
+
+# Large Tile Card
+
+large_tile_card:
+  template: live_tile_card
+  styles:
+    grid:
+      - grid-template-areas: '"n i" "s i" "l l"'
+      - grid-template-rows: min-content min-content min-content
+    card:
+      - padding: 16px
+      - background-size: cover
+    name:
+      - padding: 0
+    img_cell:
+      - padding: 0
+      - align-self: start
+    state:
+      - font-size: var(--h1-font-size)
+      - font-weight: var(--h1-font-weight)
+      - padding: 0
+    label:
+      - padding: 0
+
+
+# Light Button Card
+
+light_button_card:
+  template: live_tile_card
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background: var(--ha-card-background)
+
+
+# Light Group Button Card
+
+light_button_card_group:
+  template: live_tile_card
+  group_expand: true
+  state:
+    - value: 'on'
+      label: |
+        [[[
+          var lightsOn = entity.attributes.entity_id.filter(e => states[e].state == "on").length
+          if (lightsOn > 1) { return lightsOn + " lights are on" } else { return "1 light is on" }
+        ]]]
+  styles:
+    card:
+      - background: |
+          [[[
+            if (entity.state == "on") {
+              var lights = entity.attributes.entity_id.filter(e => states[e].state != "off")
+              if (lights.length > 0) {
+                var totalColor = [0,0,0]
+                var totalLights = 0
+                lights.forEach(light => {
+                  var colors = states[light].attributes.rgb_color
+                  if (Array.isArray(colors)) {
+                    colors.forEach((col, index) => totalColor[index] += col)
+                    totalLights += 1
+                  }
+                })
+                totalColor.forEach((col, index) => totalColor[index] = Math.round( totalColor[index] / totalLights ))
+                if (isNaN(totalColor[0])) { var finalColor = 'var(--rgb-primary-color)' } else { var finalColor = totalColor.toString() }
+                return 'linear-gradient(0deg, var(--ha-card-background), var(--ha-card-background)), linear-gradient( 0deg, rgb(' + finalColor + ') 4px, rgba(' + finalColor + ', .1) 4px )'
+              }
+            } else {
+              return 'var(--slider-thumb-color)'
+            }
+          ]]]
+      - color: var(--primary-text-color)
+
+
+# Hue Scene Tile
+
+hue_scene_card:
+  variables:
+    name: ''
+    color: ''
+  type: 'custom:button-card'
+  name: '[[[ return variables.name ]]]'
+  aspect_ratio: 1/1
+  styles:
+    card:
+      - background: |
+          [[[
+            if (variables.color == '') {
+              var colorDict = {
+                'bright ambient': 'rgb(207, 172, 104)',
+                'bright': 'rgb(250, 207, 125)',
+                'relax': 'rgb(195, 150, 71)',
+                'nightlight': 'rgb(136, 89, 30)',
+                'lights camera action!': 'rgb(141, 97, 59)',
+                'pink thoughts': 'rgb(207, 50, 188)',
+                'soho': 'rgb(107, 28, 203)',
+                'nebula': 'rgb(95, 101, 156)',
+                'arctic aurora': 'rgb(89, 196, 190)',
+                'energize': 'rgb(64, 64, 64)',
+                'concentrate': 'rgb(251, 212, 180)',
+                'read': 'rgb(248, 173, 107)',
+                'dimmed': 'rgb(64, 47, 33)'
+              }
+              if (colorDict[variables.name.toLowerCase()] != undefined) { return colorDict[variables.name.toLowerCase()] }
+            } else {
+              return variables.color
+            }
+          ]]]
+    name:
+      - text-align: left
+      - place-self: flex-start
+      - font-size: var(--body-font-size)
+      - padding: 8px 12px
+      - white-space: normal
+      - overflow: visible
+  tap_action:
+    action: call-service
+    service: hue.activate_scene
+    service_data:
+      entity_id: '[[[ return entity.entity_id ]]]'
+
+
+# Hue Scene Tile (Mini)
+
+hue_scene_card_mini:
+  template: hue_scene_card
+  styles:
+    name:
+      - font-size: var(--h6-font-size)
+      - font-weight: 500
+      - text-transform: uppercase
+

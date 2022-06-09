@@ -1,17 +1,16 @@
-# Madelena + The Machines
+# Rooms Dashboard
 # Made by Madelena Mak 2022
 # https://mmak.es
 
-title: My Machines
-# Yes, it's the one by Battles ft. Gary Numan
+title: Rooms
 
 views:
-  - !include views/machines/unison.yaml
-  - !include views/machines/terpsichora.yaml
-  - !include views/machines/genesis.yaml
-  - !include views/machines/dorothy.yaml
-  - !include views/machines/astralplane.yaml
-  - !include views/machines/printers.yaml
+  # - !include views/rooms/summary.yaml
+  - !include views/rooms/living-room.yaml
+  - !include views/rooms/kitchen.yaml
+  - !include views/rooms/workspace.yaml
+  - !include views/rooms/bedroom.yaml
+  # - !include views/rooms/bathroom.yaml
 
 decluttering_templates: !include templates/decluttering-card.yaml
 button_card_templates: !include_dir_merge_named templates/button-card/

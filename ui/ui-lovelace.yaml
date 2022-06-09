@@ -14,13 +14,14 @@ views:
   - !include views/maintenance.yaml
   - !include views/environment.yaml
   - !include views/neighborhood.yaml
+  - !include views/media.yaml
   - !include views/me.yaml
   - !include views/astrometrics.yaml
 
-decluttering_templates: !include cards/decluttering_templates.yaml
-button_card_templates: !include cards/button_card_templates.yaml
-apexcharts_card_templates: !include cards/apexcharts_card_templates.yaml
-popup_cards: !include popups/popup_cards.yaml
+decluttering_templates: !include templates/decluttering-card.yaml
+button_card_templates: !include_dir_merge_named templates/button-card/
+apexcharts_card_templates: !include templates/apexcharts-card.yaml
+popup_cards: !include_dir_merge_named popups/
 
 swipe_nav:
   animate: swipe
