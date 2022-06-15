@@ -14,6 +14,10 @@ It uses Metro design system to reduce visual clutter, create a sense of visual h
 
 This also acts as a demo and example of what the Metrology theme is capable of.
 
+![HA Config - Summary](https://user-images.githubusercontent.com/4341881/173772319-907d6821-b96c-4d07-96d0-c0fd02efe2b6.png)
+
+[View all the dashboards](https://github.com/Madelena/hass-config-public/wiki/Views-and-Cards)
+
 ## Features
 
 - Data Visualizations
@@ -21,39 +25,13 @@ This also acts as a demo and example of what the Metrology theme is capable of.
 - Responsive Design
   - Grid reflows depending on screen width and device type
 - Live Tiles
-  - Animated to display multiple pieces of information
+  - Perfectly sized squares to stack and fit together
+  - Functional Animations: Animated only to display new, changing, or multiple pieces of information with the right level of subtlety to catch the right amount of attention. No silly extraneous or distracting animations like spinning fans.
   - Variations based on states
+  - Multiple layouts depending on information type
 - Summary Sentences for NUI
   - Intelligible sentences composed by aggregating data for use on page summaries and voice assistants
 
-## Views and Cards
-
-### Main Dashboard
-- Summary
-  - USS Strawberry Fields
-- Network
-  - Network Rail Map
-- Energy
-  - Sankey Chart
-- Light
-- Maintenance
-  - Chore List
-- Environment
-  - Psychrometry Chart
-  - Climate + Forecast Chart
-- Neighborhood
-  - Transit
-  - Traffic
-  - Weather
-- Me
-  - Last.fm Music
-- Astrometrics
-
-### My Machines
-- Unison
-- Genesis
-- Terpsichora
-- Printers
 
 
 ## How to install
@@ -69,6 +47,7 @@ A few requisities will help you use these codes:
 - layout-mod
 - mini-graph-card
 - apexcharts-card
+- [View the full list](https://github.com/Madelena/hass-config-public/wiki/Specifications)
 
 ### Template libraries
 
@@ -79,12 +58,6 @@ decluttering_templates: !include cards/decluttering_templates.yaml
 button_card_templates: !include cards/button_card_templates.yaml
 apexcharts_card_templates: !include cards/apexcharts_card_templates.yaml
 ```
-
-## Hardware
-
-- Raspberry Pi 4 - 4GB RAM
-- Corsair 128GB SSD
-- ConBee
 
 ## Tools Used
 
