@@ -1,0 +1,309 @@
+{
+	"files": [
+		{
+			"path": "ui/views/neighborhood.yaml",
+			"bookmarks": [
+				{
+					"line": 23,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 225,
+					"column": 19,
+					"label": ""
+				},
+				{
+					"line": 300,
+					"column": 17,
+					"label": ""
+				},
+				{
+					"line": 350,
+					"column": 16,
+					"label": ""
+				},
+				{
+					"line": 354,
+					"column": 19,
+					"label": ""
+				},
+				{
+					"line": 358,
+					"column": 23,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/astrometrics.yaml",
+			"bookmarks": [
+				{
+					"line": 28,
+					"column": 12,
+					"label": ""
+				},
+				{
+					"line": 141,
+					"column": 15,
+					"label": ""
+				},
+				{
+					"line": 489,
+					"column": 16,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/security.yaml",
+			"bookmarks": [
+				{
+					"line": 21,
+					"column": 14,
+					"label": ""
+				},
+				{
+					"line": 198,
+					"column": 24,
+					"label": ""
+				},
+				{
+					"line": 217,
+					"column": 20,
+					"label": ""
+				},
+				{
+					"line": 237,
+					"column": 20,
+					"label": ""
+				},
+				{
+					"line": 281,
+					"column": 21,
+					"label": ""
+				},
+				{
+					"line": 301,
+					"column": 32,
+					"label": ""
+				},
+				{
+					"line": 74,
+					"column": 1,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/me.yaml",
+			"bookmarks": [
+				{
+					"line": 30,
+					"column": 20,
+					"label": ""
+				},
+				{
+					"line": 91,
+					"column": 26,
+					"label": ""
+				},
+				{
+					"line": 150,
+					"column": 18,
+					"label": ""
+				},
+				{
+					"line": 208,
+					"column": 18,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/maintenance.yaml",
+			"bookmarks": [
+				{
+					"line": 19,
+					"column": 21,
+					"label": ""
+				},
+				{
+					"line": 55,
+					"column": 24,
+					"label": ""
+				},
+				{
+					"line": 199,
+					"column": 22,
+					"label": ""
+				},
+				{
+					"line": 134,
+					"column": 1,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/lights.yaml",
+			"bookmarks": [
+				{
+					"line": 18,
+					"column": 20,
+					"label": ""
+				},
+				{
+					"line": 73,
+					"column": 18,
+					"label": ""
+				},
+				{
+					"line": 116,
+					"column": 20,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/network.yaml",
+			"bookmarks": [
+				{
+					"line": 617,
+					"column": 14,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/views/summary.yaml",
+			"bookmarks": [
+				{
+					"line": 79,
+					"column": 20,
+					"label": ""
+				},
+				{
+					"line": 163,
+					"column": 48,
+					"label": ""
+				},
+				{
+					"line": 411,
+					"column": 34,
+					"label": ""
+				},
+				{
+					"line": 630,
+					"column": 24,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "ui/cards/button_card_templates.yaml",
+			"bookmarks": [
+				{
+					"line": 7,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 29,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 40,
+					"column": 9,
+					"label": ""
+				},
+				{
+					"line": 71,
+					"column": 7,
+					"label": ""
+				},
+				{
+					"line": 137,
+					"column": 8,
+					"label": ""
+				},
+				{
+					"line": 170,
+					"column": 8,
+					"label": ""
+				},
+				{
+					"line": 247,
+					"column": 11,
+					"label": ""
+				},
+				{
+					"line": 292,
+					"column": 23,
+					"label": ""
+				},
+				{
+					"line": 313,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 356,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 374,
+					"column": 33,
+					"label": ""
+				},
+				{
+					"line": 395,
+					"column": 28,
+					"label": ""
+				},
+				{
+					"line": 408,
+					"column": 2,
+					"label": ""
+				},
+				{
+					"line": 421,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 434,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 504,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 528,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 578,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 626,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 640,
+					"column": 0,
+					"label": ""
+				}
+			]
+		}
+	]
+}

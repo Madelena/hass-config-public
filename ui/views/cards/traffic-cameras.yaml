@@ -1,0 +1,35 @@
+square: false
+columns: 2
+type: grid
+cards:
+  - show_state: false
+    show_name: true
+    camera_view: live
+    type: picture-entity
+    entity: camera.511ny_i278_at_morgan_ave
+  - show_state: false
+    show_name: true
+    camera_view: live
+    type: picture-entity
+    entity: camera.511ny_i495_at_84th_street
+  - show_state: false
+    show_name: true
+    camera_view: live
+    type: picture-entity
+    entity: camera.511ny_i278_at_state_street_upper_lvl
+  - show_state: false
+    show_name: true
+    camera_view: live
+    type: picture-entity
+    entity: camera.511ny_i495_at_queens_midtown_tunnel
+  - show_state: false
+    show_name: true
+    camera_view: auto
+    type: picture-entity
+    entity: camera.511ny_broadway_at_46_street
+    name: Broadway @ 46 Street
+  - show_state: false
+    show_name: true
+    camera_view: auto
+    type: picture-entity
+    entity: camera.511ny_canal_street_at_baxter_street

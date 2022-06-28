@@ -1,0 +1,225 @@
+# MAXIMALIST DASHBOARD
+# Lights View
+# Made by Madelena Mak 2022
+
+title: Light
+path: lights
+
+type: 'custom:grid-layout'
+layout: !include snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout: !include snippets/layout-page-columns.yaml
+    view_layout:
+      grid-area: cc
+    cards:
+
+      # [Header] Summary
+      
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
+            content: >
+              # Light
+
+              {% set daylight = ( state_attr('sun.sun', 'next_rising') | as_timestamp(0) - state_attr('sun.sun', 'next_setting') | as_timestamp(0) ) | abs / 60 / 60 %}
+              You have {{ states.light|length }} lights and {{ states.light|selectattr('state','equalto','on')|list|length }}
+              of them {{ iif(
+              (states.light|selectattr('state','equalto','on')|list|length
+              == 1), 'is', 'are') }}  turned on. There are {{ daylight | round(1) }} hours of daylight and {{ 24 - daylight | round(1) }} hours of nighttime today.
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 2
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 2
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_valhalla_rainbow
+                    name: Rainbow Hub ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret rainbow_hub_url
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_valhalla_insteon
+                    name: Insteon Hub ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: !secret insteon_hub_url
+
+
+      # [Column] Living Room
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: LIVING ROOM
+              label: Scenes
+              action: more-info
+              link: popup.living_room_scenes
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards: !include columns/lights-living-room.yaml
+
+
+      # [Column] Living Room Accents
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: LIVING ROOM ACCENTS
+              label: Scenes
+              action: more-info
+              link: popup.living_room_accents_scenes
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards: !include columns/lights-living-room-accents.yaml
+
+
+      # [Column] Kitchen
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: KITCHEN
+              label: Scenes
+              action: more-info
+              link: popup.kitchen_scenes
+            
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards: !include columns/lights-kitchen.yaml
+
+
+      # [Column] Bedroom
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: BEDROOM
+              label: Scenes
+              action: more-info
+              link: popup.bedroom_scenes
+            view_layout:
+              grid-column: 1/-1
+            
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards: !include columns/lights-bedroom.yaml
+
+
+      # [Column] Workspace Accents
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: WORKSPACE ACCENTS
+              label: Scenes
+              action: more-info
+              link: popup.workspace_accents_scenes
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards: !include columns/lights-workspace-accents.yaml
+
+
+      # [Column] Workspace Desk
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: ASTRALPLANE
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1        
+            cards: !include columns/lights-workspace-desk.yaml
+
+
+      # [Column] Workbench Studio
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: MAKERY
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1        
+            cards: !include columns/lights-workspace-studio.yaml
+

@@ -1,0 +1,10 @@
+grid-template-rows: auto 32px
+grid-template-columns: 32px auto 32px
+grid-template-areas: |
+  ". cc ."
+grid-column-gap: 0
+margin: 0
+card_margin: 0
+mediaquery:
+  '(max-width: 870px)':
+    grid-template-columns: 8px auto 8px

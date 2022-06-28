@@ -1,0 +1,151 @@
+
+type: 'custom:layout-card'
+layout_type: 'custom:grid-layout'
+layout:
+  grid-template-columns: 'repeat(auto-fit, [col-start] minmax(360px, 1fr) [col-end])'
+  grid-template-rows: auto
+  grid-column-gap: 32px
+  margin: 0 16px 32px
+
+cards:
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto max-content
+      grid-template-rows: auto
+      mediaquery:
+        '(max-width: 800px)':
+          grid-template-columns: 1fr
+      margin: 0
+    view_layout:
+      grid-column: 1/-1
+    cards:
+
+      - type: 'custom:button-card'
+        template: title_card_with_icon
+        name: Genesis
+        icon: 'mdi:jellyfish'
+        entity: sensor.octoprint_current_state
+        show_state: true
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:horizontal-layout'
+        view_layout:
+          place-self: center
+        cards:
+
+          - type: 'custom:swipe-card'
+            parameters:
+              breakpointBase: container
+              enabled: true
+              slidesPerView: 1.66
+              breakpoints:
+                '600':
+                  enabled: false
+                  slidesPerView: 3
+            cards:
+
+              - type: 'custom:mushroom-entity-card'
+                entity: button.octoprint_pause_job
+                name: Pause
+                icon: 'mdi:pause'
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+
+              - type: 'custom:mushroom-entity-card'
+                entity: button.octoprint_resume_job
+                name: Resume
+                icon: 'mdi:play'
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+
+              - type: 'custom:mushroom-entity-card'
+                entity: button.octoprint_stop_job
+                name: Stop
+                icon: 'mdi:stop'
+                icon_color: pink
+                style: 'ha-card {background: none;}'
+
+
+  - type: vertical-stack
+    cards:
+
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: STATUS
+
+      - hours_to_show: 24
+        graph: line
+        type: sensor
+        entity: sensor.octoprint_job_percentage
+        detail: 2
+
+      - type: entities
+        entities:
+          - entity: sensor.octoprint_start_time
+          - entity: sensor.octoprint_estimated_finish_time
+          - entity: binary_sensor.octoprint_printing
+          - entity: binary_sensor.octoprint_printing_error
+
+      - type: 'custom:mushroom-light-card'
+        entity: light.workspace_makery_lights
+        show_brightness_control: true
+        use_light_color: true
+        show_color_temp_control: true
+
+      - type: entities
+        entities:
+          - entity: switch.genesis_makery_fan_socket
+          - entity: light.workspace_makery_lights
+          - entity: switch.genesis_makery_plug_socket
+          - entity: switch.makery_plug_on_off
+
+  - type: vertical-stack
+    view_layout:
+      grid-column: span 2
+    cards:
+
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: PROGRESS
+
+      - show_state: false
+        show_name: false
+        camera_view: live
+        type: picture-entity
+        entity: camera.genesis_octoprint_camera
+
+      - type: 'custom:decluttering-card'
+        template: multi_graph_card
+        variables:
+          - title: Temperatures
+          - hours_to_show: 2
+          - points_per_hour: 30
+          - line_width: 1
+          - entities:
+              - entity: sensor.octoprint_actual_bed_temp
+                name: Actual Bed
+              - entity: sensor.octoprint_target_bed_temp
+                name: Target Bed
+              - entity: sensor.octoprint_actual_tool0_temp
+                name: Actual Tool
+              - entity: sensor.octoprint_target_tool0_temp
+                name: Target Tool
+              - entity: sensor.genesis_thermometer_temperature
+                name: Enclosure
+
+      - hours_to_show: 2
+        graph: line
+        type: sensor
+        entity: sensor.makery_plug_smartenergy_metering
+        detail: 2
+        name: Makery Energy Use
+
+      - hours_to_show: 2
+        graph: line
+        type: sensor
+        entity: sensor.genesis_thermometer_humidity
+        detail: 2

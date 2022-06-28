@@ -1,0 +1,77 @@
+
+noaa_space_weather_scale:
+  show_label: true
+  state:
+    - value: 5
+      styles:
+        card:      
+          - background: var(--accent-color)
+      label: Extreme
+    - value: 4
+      styles:
+        card:      
+          - background: var(--primary-color)
+      label: Severe
+    - value: 3
+      styles:
+        card:      
+          - background: rgba(var(--rgb-primary-color), .75)
+      label: Strong
+    - value: 2
+      styles:
+        card:      
+          - background: rgba(var(--rgb-primary-color), .5)
+      label: Moderate
+    - value: 1
+      styles:
+        card:      
+          - background: rgba(var(--rgb-primary-color), .25)
+      label: Minor
+    - value: 0
+      styles:
+        card:      
+          - background: var(--ha-card-background)
+          - color: var(--disabled-text-color)
+      label: None
+
+noaa_space_weather_prob:
+  show_units: false
+  state_display: |
+    [[[ return entity.state + "<span class='unit'>%</span>" ]]]
+  state:
+    - value: 100
+      operator: '=='
+      styles:
+        card:      
+          - background: var(--accent-color)
+    - value: 75
+      operator: '>='
+      styles:
+        card:      
+          - background: var(--primary-color)
+    - value: 50
+      operator: '>='
+      styles:
+        card:      
+          - background: rgba(var(--rgb-primary-color), .75)
+    - value: 25
+      operator: '>='
+      styles:
+        card:      
+          - background: rgba(var(--rgb-primary-color), .5)
+    - value: 0
+      operator: '>'
+      styles:
+        card:      
+          - background: rgba(var(--rgb-primary-color), .25)
+    - value: 0
+      operator: '=='
+      styles:
+        card:      
+          - background: var(--accent-color)
+  extra_styles: |
+    .unit {
+      font-size: var(--h6-font-size);
+      font-weight: var(--h6-font-weight);
+      opacity: .5;
+    }

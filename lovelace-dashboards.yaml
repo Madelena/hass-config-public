@@ -1,0 +1,56 @@
+# MY LOVELACE DASHBOARDS
+# Made by Madelena Mak 2022
+
+# Main Dashboard
+ui-dashboard:
+  require_admin: false
+  show_in_sidebar: true
+  icon: mdi:gauge
+  title: Dashboard
+  filename: ui/ui-lovelace.yaml
+  mode: yaml
+
+# My Machines
+ui-machines:
+  show_in_sidebar: true
+  icon: mdi:robot-excited
+  title: My Machines
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-machines.yaml
+
+# Rooms + Areas
+ui-rooms:
+  show_in_sidebar: true
+  icon: mdi:sofa
+  title: Rooms
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-rooms.yaml
+
+# Dashboard for Smart Displays
+ui-smart-displays:
+  show_in_sidebar: false
+  icon: mdi:devices
+  title: For Smart Displays
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-smartdisplays.yaml
+
+# Experiments
+ui-experiments:
+  show_in_sidebar: false
+  title: Experiments
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-lovelace-experiments.yaml
+  icon: mdi:flask-outline
+
+# For Hass.Agent Use
+ui-hassagent:
+  show_in_sidebar: false
+  title: Home Assistant Agent Menu
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-hassagent.yaml
+  icon: mdi:microsoft-windows

@@ -1,0 +1,36 @@
+- type: sensor
+  entity: sensor.bedroom_devices_plug_smartenergy_metering
+  graph: line
+  detail: 2
+  name: Bedroom Devices
+  hours_to_show: 48
+
+- hours_to_show: 48
+  graph: line
+  type: sensor
+  entity: sensor.dorothy_plug_smartenergy_metering
+  detail: 2
+  name: Dorothy
+  icon: 'mdi:server-network'
+
+- type: sensor
+  entity: sensor.dorothy_devices_plug_smartenergy_metering
+  detail: 2
+  graph: line
+  name: Dorothy Devices
+  hours_to_show: 48
+
+- type: sensor
+  entity: sensor.bedroom_air_conditioner_plug_smartenergy_metering
+  graph: line
+  detail: 2
+  name: Bedroom Air Conditioner
+  hours_to_show: 48
+
+- graph: line
+  type: sensor
+  entity: sensor.bedroom_lights_energy_use
+  detail: 2
+  icon: 'mdi:lightbulb-group'
+  name: Bedroom Lights
+  hours_to_show: 48

@@ -1,0 +1,258 @@
+# MAXIMALIST DASHBOARD
+# Media View
+# Made by Madelena Mak 2022
+
+title: Media
+path: media
+
+type: 'custom:grid-layout'
+layout: !include snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+    view_layout:
+      grid-area: cc
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            style: !include snippets/style-markdown-page-title.yaml
+            content: >
+              # Media
+
+              {{ states.media_player|selectattr('state','equalto','playing')|list|length }}
+              device{{ iif( states.media_player|selectattr('state','equalto','playing')|list|length == 1, ' is ', 's are ') }} playing and 
+              {{ states.media_player|selectattr('state','equalto','paused')|list|length }} 
+              {{ iif( states.media_player|selectattr('state','equalto','paused')|list|length == 1, ' is ', ' are ') }} paused.
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 2
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: binary_sensor.ping_my_website
+                    name: OPAS Tynan ↗
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: 'https://MadelenaMak.com'
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: sensor.my_last_fm_play_count
+                    name: Last.fm ↗
+                    icon: 'mdi:music'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: 'https://last.fm/user/pakkei'
+
+
+      # [Row] Terpsichora
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: LIVING ROOM - TERPSICHORA
+              icon: mdi:cat
+              show_icon: true
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: navigate
+              link: '/ui-machines/terpsichora'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-page-columns.yaml
+            cards:
+
+              - type: entities
+                title: Media Sources
+                entities:
+
+                  - media_player.birch_mirror_dlna
+
+                  - media_player.plex_terpsichora_shield
+
+                  - media_player.terpsichora_shield_airplay
+                  - media_player.terpsichora_shield_cast
+                  - media_player.terpsichora_shield_dmr
+
+                  - media_player.terpsichora_stage_cast
+                  - media_player.terpsichora_stage_dlna
+
+              - type: entities
+                title: Inputs
+                entities:
+                  - media_player.terpsichora_shield_androidtv
+
+                  - media_player.terpsichora_cast
+                  - media_player.terpsichora_echo_dot
+
+              - type: entities
+                title: Receiver
+                entities:
+                  - media_player.terpsichora
+
+              - type: entities
+                title: Outputs
+                entities:
+                  - media_player.terpsichora_zone2
+                  - media_player.birch_mirror
+                  - media_player.birch_mirror_2
+                  - media_player.terpsichora_stage
+
+
+      # [Row] Astralplane
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: WORKSPACE - ASTRALPLANE
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: navigate
+              link: '/ui-machines/terpsichora'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-page-columns.yaml
+            cards:
+
+              - type: entities
+                title: Media Sources
+                entities:
+                  # To Etherealm
+                  - media_player.plex_etherealm
+
+                  # To Etherealm via Multiplicity
+                  - media_player.plex_plexamp_astralplane_lieutenant
+
+                  # To Echo Link via Bluetooth
+                  - media_player.plex_plex_for_mac_elysian_fields_local
+
+              - type: entities
+                title: Inputs
+                entities:
+                  # To Echo Link via Coaxial
+                  - media_player.etherealm
+
+                  # To Echo Link via Alexa
+                  - media_player.astralplane_echo_dot
+
+              - type: entities
+                title: Receiver
+                entities:
+                  - media_player.astralplane_echo_link
+
+              - type: entities
+                title: Outputs
+                entities:
+                  - name: Speakers
+
+
+      # [Row] Dorothy
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: BEDROOM - DOROTHY
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: navigate
+              link: '/ui-machines/terpsichora'
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-page-columns.yaml
+            cards:
+
+              - type: entities
+                title: Media Sources
+                entities:
+                  - media_player.dorothy_cast_video_cast
+                  - media_player.plex_dorothy
+                  - media_player.plex_dorothy_cast_video
+
+              - type: entities
+                title: Inputs
+                entities:
+                  - media_player.dorothy_cast_video
+                  - media_player.dorothy_cast
+                  - media_player.bedroom_echo_show
+
+              - type: entities
+                title: Receiver
+                entities:
+                  - media_player.dorothy_echo_link
+
+              - type: entities
+                title: Outputs
+                entities:
+                  - name: Speakers
+
+
+
+
+      # [Row] Misc
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: MISC
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-page-columns.yaml
+            cards:
+
+              - type: entities
+                title: Other Rooms
+                entities:
+                  - media_player.entire_apartment
+                  - media_player.bathroom_echo_dot
+                  - media_player.kitchen_echo_show
+
+              - type: entities
+                title: Mobile Devices
+                entities:
+                  - media_player.plex_crepe
+
+                  - media_player.plex_plexamp_kaleidoscape
+                  - media_player.plex_plexamp_zuneth
+                  - media_player.plex_zuneth
+                  - media_player.plex_kaleidoscape

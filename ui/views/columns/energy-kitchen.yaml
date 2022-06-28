@@ -1,0 +1,28 @@
+- type: sensor
+  entity: sensor.kitchen_microwave_plug_smartenergy_metering
+  graph: line
+  detail: 2
+  name: Kitchen Microwave
+  hours_to_show: 48
+
+- type: sensor
+  entity: sensor.kitchen_fridge_plug_smartenergy_metering
+  graph: line
+  detail: 2
+  name: Kitchen Fridge
+  hours_to_show: 48
+
+- type: sensor
+  entity: sensor.kitchen_aerogardens_plug_smartenergy_metering
+  graph: line
+  detail: 2
+  name: Kitchen Aerogardens
+  hours_to_show: 48
+
+- graph: line
+  type: sensor
+  entity: sensor.kitchen_lights_energy_use
+  detail: 2
+  icon: 'mdi:lightbulb-group'
+  name: Kitchen Lights
+  hours_to_show: 48

@@ -1,0 +1,37 @@
+# METROLOGY FOR HOME ASSISTANT
+# Button Card Templates
+# Made by Madelena Mak 2022
+
+
+## BASES AND COMPONENTS
+
+# VanillaTilt
+# Add tilting effects on the live tiles
+# Code from https://github.com/matt8707/hass-config/blob/master/button_card_templates.yaml
+
+tilt:
+  custom_fields:
+    tilt: >
+      [[[
+        try {
+          setTimeout(() => {
+            let elt = this.shadowRoot,
+              card = elt.getElementById('card'),
+              ignore = window.navigator.userAgent;
+            if (elt && card && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)) {
+              VanillaTilt.init(card, variables.tilt_options);
+            }
+          }, 0);
+        }
+        catch (e) {
+        }
+      ]]]
+
+# Require Confirmation Dialog
+
+require_confirmation:
+  confirmation:
+    text: >-
+      [[[ return `Are you sure you want to toggle
+      ${entity.attributes.friendly_name}?` ]]]
+

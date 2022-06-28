@@ -1,0 +1,33 @@
+# Rooms Dashboard
+# Made by Madelena Mak 2022
+# https://mmak.es
+
+title: Rooms
+
+views:
+  # - !include views/rooms/summary.yaml
+  - !include views/rooms/living-room.yaml
+  - !include views/rooms/kitchen.yaml
+  - !include views/rooms/workspace.yaml
+  - !include views/rooms/bedroom.yaml
+  # - !include views/rooms/bathroom.yaml
+
+decluttering_templates: !include templates/decluttering-card.yaml
+button_card_templates: !include_dir_merge_named templates/button-card/
+popup_cards: !include_dir_merge_named popups/
+
+swipe_nav:
+  animate: swipe
+  prevent_default: true
+
+kiosk_mode:
+  user_settings:
+    - users:
+        - Strawberry
+        - Maddy
+      hide_sidebar: true
+      hide_menubutton: true
+      hide_overflow: true
+  mobile_settings:
+    hide_menubutton: true
+    hide_overflow: true

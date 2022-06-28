@@ -1,0 +1,474 @@
+# MAXIMALIST DASHBOARD
+# Neighborhood View
+# Made by Madelena Mak 2022
+
+title: Neighborhood
+path: neighborhood
+
+type: 'custom:grid-layout'
+layout: !include snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(352px, 1fr) [col-end])'
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+        
+          - type: markdown
+            content: >
+              # {{ states('input_text.neighborhood_name') }}
+
+              {{ state_attr('sensor.nws_alert_rss_feed', 'entries')[0].title
+              }}. Parking restrictions are {{
+              states('sensor.nyc_311_alternate_side_parking_0d') | lower }}. Trains are in {{
+              states('sensor.goodserviceio_l_service') | lower }} currently.
+              {%- set is_cold =  state_attr('weather.valhalla_hourly',
+              'forecast')|map(attribute='temperature')|average < 18 -%} {%-
+              set is_freezing =  state_attr('weather.valhalla_hourly',
+              'forecast')|map(attribute='temperature')|average < 8 -%} {%-
+              set is_rainy = 'rainy' in
+              state_attr('weather.valhalla_hourly',
+              'forecast')|map(attribute='condition')|join(',') -%} {{ iif(
+              is_cold or is_rainy, ' You should', '') }} {{ iif( is_cold, '
+              wear a jacket', '') }} {{ iif( is_freezing, ' and a scarf, and
+              also', ' and') }} {{ iif( is_rainy, ' bring an umbrella.',
+              '.') }}
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 500;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:horizontal-layout'
+            view_layout:
+              place-self: center start
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters:
+                  breakpointBase: container
+                  enabled: true
+                  slidesPerView: 1.66
+                  breakpoints:
+                    '600':
+                      enabled: false
+                      slidesPerView: 3
+                cards:
+
+                  - type: 'custom:mushroom-entity-card'
+                    entity: sensor.goodserviceio_l_service
+                    name: Subway Map ↗
+                    icon_color: pink
+                    tap_action:
+                      action: url
+                      url_path: !secret weekendest_url
+                    style: 'ha-card {background: none;}'
+
+                  - type: 'custom:mushroom-template-card'
+                    primary: Citizen ↗
+                    icon: 'mdi:police-badge'
+                    style: 'ha-card {background: none;}'
+                    icon_color: pink
+                    tap_action:
+                      action: url
+                      url_path: 'https://citizen.com/explore'
+
+                  - type: 'custom:mushroom-template-card'
+                    primary: NYC 311 ↗
+                    secondary: null
+                    icon: 'mdi:shield-alert'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    tap_action:
+                      action: url
+                      url_path: 'https://portal.311.nyc.gov/'
+
+
+      # [Column] Transit
+      - type: vertical-stack
+        cards: !include secret/neighborhood-transit.yaml
+
+
+      # [Column] Traffic
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: TRAFFIC
+              label: Waze
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://www.waze.com/live-map'
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: picture
+            image: !secret virtualearth_image_path
+            tap_action:
+              action: url
+              url_path: !secret googlemaps_path
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - title: Driving Time to Union Square
+              - lower_bound: 0
+              - entities:
+                  - entity: sensor.waze_travel_time
+                    name: Union Square
+                  - entity: sensor.waze_travel_time_to_hicksville
+                    name: Hicksville
+                  - entity: sensor.waze_travel_time_to_newark
+                    name: Newark
+                  - entity: sensor.waze_travel_time_to_tappan_zee
+                    name: Tappan Zee
+                  - entity: sensor.sun_elevation
+                    show_legend: false
+                    y_axis: secondary
+                    show_line: false
+                    show_points: false
+                    show_labels: false
+                    show_labels_secondary: false
+                    show_indicator: false
+                    line_width: 1
+                    color: 'rgba(255,255,255,.25)'
+
+          - type: entities
+            entities:
+              - entity: sensor.waze_travel_time
+                type: 'custom:multiple-entity-row'
+                name: Driving to
+                show_state: false
+                entities:
+                  - entity: sensor.waze_travel_time_to_hicksville
+                    name: HICKSVILLE
+                    styles:
+                      text-align: left
+                  - entity: sensor.waze_travel_time_to_newark
+                    name: NEWARK
+                    styles:
+                      text-align: left
+                  - entity: sensor.waze_travel_time_to_tappan_zee
+                    name: TAPPAN ZEE
+                    styles:
+                      text-align: left
+
+    #      - !include cards/traffic-cameras.yaml
+
+          - !include cards/traffic-bridges-and-tunnels.yaml
+
+          - type: entities
+            title: Parking
+            entities:
+              - entity: sensor.nyc_311_alternate_side_parking_0d
+                type: 'custom:multiple-entity-row'
+              - entity: sensor.nyc_311_alternate_side_parking_0d
+                type: 'custom:multiple-entity-row'
+                show_state: false
+                name: ' '
+                icon: none
+                styles:
+                  white-space: normal
+                secondary_info:
+                  attribute: details
+                style:
+                  hui-generic-entity-row:
+                    $: |
+                      .info, .info > * {
+                        white-space: normal !important;
+                      }
+
+          - type: entities
+            entities:
+              - entity: sensor.nyc_311_alternate_side_parking_1d
+                type: 'custom:multiple-entity-row'
+              - entity: sensor.nyc_311_alternate_side_parking_1d
+                type: 'custom:multiple-entity-row'
+                show_state: false
+                name: ' '
+                icon: none
+                styles:
+                  white-space: normal
+                secondary_info:
+                  attribute: details
+                style:
+                  hui-generic-entity-row:
+                    $: |
+                      .info, .info > * {
+                        white-space: normal !important;
+                      }
+
+          - type: entities
+            entities:
+              - entity: sensor.nyc_311_alternate_side_parking_2d
+                type: 'custom:multiple-entity-row'
+
+          - type: entities
+            entities:
+              - entity: sensor.next_parking_rule_suspension
+
+
+      # [Column] Weather
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: WEATHER
+              label: More
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: !secret accuweather_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: picture
+            image: //s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/usbgm/animate.png
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+
+          - type: 'custom:weather-chart-card'
+            entity: weather.valhalla_hourly
+
+          - type: weather-forecast
+            entity: weather.valhalla_2
+            show_forecast: true
+            title: Daily Forecast
+            card_mod:
+              style: |
+                .content {display: none !important;}
+                .forecast {padding-top: 0 !important;}
+
+          - type: entities
+            entities:
+              - entity: sun.sun
+                type: 'custom:multiple-entity-row'
+                show_state: false
+                secondary_info:
+                  entity: sun.sun
+                entities:
+                  - attribute: next_rising
+                    format: relative
+                    name: SUNRISE
+                    styles:
+                      text-align: left
+                  - attribute: next_setting
+                    format: relative
+                    name: SUNSET
+                    styles:
+                      text-align: left
+
+              - entity: sensor.valhalla_uv_index
+                name: UV Index
+
+              - entity: sensor.moon
+
+              - entity: sensor.noaa_tides
+                name: Tides
+                icon: 'mdi:waves'
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+
+              - type: entities
+                entities:
+                  - entity: sensor.nws_alert_rss_feed
+                    type: custom:template-entity-row
+                    state: ''
+                    name: "{{states('sensor.nws_alert_rss_feed')}} Alert{% if states('sensor.nws_alert_rss_feed') | int > 1 %}s{% endif %} "
+                title: NWS Alerts
+
+              - !include cards/nws-alerts.yaml
+
+          - type: entities
+            entities:
+              - entity: sensor.tomorrow_io_valhalla_fire_index
+                name: Fire Index
+
+          - type: entities
+            title: Pollen
+            entities:
+              - entity: sensor.tomorrow_io_valhalla_grass_pollen_index
+                name: Grass Pollen Index
+              - entity: sensor.valhalla_grass_pollen_0d
+                name:  Grass Pollen
+              - entity: sensor.tomorrow_io_valhalla_tree_pollen_index
+                name: Tree Pollen Index
+              - entity: sensor.valhalla_tree_pollen_0d
+                name: Tree Pollen
+              - entity: sensor.tomorrow_io_valhalla_weed_pollen_index
+                name: Weed Pollen Index
+              - entity: sensor.valhalla_mold_pollen_0d
+                name: Mold Pollen
+              - entity: sensor.valhalla_ragweed_pollen_0d
+                name: Ragweed Pollen
+
+
+      # [Column] Notices  
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: NOTICES
+              label: Notify NYC
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://twitter.com/NotifyNYC'
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: 'custom:list-card'
+            entity: sensor.notify_nyc
+            feed_attribute: entries
+            columns:
+              - title: ''
+                field: title
+                style:
+                  - display: block
+                  - font-weight: 500
+                  - font-size: var(--h4-font-size)
+                  - xwhite-space: nowrap
+                  - padding: 16px 0 2px
+                regex: (?<=- ).*
+              - title: ''
+                field: published
+                style:
+                  - display: block
+                  - font-size: var(--h6-font-size)
+                  - padding: 0 0 4px
+                  - opacity: 0.5
+                  - text-transform: uppercase
+              - title: ''
+                field: summary
+                style:
+                  - display: block
+                  - padding: 0
+                regex: (?<=.*\.\s\n+)(.|\n)*(?=\n+To view this message)
+            style: >
+              xha-card { background: none; }
+
+              table tbody:first-child { display: none; }
+
+              tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+              background: none; }
+
+
+      # [Column] Gas
+      - !include secret/neighborhood-gas.yaml
+
+
+      # [Column] Stores
+      - !include secret/neighborhood-stores.yaml
+
+
+      # [Column] Bird Watch
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BIRD WATCH
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: entities
+            entities:
+              - entity: sensor.opensky_flight_in_vicinity
+                type: 'custom:multiple-entity-row'
+                secondary_info:
+                  attribute: movement
+                  hide_unavailable: true
+          - type: conditional
+            conditions:
+              - entity: sensor.opensky_flight_in_vicinity
+                state_not: 'off'
+            card:
+              type: vertical-stack
+              cards:
+                - type: entities
+                  entities:
+                    - entity: sensor.opensky_flight_friendly_name
+                      type: 'custom:multiple-entity-row'
+                      name: ' '
+                      show_state: false
+                      secondary_info:
+                        entity: sensor.opensky_flight_friendly_name
+                - type: horizontal-stack
+                  cards:
+                    - type: vertical-stack
+                      cards:
+                        - type: entity
+                          entity: sensor.opensky_origin_airport_code
+                          name: Origin
+                        - show_name: false
+                          show_icon: false
+                          show_state: true
+                          type: glance
+                          entities:
+                            - entity: sensor.opensky_origin_city
+                              card_mod:
+                                style: |
+                                  div {text-align: left;}
+                          style: |
+                            .entity {padding: 0 !important; margin: -16px 0}
+                    - type: vertical-stack
+                      cards:
+                        - type: entity
+                          entity: sensor.opensky_destination_airport_code
+                          name: Destination
+                        - show_name: false
+                          show_icon: false
+                          show_state: true
+                          type: glance
+                          entities:
+                            - entity: sensor.opensky_destination_city
+                              card_mod:
+                                style: |
+                                  div {text-align: left;}
+                          style: |
+                            .entity {padding: 0 !important; margin: -16px 0}
+                - type: entities
+                  entities:
+                    - entity: sensor.opensky_flight_in_vicinity
+                      type: 'custom:multiple-entity-row'
+                      name: ' '
+                      secondary_info:
+                        attribute: movement
+                      show_state: false
+                      entities:
+                        - attribute: altitude
+                          name: Altitude
+              in_card: true

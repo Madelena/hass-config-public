@@ -1,0 +1,31 @@
+.line-marker { 
+    stroke: var(--primary-text-color) !important;
+    stroke-width: 3 !important;
+}
+
+.data-scale { filter: var(--dark-mode-filter) hue-rotate(calc(-245deg + var(--hue-primary-color))); }
+
+.text-axis {
+  fill:var(--primary-text-color);
+  font-size: 2em;
+}
+.text-grid {
+  font-size: 1.2em !important;
+
+}
+.data { filter: var(--dark-mode-filter) hue-rotate(calc(-245deg + var(--hue-primary-color))); }
+
+.fill-white { fill: transparent !important; }
+
+.font-overlay { 
+    fill:var(--primary-text-color) !important;
+    font-family: var(--font-stack);
+    font-size: 1.2em !important;
+    font-weight: 500;
+    text-shadow:none !important;
+}
+
+.overlay polygon, .overlay polyline {
+  stroke: var(--primary-text-color) !important;
+  opacity: .33;
+}

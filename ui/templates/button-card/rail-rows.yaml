@@ -1,0 +1,299 @@
+# METROLOGY FOR HOME ASSISTANT
+# Button Card Templates
+# Made by Madelena Mak 2022
+
+
+# RAIL ROWS
+# (I love puns.)
+
+# Rail Station Row
+
+rail_station_row:
+  variables:
+    rail0_entity: null
+    rail1_entity: null
+    rail2_entity: null
+    rail3_entity: null
+    rail4_entity: null
+    station_rail: -1
+    terminate_at: "none"
+
+    condition_attribute: round_trip_time_avg
+    condition_threshold: 60
+    on_color: var(--primary-color)
+    off_color: rgb(var(--rgb-disabled-color))
+    mid_color: var(--warning-color)
+  custom_fields:
+    rail0: ''
+    rail1: ''
+    rail2: ''
+    rail3: ''
+    rail4: ''
+    station: ''
+  show_icon: false
+  show_label: true
+  show_state: true
+  triggers_update: all
+  styles:
+    grid:
+      - grid-template-columns: min-content min-content min-content min-content min-content min-content min-content auto min-content
+      - grid-template-rows: min-content min-content
+      - grid-template-areas: '"rail0 rail1 rail2 rail3 rail4 station i n s" "rail0 rail1 rail2 rail3 rail4 station i l s"'
+      - xoverflow: visible
+    card:
+      - margin: 0
+      - padding: 0
+      - background: none
+      - font-size: var(--body-font-size)
+      - text-align: left
+      - min-height: 56px
+      - xoverflow: visible
+    name:
+      - place-self: center start
+      - margin-left: 80px
+      - xtransform-origin: center left
+      - xtransform: rotate(-45deg)
+    label:
+      - place-self: center start
+      - margin-left: 80px
+      - color: var(--secondary-text-color)
+      - xtransform-origin: center left
+      - xtransform: translateX(12px) translateY(-8px) rotate(-45deg)
+    state:
+      - place-self: center end
+    custom_fields:
+      station:
+        - position: absolute
+        - left: '[[[ if ((variables.terminate_at != "none") && !(variables.terminate_at.includes("terminal"))) {return "58px"} else {return (variables.station_rail * 12) + "px"} ]]]'
+        - width: 4px
+        - height: 4px
+        - margin-top: 1px
+        - border-radius: 8px
+        - border: 2px solid var(--station-color)
+        - background: var(--accent-text-color)
+  extra_styles: |
+    [[[
+      var extra_styles = ''
+      for (let rail = 0; rail <= 4; rail++) {
+        var style = `
+          #rail${ rail } {
+            display: ${ (variables['rail' + rail + '_entity'] == null) ? 'none' : 'block' };
+            position: absolute;
+            left: ${ rail * 12 }px;
+            top:
+              ${ ((variables.station_rail == rail) && (variables.terminate_at.includes('top')))
+                  ? 'calc( 50% - ' + (4 * !(variables.terminate_at.includes('terminal'))) + 'px )' : '0' };
+            width: ${ ((variables.station_rail == rail) && !(variables.terminate_at.includes("terminal"))) ? (6 + (4 - rail) * 12) + "px" : "0" };
+            height:
+              ${ variables.station_rail == rail
+                  ? variables.terminate_at.includes("terminal")
+                    ? '50%'
+                    : variables.terminate_at.includes("top")
+                      ? 'calc( 50% + 4px )'
+                      : variables.terminate_at.includes("bottom")
+                        ? 'calc( 50% - 4px )'
+                        : '100%'
+                  : '100%'
+              };
+            box-shadow: 0px 0px 0px 2px rgba(var(--rgb-primary-background-color),0.5);
+            --rail-color:
+              ${ variables['rail' + rail + '_entity'] !== null
+                  ? states[variables['rail' + rail + '_entity']].attributes[variables.condition_attribute] !== undefined
+                    ? states[variables['rail' + rail + '_entity']].attributes[variables.condition_attribute] >= variables.condition_threshold
+                      ? variables.mid_color
+                      : variables.on_color
+                    : variables.off_color
+                  : 'transparent'
+              };
+            border-left: 8px solid var(--rail-color);
+            border-top: ${ ((variables.station_rail == rail) && (variables.terminate_at == "top")) ? "8px solid var(--rail-color)" : "none" };
+            border-bottom: ${ ((variables.station_rail == rail) && (variables.terminate_at == "bottom")) ? "8px solid var(--rail-color)" : "none" };
+            border-radius:
+              ${ variables.station_rail == rail
+                  ? variables.terminate_at == "top"
+                    ? (6 * (5 - rail)) + "px 0 0 0"
+                    : variables.terminate_at == "bottom"
+                      ? "0 0 0 " + (6 * (5 - rail)) + "px"
+                      : "0"
+                  : "0"
+              };
+          }
+        `
+        extra_styles = extra_styles + style
+      }
+      var stationStyle = `
+        #station {
+          --station-color:
+            ${ entity != null
+                ? entity.attributes[variables.condition_attribute] !== undefined
+                  ? entity.attributes[variables.condition_attribute] >= variables.condition_threshold
+                    ? variables.mid_color
+                    : variables.on_color
+                  : variables.off_color
+                : 'transparent'
+            }
+          }
+        `
+      return extra_styles + stationStyle
+    ]]]
+  tap_action:
+    action: none
+
+
+# Rail Interchange Row
+
+rail_interchange_row:
+  variables:
+    rail0_top_entity: null
+    rail0_bottom_entity: null
+    rail1_top_entity: null
+    rail1_bottom_entity: null
+    rail2_top_entity: null
+    rail2_bottom_entity: null
+    rail3_top_entity: null
+    rail3_bottom_entity: null
+    rail4_top_entity: null
+    rail4_bottom_entity: null
+    station_size_from: 0
+    station_size_to: 3
+
+    condition_attribute: round_trip_time_avg
+    condition_threshold: 60
+    on_color: var(--primary-color)
+    off_color: rgb(var(--rgb-disabled-color))
+    mid_color: var(--warning-color)
+  custom_fields:
+    rail0_top: ''
+    rail1_top: ''
+    rail2_top: ''
+    rail3_top: ''
+    rail4_top: ''
+    rail0_bottom: ''
+    rail1_bottom: ''
+    rail2_bottom: ''
+    rail3_bottom: ''
+    rail4_bottom: ''
+    station: ''
+  show_icon: false
+  show_label: true
+  show_state: true
+  triggers_update: all
+  styles:
+    grid:
+      - grid-template-columns: min-content min-content min-content min-content min-content min-content min-content auto min-content
+      - grid-template-rows: min-content min-content
+      - grid-template-areas: '"rail0_top rail1_top rail2_top rail3_top rail4_top station i n s" "rail0_bottom rail1_bottom rail2_bottom rail3_bottom rail4_bottom station i l s"'
+      - xoverflow: visible
+    card:
+      - margin: 0
+      - padding: 0
+      - background: none
+      - font-size: var(--body-font-size)
+      - text-align: left
+      - min-height: 56px
+      - xoverflow: visible
+    name:
+      - place-self: center start
+      - margin-left: 80px
+      - xtransform-origin: center left
+      - xtransform: rotate(-45deg)
+    label:
+      - place-self: center start
+      - margin-left: 80px
+      - color: var(--secondary-text-color)
+      - xtransform-origin: center left
+      - xtransform: translateX(12px) translateY(-8px) rotate(-45deg)
+    state:
+      - place-self: center end
+    custom_fields:
+      station:
+        - position: absolute
+        - left: '[[[ return ((variables.station_size_from * 12)) + "px" ]]]'
+        - width: '[[[ return (((variables.station_size_to - variables.station_size_from) * 12) + 4) + "px" ]]]'
+        - height: 8px
+        - margin-top: 1px
+        - border-radius: 8px
+        - border: 2px solid var(--primary-text-color)
+        - background: var(--station-color)
+  extra_styles: |
+    [[[
+      var extra_styles = ''
+      for (let rail = 0; rail <= 4; rail++) {
+        var style = `
+          #rail${ rail }_top {
+            display: ${ (variables['rail' + rail + '_top_entity'] == null) ? 'none' : 'block' };
+            position: absolute;
+            top: 0;
+            left: ${ rail * 12 }px;
+            width: 0;
+            height: 50%;
+            --rail-color:
+              ${ variables['rail' + rail + '_top_entity'] != null
+                  ? states[variables['rail' + rail + '_top_entity']].attributes[variables.condition_attribute] != undefined
+                    ? states[variables['rail' + rail + '_top_entity']].attributes[variables.condition_attribute] >= variables.condition_threshold
+                      ? variables.mid_color
+                      : variables.on_color
+                    : variables.off_color
+                  : 'transparent'
+              };
+            border-left: 8px solid var(--rail-color);
+          }
+          #rail${ rail }_bottom {
+            display: ${ (variables['rail' + rail + '_bottom_entity'] == null) ? 'none' : 'block' };
+            position: absolute;
+            top: 50%;
+            left: ${ rail * 12 }px;
+            width: 0;
+            height: 50%;
+            --rail-color:
+              ${ variables['rail' + rail + '_bottom_entity'] != null
+                  ? states[variables['rail' + rail + '_bottom_entity']].attributes[variables.condition_attribute] != undefined
+                    ? states[variables['rail' + rail + '_bottom_entity']].attributes[variables.condition_attribute] >= variables.condition_threshold
+                      ? variables.mid_color
+                      : variables.on_color
+                    : variables.off_color
+                  : 'transparent'
+              };
+            border-left: 8px solid var(--rail-color);
+          }
+        `
+        extra_styles = extra_styles + style
+      }
+      var stationStyle = `
+        #station {
+          --station-color:
+            ${ entity != null
+                ? entity.attributes[variables.condition_attribute] != undefined
+                  ? entity.attributes[variables.condition_attribute] >= variables.condition_threshold
+                    ? variables.mid_color
+                    : variables.on_color
+                  : variables.off_color
+                : 'transparent'
+            }
+          }
+        `
+      return extra_styles + stationStyle
+    ]]]
+
+
+# Rail Section Row
+
+rail_section_row:
+  template: rail_station_row
+  variables:
+    line_style: 2px dotted rgba(var(--rgb-primary-text-color),.5)
+  custom_fields:
+    section: ''
+  styles:
+    grid:
+      - grid-template-columns: min-content min-content min-content min-content min-content min-content min-content auto min-content
+      - grid-template-rows: min-content min-content 0
+      - grid-template-areas: '"rail0 rail1 rail2 rail3 rail4 station i n s" "rail0 rail1 rail2 rail3 rail4 station i l s" "section section section section section section . . ."'
+    custom_fields:
+      section:
+        - position: absolute
+        - top: 50%
+        - left: 0
+        - width: 68px
+        - height: 0
+        - border-top: '[[[ return variables.line_style ]]]'

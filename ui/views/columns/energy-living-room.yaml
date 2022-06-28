@@ -1,0 +1,29 @@
+- hours_to_show: 48
+  graph: line
+  type: sensor
+  entity: sensor.terpsichora_plug_smartenergy_metering
+  detail: 2
+  name: Terpsichora
+  icon: 'mdi:speaker-multiple'
+
+- type: sensor
+  entity: sensor.living_room_projector_plug_smartenergy_metering
+  graph: line
+  hours_to_show: 48
+  detail: 2
+  name: Living Room Projector
+
+- type: sensor
+  entity: sensor.living_room_air_conditioner_plug_smartenergy_metering
+  graph: line
+  hours_to_show: 48
+  detail: 2
+  name: Living Room Air Conditioner
+
+- graph: line
+  type: sensor
+  hours_to_show: 48
+  entity: sensor.living_room_lights_energy_use
+  detail: 2
+  icon: 'mdi:lightbulb-group'
+  name: Living Room Lights

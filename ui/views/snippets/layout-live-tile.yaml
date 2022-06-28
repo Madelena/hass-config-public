@@ -1,0 +1,3 @@
+grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
+grid-template-rows: auto
+margin: -1

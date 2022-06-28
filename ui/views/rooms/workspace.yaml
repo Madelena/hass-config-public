@@ -1,0 +1,35 @@
+# MAXIMALIST DASHBOARD
+# Workspace View
+# Made by Madelena Mak 2022
+
+title: Workspace
+path: workspace
+
+type: 'custom:grid-layout'
+layout: !include ../snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      margin: -1px
+    view_layout:
+      grid-area: cc
+    cards:
+
+      # [Header] Summary
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include ../snippets/layout-page-title.yaml
+        cards:
+
+          - type: markdown
+            style: !include ../snippets/style-markdown-page-title.yaml
+            content: >
+              # Workspace
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include ../snippets/layout-page-columns.yaml
+        cards: !include workspace-cards.yaml
