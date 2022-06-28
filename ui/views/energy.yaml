@@ -40,10 +40,17 @@ cards:
               You have {{ expand('group.all_on_off')|length }} switches and
               {{
               expand('group.all_on_off')|selectattr('state','equalto','on')|list|length
-              }} of them are turned on.
+              }} of them are turned on. The amount of carbon you generated today will require about
+              {{ (states('sensor.total_energy_use_daily') | float / 1000 * 0.223232 * 10) | int / 10 }}
+              trees to sequester for a year.
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              grid-template-columns: 600px
+              mediaquery:
+                '(max-width: 800px)':
+                  grid-template-columns: 100%
             view_layout:
               place-self: center start
             cards:
@@ -68,7 +75,7 @@ cards:
                       action: more-info
 
                   - type: 'custom:mushroom-template-card'
-                    primary: Electricity Map ↗
+                    primary: CO₂ Intensity ↗
                     secondary: >
                       {{ states('sensor.co2_intensity') + 'g (' +
                       states('sensor.grid_fossil_fuel_percentage') + '%)' }}
@@ -136,8 +143,7 @@ cards:
                       - sensor.astralplane_plug_smartenergy_metering
                       - sensor.bedroom_devices_plug_smartenergy_metering
                       - sensor.kitchen_aerogardens_plug_smartenergy_metering
-                      # - >-
-                      #  sensor.living_room_air_conditioner_plug_smartenergy_metering
+                      - sensor.living_room_air_conditioner_plug_smartenergy_metering
                       - sensor.makery_plug_smartenergy_metering
                       - sensor.quattro_plug_smartenergy_metering
                       - sensor.terpsichora_plug_smartenergy_metering
@@ -212,14 +218,14 @@ cards:
                     name: Valhalla
                     children:
                       - sensor.all_computers_energy_use
+                  - entity_id: sensor.living_room_air_conditioner_plug_smartenergy_metering
+                    name: Living Room A/C
+                    children:
+                      - sensor.all_climate_energy_use
                   - entity_id: sensor.bedroom_air_conditioner_plug_smartenergy_metering
                     name: Bedroom A/C
                     children:
                       - sensor.all_climate_energy_use
-                  #- entity_id: sensor.living_room_air_conditioner_plug_smartenergy_metering
-                  #  name: Living Room A/C
-                    # children:
-                    #   - sensor.all_climate_energy_use
                   - entity_id: sensor.dorothy_devices_plug_smartenergy_metering
                     name: Dorothy Devices
                     children:
@@ -486,14 +492,12 @@ cards:
                     name: Kitchen Aerogardens
                   - entity: sensor.kitchen_counter_kettle_current_consumption
                     name: Kitchen Kettle
-                  - entity: >-
-                      sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                  - entity: sensor.bedroom_air_conditioner_plug_smartenergy_metering
                     name: Bedroom AC
                   - entity: sensor.bedroom_devices_plug_smartenergy_metering
                     name: Bedroom Devices
-                  #- entity: >-
-                  #    sensor.living_room_air_conditioner_plug_smartenergy_metering
-                  #  name: Living Room AC
+                  - entity: sensor.living_room_air_conditioner_plug_smartenergy_metering
+                    name: Living Room AC
                   - entity: sensor.living_room_projector_plug_smartenergy_metering
                     name: Living Room Projector
                   - entity: sensor.unaccounted_lights_energy_use

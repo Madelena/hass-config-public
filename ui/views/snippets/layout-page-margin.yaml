@@ -7,4 +7,4 @@ margin: 0
 card_margin: 0
 mediaquery:
   '(max-width: 870px)':
-    grid-template-columns: 0 auto 0
+    grid-template-columns: 8px auto 8px

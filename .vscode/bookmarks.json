@@ -4,32 +4,32 @@
 			"path": "ui/views/neighborhood.yaml",
 			"bookmarks": [
 				{
-					"line": 33,
+					"line": 23,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 243,
+					"line": 225,
 					"column": 19,
 					"label": ""
 				},
 				{
-					"line": 318,
+					"line": 300,
 					"column": 17,
 					"label": ""
 				},
 				{
-					"line": 368,
+					"line": 350,
 					"column": 16,
 					"label": ""
 				},
 				{
-					"line": 372,
+					"line": 354,
 					"column": 19,
 					"label": ""
 				},
 				{
-					"line": 376,
+					"line": 358,
 					"column": 23,
 					"label": ""
 				}
@@ -39,17 +39,17 @@
 			"path": "ui/views/astrometrics.yaml",
 			"bookmarks": [
 				{
-					"line": 38,
+					"line": 28,
 					"column": 12,
 					"label": ""
 				},
 				{
-					"line": 156,
+					"line": 141,
 					"column": 15,
 					"label": ""
 				},
 				{
-					"line": 385,
+					"line": 489,
 					"column": 16,
 					"label": ""
 				}
@@ -99,22 +99,22 @@
 			"path": "ui/views/me.yaml",
 			"bookmarks": [
 				{
-					"line": 40,
+					"line": 30,
 					"column": 20,
 					"label": ""
 				},
 				{
-					"line": 107,
+					"line": 91,
 					"column": 26,
 					"label": ""
 				},
 				{
-					"line": 166,
+					"line": 150,
 					"column": 18,
 					"label": ""
 				},
 				{
-					"line": 224,
+					"line": 208,
 					"column": 18,
 					"label": ""
 				}
@@ -169,38 +169,8 @@
 			"path": "ui/views/network.yaml",
 			"bookmarks": [
 				{
-					"line": 627,
+					"line": 617,
 					"column": 14,
-					"label": ""
-				},
-				{
-					"line": 370,
-					"column": 20,
-					"label": ""
-				},
-				{
-					"line": 404,
-					"column": 19,
-					"label": ""
-				},
-				{
-					"line": 438,
-					"column": 19,
-					"label": ""
-				},
-				{
-					"line": 476,
-					"column": 20,
-					"label": ""
-				},
-				{
-					"line": 500,
-					"column": 17,
-					"label": ""
-				},
-				{
-					"line": 525,
-					"column": 19,
 					"label": ""
 				}
 			]
@@ -214,17 +184,17 @@
 					"label": ""
 				},
 				{
-					"line": 150,
+					"line": 163,
 					"column": 48,
 					"label": ""
 				},
 				{
-					"line": 398,
+					"line": 411,
 					"column": 34,
 					"label": ""
 				},
 				{
-					"line": 615,
+					"line": 630,
 					"column": 24,
 					"label": ""
 				}
