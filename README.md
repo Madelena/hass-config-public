@@ -34,8 +34,6 @@ Animation is toned down so that it still feels responsive but not distracting. C
 
 It uses my own [Metrology theme](https://github.com/Madelena/Metrology-for-Hass), based on Metro design system, to reduce visual clutter, create a sense of visual hierarchy, and focus on the data.
 
-[View all the dashboards here.](https://github.com/Madelena/hass-config-public/wiki/Views-and-Cards)
-
 ## Features
 
 ### Data Visualizations - Make it Beautiful
@@ -84,6 +82,35 @@ Bing Traffic Static Map</td>
     <td width="33%" valign="bottom">
 <img src="https://user-images.githubusercontent.com/4341881/176596708-ddd33534-d974-4f0e-97c9-c4b9138dd973.png"><br/>
 Astropheric Weather Chart</td>
+  </tr>
+</table>
+
+
+### Responsive Design - Make it Versatile
+Grid columns reflow depending on screen width and device type. Since I use the dashboard in multiple form factors, the design needs to fit everything.
+
+![The dashboard in many different sizes on many different screens.](https://user-images.githubusercontent.com/4341881/177017856-a0dc2761-6ea6-4a41-a135-50cb0d3f9071.png)
+
+
+## Screenshots
+
+[View all the dashboards in detail here.](https://github.com/Madelena/hass-config-public/wiki/Views-and-Cards)
+
+<table>
+  <tr>
+    <td width="33%" valign="top">Summary view<br/><img src="https://user-images.githubusercontent.com/4341881/173772319-907d6821-b96c-4d07-96d0-c0fd02efe2b6.png"></td>
+    <td width="33%" valign="top">Network view<br/><img src="https://user-images.githubusercontent.com/4341881/173772391-fd265a83-065c-45eb-b338-744100f6b97d.jpeg"></td>
+    <td width="33%" valign="top">Energy view<br/><img src="https://user-images.githubusercontent.com/4341881/173772446-7beba3cf-2019-417b-a342-85f58230f96b.jpeg"></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">Light view<br/><img src="https://user-images.githubusercontent.com/4341881/173772510-b6e747b6-13fc-47cf-ab68-4a028eec5963.jpeg"></td>
+    <td width="33%" valign="top">Maintenance view<br/><img src="https://user-images.githubusercontent.com/4341881/173772525-ba3940d8-3345-4f85-abc1-b41f058dddf0.jpeg"></td>
+    <td width="33%" valign="top">Environment view<br/><img src="https://user-images.githubusercontent.com/4341881/173772551-c90b7443-c65b-47dc-942b-6432ea1fcc07.jpeg"></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">Neighborhood view<br/><img src="https://user-images.githubusercontent.com/4341881/173772659-7ad7ab80-b5ee-44d1-a0ba-39bbd6470e54.jpeg"></td>
+    <td width="33%" valign="top">Me view<br/><img src="https://user-images.githubusercontent.com/4341881/173772638-4140700a-31e6-4c26-821a-2ef0ba24d9c1.jpeg"></td>
+    <td width="33%" valign="top">Astrometrics view (TBD)</td>
   </tr>
 </table>
 
