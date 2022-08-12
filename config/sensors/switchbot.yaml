@@ -1,0 +1,53 @@
+
+# - platform: rest
+#   name: "Front Door Contact Sensor Open Close"
+#   resource: !secret switchbot_contact_sensor_get
+#   method: GET
+#   scan_interval: 300
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   value_template: "{{ value_json.body.openState }}"
+#   json_attributes_path: "$.body"
+#   json_attributes:
+#     - openState
+#     - moveDetected
+#     - brightness
+
+- platform: rest
+  name: "Bedroom Humidifier Power"
+  resource: !secret switchbot_humidifier_get
+  method: GET
+  scan_interval: 60
+  headers:
+    Authorization: !secret switchbot_api_token
+    Content-Type: "application/json"
+  value_template: "{{ value_json.body.power }}"
+  json_attributes_path: "$.body"
+  json_attributes:
+    - nebulizationEfficiency
+    - humidity
+    - auto
+    - childLock
+    - sound
+    - power
+    - temperature
+    - lackWater
+
+- platform: rest
+  name: "Front Door Lock Status"
+  resource: !secret switchbot_front_door_lock_get
+  method: GET
+  scan_interval: 60
+  headers:
+    Authorization: !secret switchbot_api_token
+    Content-Type: "application/json"
+  value_template: "{{ value_json.body.lockState }}"
+  json_attributes_path: "$.body"
+  json_attributes:
+    - deviceId
+    - deviceType
+    - hubDeviceId
+    - lockState
+    - doorState
+    - calibrate

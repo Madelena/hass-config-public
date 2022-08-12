@@ -1,0 +1,3 @@
+
+- platform: car_wash
+  weather: weather.valhalla_2

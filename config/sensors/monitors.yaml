@@ -1,0 +1,24 @@
+
+- platform: systemmonitor
+  entity_namespace: unison
+  resources:
+    - type: disk_use_percent
+      arg: /
+    - type: memory_use_percent
+    - type: load_1m
+    - type: network_in
+      arg: eth0
+    - type: network_out
+      arg: eth0
+    - type: throughput_network_in
+      arg: eth0
+    - type: throughput_network_out
+      arg: eth0
+    - type: ipv4_address
+      arg: eth0
+    - type: processor_use
+    - type: processor_temperature
+    - type: last_boot
+
+- platform: openhardwaremonitor
+  host: !secret dorothy_ip

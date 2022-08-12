@@ -63,49 +63,78 @@ cards:
                 }
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
             view_layout:
               place-self: center start
             cards:
 
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
                   slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 3
+                      width: 360
+                    '1024':
+                      enabled: false
+                      slidesPerView: 3
+                      width: 600
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: sensor.goodserviceio_l_service
-                    name: Subway Map ↗
-                    icon_color: pink
-                    tap_action:
-                      action: url
-                      url_path: !secret weekendest_url
-                    style: 'ha-card {background: none;}'
 
-                  - type: 'custom:mushroom-template-card'
-                    primary: Citizen ↗
-                    icon: 'mdi:police-badge'
-                    style: 'ha-card {background: none;}'
-                    icon_color: pink
-                    tap_action:
-                      action: url
-                      url_path: 'https://citizen.com/explore'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: sensor.goodserviceio_l_service
+                        name: Subway Map ↗
+                        icon_color: pink
+                        tap_action:
+                          action: url
+                          url_path: !secret weekendest_url
+                        style: 'ha-card {background: none;}'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-template-card'
-                    primary: NYC 311 ↗
-                    secondary: null
-                    icon: 'mdi:shield-alert'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://portal.311.nyc.gov/'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-template-card'
+                        primary: Citizen ↗
+                        icon: 'mdi:police-badge'
+                        style: 'ha-card {background: none;}'
+                        icon_color: pink
+                        tap_action:
+                          action: url
+                          url_path: 'https://citizen.com/explore'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                        type: 'custom:mushroom-template-card'
+                        primary: NYC 311 ↗
+                        secondary: null
+                        icon: 'mdi:shield-alert'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://portal.311.nyc.gov/'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-3
+                        layout: vertical
 
 
       # [Column] Transit
@@ -185,10 +214,11 @@ cards:
           - !include cards/traffic-bridges-and-tunnels.yaml
 
           - type: entities
-            title: Parking
+            title: Parking Rules
             entities:
               - entity: sensor.nyc_311_alternate_side_parking_0d
                 type: 'custom:multiple-entity-row'
+                name: Today
               - entity: sensor.nyc_311_alternate_side_parking_0d
                 type: 'custom:multiple-entity-row'
                 show_state: false
@@ -209,6 +239,7 @@ cards:
             entities:
               - entity: sensor.nyc_311_alternate_side_parking_1d
                 type: 'custom:multiple-entity-row'
+                name: Tomorrow
               - entity: sensor.nyc_311_alternate_side_parking_1d
                 type: 'custom:multiple-entity-row'
                 show_state: false
@@ -228,11 +259,12 @@ cards:
           - type: entities
             entities:
               - entity: sensor.nyc_311_alternate_side_parking_2d
+                name: In 2 days
                 type: 'custom:multiple-entity-row'
 
-          - type: entities
-            entities:
-              - entity: sensor.next_parking_rule_suspension
+          # - type: entities
+          #   entities:
+          #     - entity: sensor.next_parking_rule_suspension
 
 
       # [Column] Weather
@@ -317,26 +349,10 @@ cards:
               - entity: sensor.tomorrow_io_valhalla_fire_index
                 name: Fire Index
 
-          - type: entities
-            title: Pollen
-            entities:
-              - entity: sensor.tomorrow_io_valhalla_grass_pollen_index
-                name: Grass Pollen Index
-              - entity: sensor.valhalla_grass_pollen_0d
-                name:  Grass Pollen
-              - entity: sensor.tomorrow_io_valhalla_tree_pollen_index
-                name: Tree Pollen Index
-              - entity: sensor.valhalla_tree_pollen_0d
-                name: Tree Pollen
-              - entity: sensor.tomorrow_io_valhalla_weed_pollen_index
-                name: Weed Pollen Index
-              - entity: sensor.valhalla_mold_pollen_0d
-                name: Mold Pollen
-              - entity: sensor.valhalla_ragweed_pollen_0d
-                name: Ragweed Pollen
 
 
       # [Column] Notices  
+
       - type: vertical-stack
         cards:
           - type: 'custom:button-card'
@@ -386,15 +402,192 @@ cards:
               background: none; }
 
 
+      # [Column] Public Health  
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: PUBLIC HEALTH
+              label: NYC Health
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://twitter.com/NotifyNYC'
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: entities
+            title: Cold + Flu Index
+            entities:
+
+              - entity: sensor.cold_flu_forecasted_average
+                type: 'custom:multiple-entity-row'
+                name: Forecasted Average
+                secondary_info:
+                  attribute: rating
+                entities:
+                  - attribute: trend
+
+              - entity: sensor.cold_flu_index_today
+                type: 'custom:multiple-entity-row'
+                name: Today
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.cold_flu_index_today
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - attribute: flu_index
+                    name: FLU
+                    styles:
+                      text-align: left
+                  - attribute: fever_index
+                    name: FEVER
+                    styles:
+                      text-align: left
+                  - attribute: strep_index
+                    name: STREP
+                    styles:
+                      text-align: left
+                  - attribute: cough_index
+                    name: COUGH
+                    styles:
+                      text-align: left
+
+          - type: entities
+            title: Allergy Index
+            entities:
+              - entity: sensor.allergy_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                name: Forecasted Average
+                secondary_info:
+                  attribute: rating
+                entities:
+                  - attribute: trend
+
+              - entity: sensor.allergy_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: Season
+                show_state: false
+                entities:
+                  - attribute: season
+
+              - entity: sensor.allergy_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                secondary_info:
+                  attribute: outlook
+
+              - entity: sensor.allergy_index_today
+                type: 'custom:multiple-entity-row'
+                name: Today
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.allergy_index_tomorrow
+                type: 'custom:multiple-entity-row'
+                name: Tomorrow
+                secondary_info:
+                  attribute: rating
+
+          - type: entities
+            title: Pollen
+            entities:
+              - entity: sensor.tomorrow_io_valhalla_grass_pollen_index
+                name: Grass Pollen Index
+              - entity: sensor.valhalla_grass_pollen_0d
+                name:  Grass Pollen
+              - entity: sensor.tomorrow_io_valhalla_tree_pollen_index
+                name: Tree Pollen Index
+              - entity: sensor.valhalla_tree_pollen_0d
+                name: Tree Pollen
+              - entity: sensor.tomorrow_io_valhalla_weed_pollen_index
+                name: Weed Pollen Index
+              - entity: sensor.valhalla_mold_pollen_0d
+                name: Mold Pollen
+              - entity: sensor.valhalla_ragweed_pollen_0d
+                name: Ragweed Pollen
+
+          - type: entities
+            title: Asthma Index
+            entities:
+
+              - entity: sensor.asthma_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                name: Forecasted Average
+                secondary_info:
+                  attribute: rating
+                entities:
+                  - attribute: trend
+
+              - entity: sensor.asthma_index_today
+                type: 'custom:multiple-entity-row'
+                name: Today
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.asthma_index_today
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - attribute: allergen_amount_1
+                    name: OZONE
+                    styles:
+                      text-align: left
+                  - attribute: allergen_amount_2
+                    name: PM2.5
+                    styles:
+                      text-align: left
+                  - attribute: allergen_amount_3
+                    name: PM10
+                    styles:
+                      text-align: left
+
+              - entity: sensor.asthma_index_tomorrow
+                type: 'custom:multiple-entity-row'
+                name: Tomorrow
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.asthma_index_tomorrow
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - attribute: allergen_amount_1
+                    name: OZONE
+                    styles:
+                      text-align: left
+                  - attribute: allergen_amount_2
+                    name: PM2.5
+                    styles:
+                      text-align: left
+
+
+
       # [Column] Gas
+
       - !include secret/neighborhood-gas.yaml
 
 
       # [Column] Stores
+      
       - !include secret/neighborhood-stores.yaml
 
 
       # [Column] Bird Watch
+
       - type: vertical-stack
         cards:
           - type: 'custom:button-card'

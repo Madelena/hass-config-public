@@ -1,0 +1,257 @@
+
+# Get the details from Accuweather that I want that isn't in the official integration.
+
+- name: Accuweather - Detailed Hourly Forecast
+  resource: !secret accuweather_api_url
+  scan_interval: 3600
+  sensor:
+
+    - unique_id: accuweather_condition_hourly
+      name: Accuweather - Condition - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].IconPhrase }}'
+      unit_of_measurement: '°C'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].IconPhrase }}'
+        - name: 1h
+          value_template: '{{ value_json[1].IconPhrase }}'
+        - name: 2h
+          value_template: '{{ value_json[2].IconPhrase }}'
+        - name: 3h
+          value_template: '{{ value_json[3].IconPhrase }}'
+        - name: 4h
+          value_template: '{{ value_json[4].IconPhrase }}'
+        - name: 5h
+          value_template: '{{ value_json[5].IconPhrase }}'
+        - name: 6h
+          value_template: '{{ value_json[6].IconPhrase }}'
+        - name: 7h
+          value_template: '{{ value_json[7].IconPhrase }}'
+        - name: 8h
+          value_template: '{{ value_json[8].IconPhrase }}'
+        - name: 9h
+          value_template: '{{ value_json[9].IconPhrase }}'
+        - name: 10h
+          value_template: '{{ value_json[10].IconPhrase }}'
+        - name: 11h
+          value_template: '{{ value_json[11].IconPhrase }}'
+
+    - unique_id: accuweather_temperature_hourly
+      name: Accuweather - Temperature - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].Temperature.Value }}'
+      unit_of_measurement: '°C'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].Temperature.Value }}'
+        - name: 1h
+          value_template: '{{ value_json[1].Temperature.Value }}'
+        - name: 2h
+          value_template: '{{ value_json[2].Temperature.Value }}'
+        - name: 3h
+          value_template: '{{ value_json[3].Temperature.Value }}'
+        - name: 4h
+          value_template: '{{ value_json[4].Temperature.Value }}'
+        - name: 5h
+          value_template: '{{ value_json[5].Temperature.Value }}'
+        - name: 6h
+          value_template: '{{ value_json[6].Temperature.Value }}'
+        - name: 7h
+          value_template: '{{ value_json[7].Temperature.Value }}'
+        - name: 8h
+          value_template: '{{ value_json[8].Temperature.Value }}'
+        - name: 9h
+          value_template: '{{ value_json[9].Temperature.Value }}'
+        - name: 10h
+          value_template: '{{ value_json[10].Temperature.Value }}'
+        - name: 11h
+          value_template: '{{ value_json[11].Temperature.Value }}'
+
+    - unique_id: accuweather_wind_speed_hourly
+      name: Accuweather - Wind - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].Wind.Speed.Value }}'
+      unit_of_measurement: 'km/h'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].Wind.Speed.Value }}'
+        - name: 1h
+          value_template: '{{ value_json[1].Wind.Speed.Value }}'
+        - name: 2h
+          value_template: '{{ value_json[2].Wind.Speed.Value }}'
+        - name: 3h
+          value_template: '{{ value_json[3].Wind.Speed.Value }}'
+        - name: 4h
+          value_template: '{{ value_json[4].Wind.Speed.Value }}'
+        - name: 5h
+          value_template: '{{ value_json[5].Wind.Speed.Value }}'
+        - name: 6h
+          value_template: '{{ value_json[6].Wind.Speed.Value }}'
+        - name: 7h
+          value_template: '{{ value_json[7].Wind.Speed.Value }}'
+        - name: 8h
+          value_template: '{{ value_json[8].Wind.Speed.Value }}'
+        - name: 9h
+          value_template: '{{ value_json[9].Wind.Speed.Value }}'
+        - name: 10h
+          value_template: '{{ value_json[10].Wind.Speed.Value }}'
+        - name: 11h
+          value_template: '{{ value_json[11].Wind.Speed.Value }}'
+
+    - unique_id: accuweather_wind_direction_hourly
+      name: Accuweather - Wind Direction - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].Wind.Direction.Degrees }}'
+      unit_of_measurement: '°'
+      icon: mdi:navigation
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].Wind.Direction.Degrees }}'
+        - name: 1h
+          value_template: '{{ value_json[1].Wind.Direction.Degrees }}'
+        - name: 2h
+          value_template: '{{ value_json[2].Wind.Direction.Degrees }}'
+        - name: 3h
+          value_template: '{{ value_json[3].Wind.Direction.Degrees }}'
+        - name: 4h
+          value_template: '{{ value_json[4].Wind.Direction.Degrees }}'
+        - name: 5h
+          value_template: '{{ value_json[5].Wind.Direction.Degrees }}'
+        - name: 6h
+          value_template: '{{ value_json[6].Wind.Direction.Degrees }}'
+        - name: 7h
+          value_template: '{{ value_json[7].Wind.Direction.Degrees }}'
+        - name: 8h
+          value_template: '{{ value_json[8].Wind.Direction.Degrees }}'
+        - name: 9h
+          value_template: '{{ value_json[9].Wind.Direction.Degrees }}'
+        - name: 10h
+          value_template: '{{ value_json[10].Wind.Direction.Degrees }}'
+        - name: 11h
+          value_template: '{{ value_json[11].Wind.Direction.Degrees }}'
+
+    - unique_id: accuweather_relative_humidity_hourly
+      name: Accuweather - Relative Humidity - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].RelativeHumidity }}'
+      unit_of_measurement: '%'
+      icon: mdi:water
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].RelativeHumidity }}'
+        - name: 1h
+          value_template: '{{ value_json[1].RelativeHumidity }}'
+        - name: 2h
+          value_template: '{{ value_json[2].RelativeHumidity }}'
+        - name: 3h
+          value_template: '{{ value_json[3].RelativeHumidity }}'
+        - name: 4h
+          value_template: '{{ value_json[4].RelativeHumidity }}'
+        - name: 5h
+          value_template: '{{ value_json[5].RelativeHumidity }}'
+        - name: 6h
+          value_template: '{{ value_json[6].RelativeHumidity }}'
+        - name: 7h
+          value_template: '{{ value_json[7].RelativeHumidity }}'
+        - name: 8h
+          value_template: '{{ value_json[8].RelativeHumidity }}'
+        - name: 9h
+          value_template: '{{ value_json[9].RelativeHumidity }}'
+        - name: 10h
+          value_template: '{{ value_json[10].RelativeHumidity }}'
+        - name: 11h
+          value_template: '{{ value_json[11].RelativeHumidity }}'
+
+    - unique_id: accuweather_total_precipitation_hourly
+      name: Accuweather - Total Precipitation - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].TotalLiquid.Value }}'
+      unit_of_measurement: 'mm'
+      icon: mdi:weather-rainy
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].TotalLiquid.Value }}'
+        - name: 1h
+          value_template: '{{ value_json[1].TotalLiquid.Value }}'
+        - name: 2h
+          value_template: '{{ value_json[2].TotalLiquid.Value }}'
+        - name: 3h
+          value_template: '{{ value_json[3].TotalLiquid.Value }}'
+        - name: 4h
+          value_template: '{{ value_json[4].TotalLiquid.Value }}'
+        - name: 5h
+          value_template: '{{ value_json[5].TotalLiquid.Value }}'
+        - name: 6h
+          value_template: '{{ value_json[6].TotalLiquid.Value }}'
+        - name: 7h
+          value_template: '{{ value_json[7].TotalLiquid.Value }}'
+        - name: 8h
+          value_template: '{{ value_json[8].TotalLiquid.Value }}'
+        - name: 9h
+          value_template: '{{ value_json[9].TotalLiquid.Value }}'
+        - name: 10h
+          value_template: '{{ value_json[10].TotalLiquid.Value }}'
+        - name: 11h
+          value_template: '{{ value_json[11].TotalLiquid.Value }}'
+
+    - unique_id: accuweather_cloud_cover_hourly
+      name: Accuweather - Cloud Cover - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].CloudCover }}'
+      unit_of_measurement: '%'
+      icon: mdi:weather-cloudy
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].CloudCover }}'
+        - name: 1h
+          value_template: '{{ value_json[1].CloudCover }}'
+        - name: 2h
+          value_template: '{{ value_json[2].CloudCover }}'
+        - name: 3h
+          value_template: '{{ value_json[3].CloudCover }}'
+        - name: 4h
+          value_template: '{{ value_json[4].CloudCover }}'
+        - name: 5h
+          value_template: '{{ value_json[5].CloudCover }}'
+        - name: 6h
+          value_template: '{{ value_json[6].CloudCover }}'
+        - name: 7h
+          value_template: '{{ value_json[7].CloudCover }}'
+        - name: 8h
+          value_template: '{{ value_json[8].CloudCover }}'
+        - name: 9h
+          value_template: '{{ value_json[9].CloudCover }}'
+        - name: 10h
+          value_template: '{{ value_json[10].CloudCover }}'
+        - name: 11h
+          value_template: '{{ value_json[11].CloudCover }}'
+
+    - unique_id: accuweather_solar_irradiance_hourly
+      name: Accuweather - Solar Irradiance - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].SolarIrradiance.Value }}'
+      unit_of_measurement: 'W/m²'
+      icon: mdi:weather-sunny
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].SolarIrradiance.Value }}'
+        - name: 1h
+          value_template: '{{ value_json[1].SolarIrradiance.Value }}'
+        - name: 2h
+          value_template: '{{ value_json[2].SolarIrradiance.Value }}'
+        - name: 3h
+          value_template: '{{ value_json[3].SolarIrradiance.Value }}'
+        - name: 4h
+          value_template: '{{ value_json[4].SolarIrradiance.Value }}'
+        - name: 5h
+          value_template: '{{ value_json[5].SolarIrradiance.Value }}'
+        - name: 6h
+          value_template: '{{ value_json[6].SolarIrradiance.Value }}'
+        - name: 7h
+          value_template: '{{ value_json[7].SolarIrradiance.Value }}'
+        - name: 8h
+          value_template: '{{ value_json[8].SolarIrradiance.Value }}'
+        - name: 9h
+          value_template: '{{ value_json[9].SolarIrradiance.Value }}'
+        - name: 10h
+          value_template: '{{ value_json[10].SolarIrradiance.Value }}'
+        - name: 11h
+          value_template: '{{ value_json[11].SolarIrradiance.Value }}'
+
+

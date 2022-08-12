@@ -1,0 +1,71 @@
+
+# Calculate the number of chores done, to do, or overdue.
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: time_pattern
+      minutes: "/5"
+    - platform: state
+      entity_id:
+        - group.chores
+  sensor:
+
+    - name: Chores Done
+      unit_of_measurement: "Tasks"
+      state: "OK"
+      attributes:
+        entities: >
+          {%- set chore_done = namespace(entities=[]) -%}
+          {%- for chore in expand('group.chores') -%}
+            {%- if (chore.state != 'unknown') -%}
+              {%- set input = chore.entity_id|regex_replace(find='input_button', replace='input_text') -%}
+              {%- set diff = ( as_timestamp(now()) - as_timestamp(chore.state) ) / 60 / 60 / 24 %}
+              {%- set due = states(input)|float(-1) -%}
+              {%- if (diff < 1) and (as_datetime(chore.state).day == now().day) -%}
+                {%- set chore_done.entities = chore_done.entities + [chore.entity_id] -%}
+              {%- endif -%}
+            {%- endif %}
+          {%- endfor -%}
+          {{ chore_done.entities }}
+
+    - name: Chores To Do
+      state: "OK"
+      attributes:
+        entities: >
+          {%- set chore_todo = namespace(entities=[]) -%}
+          {%- for chore in expand('group.chores') -%}
+            {%- if (chore.state != 'unknown') -%}
+              {%- set input = chore.entity_id|regex_replace(find='input_button', replace='input_text') -%}
+              {%- set diff = ( as_timestamp(now()) - as_timestamp(chore.state) ) / 60 / 60 / 24 %}
+              {%- set due = states(input)|float(-1) -%}
+              {%- if due > 0 -%}
+                {%- if (due < diff) -%}
+                {%- else -%}
+                  {%- if (due < diff + (due / 4)) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif %}
+          {%- endfor -%}
+          {{ chore_todo.entities }}
+
+    - name: Chores Overdue
+      state: "OK"
+      attributes:
+        entities: >
+          {%- set chore_overdue = namespace(entities=[]) -%}
+          {%- for chore in expand('group.chores') -%}
+            {%- if (chore.state != 'unknown') -%}
+              {%- set input = chore.entity_id|regex_replace(find='input_button', replace='input_text') -%}
+              {%- set diff = ( as_timestamp(now()) - as_timestamp(chore.state) ) / 60 / 60 / 24 %}
+              {%- set due = states(input)|float(-1) -%}
+              {%- if due > 0 -%}
+                {%- if (due < diff) -%}
+                  {%- set chore_overdue.entities = chore_overdue.entities + [chore.entity_id] -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif %}
+          {%- endfor -%}
+          {{ chore_overdue.entities }}

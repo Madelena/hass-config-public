@@ -1,0 +1,107 @@
+
+# Plants
+chore_water_plants:
+  name: Water Plants
+  icon: mdi:watering-can
+chore_fertilize_plants:
+  name: Fertilize Plants
+  icon: mdi:flower
+
+# Kitchen
+chore_clean_kitchen_sink:
+  name: Clean Kitchen Sink
+  icon: mdi:water-pump
+chore_clean_kitchen_counter:
+  name: Clean Kitchen Counter
+  icon: mdi:countertop
+chore_clean_kitchen_stove:
+  name: Clean Kitchen Stove
+  icon: mdi:stove
+chore_dust_lights:
+  name: Dust Lights
+  icon: mdi:ceiling-light
+chore_replace_uv_lamp:
+  name: Replace UV Lamp
+  icon: mdi:sun-wireless
+chore_wipe_handles:
+  name: Wipe Handles
+  icon: mdi:door
+chore_clean_kitchen_exhaust_fan:
+  name: Clean Kitchen Exhaust Fan
+  icon: mdi:stove
+chore_change_sponge:
+  name: Change Sponge
+  icon: mdi:hand-wash
+chore_clean_kitchen_floor:
+  name: Clean Kitchen Floor
+  icon: mdi:broom
+chore_change_kitchen_hand_towels:
+  name: Change Kitchen Hand Towels
+  icon: mdi:hand-water
+
+# Bathroom
+chore_clean_bathroom_floor:
+  name: Clean Bathroom Floor
+  icon: mdi:broom
+chore_clean_bathtub:
+  name: Clean Bathtub
+  icon: mdi:bathtub
+chore_clean_toilet:
+  name: Clean Toilet
+  icon: mdi:toilet
+chore_change_hand_towels:
+  name: Change Bathroom Hand Towels
+  icon: mdi:hand-water
+chore_change_bath_mat:
+  name: Change Bath Mat
+  icon: mdi:rug
+chore_change_shower_curtain:
+  name: Change Shower Curtain
+  icon: mdi:curtains-closed
+chore_change_face_towel:
+  name: Change Face Towel
+  icon: mdi:shower
+chore_change_body_sponge:
+  name: Change Body Sponge
+  icon: mdi:shower
+
+# Living Room
+chore_wipe_floors:
+  name: Wipe Floors
+  icon: mdi:broom
+chore_dust_bookshelves:
+  name: Dust Bookshelves
+  icon: mdi:bookshelf
+chore_dust_stereos:
+  name: Dust Stereos
+  icon: mdi:speaker-multiple
+chore_clean_windows:
+  name: Clean Windows
+  icon: mdi:window-shutter-open
+chore_clean_tables:
+  name: Clean Tables
+  icon: mdi:table-furniture
+chore_dust_window_blinds:
+  name: Dust Window Blinds
+  icon: mdi:window-shutter
+
+# Personal
+chore_clothes_laundry:
+  name: Clothes Laundry
+  icon: mdi:washing-machine
+chore_heavy_laundry:
+  name: Heavy Laundry
+  icon: mdi:washing-machine
+chore_change_bed_sheets:
+  name: Change Bed Sheets
+  icon: mdi:bed
+chore_clean_bedroom_floor:
+  name: Clean Bedroom Floor
+  icon: mdi:broom
+chore_wash_hair:
+  name: Wash My Hair
+  icon: mdi:hair-dryer
+chore_body_deep_clean:
+  name: Body Deep Clean
+  icon: mdi:shower
+

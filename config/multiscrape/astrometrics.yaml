@@ -1,0 +1,363 @@
+
+# Split NOAA space weather condition scales (R/S/G) JSON into sensors.
+
+- name: NOAA Space Weather - Conditions
+  resource: https://services.swpc.noaa.gov/products/noaa-scales.json
+  scan_interval: 3600
+  sensor:
+    - unique_id: noaa_space_weather_R_24hr
+      name: NOAA Space Weather - Radio Blackout Impacts (24-Hour Observed Maximums)
+      value_template: '{{ value_json["-1"].R.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["-1"].R.Text }}'
+    - unique_id: noaa_space_weather_S_24hr
+      name: NOAA Space Weather - Solar Radiation Storm Impacts (24-Hour Observed Maximums)
+      value_template: '{{ value_json["-1"].S.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["-1"].S.Text }}'
+    - unique_id: noaa_space_weather_G_24hr
+      name: NOAA Space Weather - Geomagnetic Storm Impacts (24-Hour Observed Maximums)
+      value_template: '{{ value_json["-1"].G.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["-1"].G.Text }}'
+
+    - unique_id: noaa_space_weather_R_latest
+      name: NOAA Space Weather - Radio Blackout Impacts (Latest Observed)
+      value_template: '{{ value_json["0"].R.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["0"].R.Text }}'
+    - unique_id: noaa_space_weather_S_latest
+      name: NOAA Space Weather - Solar Radiation Storm Impacts (Latest Observed)
+      value_template: '{{ value_json["0"].S.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["0"].S.Text }}'
+    - unique_id: noaa_space_weather_G_latest
+      name: NOAA Space Weather - Geomagnetic Storm Impacts (Latest Observed)
+      value_template: '{{ value_json["0"].G.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["0"].G.Text }}'
+
+    - unique_id: noaa_space_weather_R_MajorProb_1day
+      name: NOAA Space Weather - Radio Blackout Impacts (1 Day Forecast)
+      value_template: '{{ value_json["1"].R.MajorProb }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["1"].DateStamp }} {{ value_json["1"].TimeStamp }}'
+    - unique_id: noaa_space_weather_R_MinorProb_1day
+      name: NOAA Space Weather - Radio Blackout Impacts (1 Day Forecast)
+      value_template: '{{ value_json["1"].R.MinorProb }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["1"].DateStamp }} {{ value_json["1"].TimeStamp }}'
+    - unique_id: noaa_space_weather_S_1day
+      name: NOAA Space Weather - Solar Radiation Storm Impacts (1 Day Forecast)
+      value_template: '{{ value_json["1"].S.Prob }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["1"].DateStamp }} {{ value_json["1"].TimeStamp }}'
+    - unique_id: noaa_space_weather_G_1day
+      name: NOAA Space Weather - Geomagnetic Storm Impacts (1 Day Forecast)
+      value_template: '{{ value_json["1"].G.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["1"].G.Text }}'
+        - name: Timestamp
+          value_template: '{{ value_json["1"].DateStamp }} {{ value_json["1"].TimeStamp }}'
+
+    - unique_id: noaa_space_weather_R_MajorProb_2day
+      name: NOAA Space Weather - Radio Blackout Impacts (2 Day Forecast)
+      value_template: '{{ value_json["2"].R.MajorProb }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["2"].DateStamp }} {{ value_json["2"].TimeStamp }}'
+    - unique_id: noaa_space_weather_R_MinorProb_2day
+      name: NOAA Space Weather - Radio Blackout Impacts (2 Day Forecast)
+      value_template: '{{ value_json["2"].R.MinorProb }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["2"].DateStamp }} {{ value_json["2"].TimeStamp }}'
+    - unique_id: noaa_space_weather_S_2day
+      name: NOAA Space Weather - Solar Radiation Storm Impacts (2 Day Forecast)
+      value_template: '{{ value_json["2"].S.Prob }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["2"].DateStamp }} {{ value_json["2"].TimeStamp }}'
+    - unique_id: noaa_space_weather_G_2day
+      name: NOAA Space Weather - Geomagnetic Storm Impacts (2 Day Forecast)
+      value_template: '{{ value_json["2"].G.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["2"].G.Text }}'
+        - name: Timestamp
+          value_template: '{{ value_json["2"].DateStamp }} {{ value_json["2"].TimeStamp }}'
+
+    - unique_id: noaa_space_weather_R_MajorProb_3day
+      name: NOAA Space Weather - Radio Blackout Impacts (3 Day Forecast)
+      value_template: '{{ value_json["3"].R.MajorProb }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["3"].DateStamp }} {{ value_json["3"].TimeStamp }}'
+    - unique_id: noaa_space_weather_R_MinorProb_3day
+      name: NOAA Space Weather - Radio Blackout Impacts (3 Day Forecast)
+      value_template: '{{ value_json["3"].R.MinorProb }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["3"].DateStamp }} {{ value_json["3"].TimeStamp }}'
+    - unique_id: noaa_space_weather_S_3day
+      name: NOAA Space Weather - Solar Radiation Storm Impacts (3 Day Forecast)
+      value_template: '{{ value_json["3"].S.Prob }}'
+      unit_of_measurement: '%'
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json["3"].DateStamp }} {{ value_json["3"].TimeStamp }}'
+    - unique_id: noaa_space_weather_G_3day
+      name: NOAA Space Weather - Geomagnetic Storm Impacts (3 Day Forecast)
+      value_template: '{{ value_json["3"].G.Scale }}'
+      attributes:
+        - name: Text
+          value_template: '{{ value_json["3"].G.Text }}'
+        - name: Timestamp
+          value_template: '{{ value_json["3"].DateStamp }} {{ value_json["3"].TimeStamp }}'
+
+
+# Parse NOAA space weather alert feed.
+
+- name: NOAA Space Weather - Alerts
+  resource: https://services.swpc.noaa.gov/products/alerts.json
+  scan_interval: 3600
+  sensor:
+    - unique_id: noaa_space_weather_alerts_feed
+      name: NOAA Space Weather - Alerts
+      value_template: '{{ value_json[0]["product_id"] }}'
+      attributes:
+        - name: Entries
+          value_template: |
+            {% set temp = '' %}
+            {% for message in value_json %}
+            - product_id: {{ message.product_id }}
+              issue_datetime: {{ message.issue_datetime }}
+              message: {{ message.message }}
+            {% endfor %}
+    - unique_id: noaa_space_weather_alert_1
+      name: NOAA Space Weather - Alert 1
+      value_template: '{{ value_json[0]["product_id"] }}'
+      attributes:
+        - name: Message
+          value_template: '{{ value_json[0]["message"] }}'
+        - name: Date
+          value_template: '{{ value_json[0]["issue_datetime"] }}'
+        - name: Summary
+          value_template: '{{ value_json[0]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
+        - name: Potential Impacts
+          value_template: |
+            {{ iif( value_json[0]["message"] | regex_findall('Potential Impacts') != [], 
+              value_json[0]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
+    - unique_id: noaa_space_weather_alert_2
+      name: NOAA Space Weather - Alert 2
+      value_template: '{{ value_json[1]["product_id"] }}'
+      attributes:
+        - name: Message
+          value_template: '{{ value_json[1]["message"] }}'
+        - name: Date
+          value_template: '{{ value_json[1]["issue_datetime"] }}'
+        - name: Summary
+          value_template: '{{ value_json[1]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
+        - name: Potential Impacts
+          value_template: |
+            {{ iif( value_json[1]["message"] | regex_findall('Potential Impacts') != [], 
+              value_json[1]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
+    - unique_id: noaa_space_weather_alert_3
+      name: NOAA Space Weather - Alert 3
+      value_template: '{{ value_json[2]["product_id"] }}'
+      attributes:
+        - name: Message
+          value_template: '{{ value_json[2]["message"] }}'
+        - name: Date
+          value_template: '{{ value_json[2]["issue_datetime"] }}'
+        - name: Summary
+          value_template: '{{ value_json[2]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
+        - name: Potential Impacts
+          value_template: |
+            {{ iif( value_json[2]["message"] | regex_findall('Potential Impacts') != [], 
+              value_json[2]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
+    - unique_id: noaa_space_weather_alert_4
+      name: NOAA Space Weather - Alert 4
+      value_template: '{{ value_json[3]["product_id"] }}'
+      attributes:
+        - name: Message
+          value_template: '{{ value_json[3]["message"] }}'
+        - name: Date
+          value_template: '{{ value_json[3]["issue_datetime"] }}'
+        - name: Summary
+          value_template: '{{ value_json[3]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
+        - name: Potential Impacts
+          value_template: |
+            {{ iif( value_json[3]["message"] | regex_findall('Potential Impacts') != [], 
+              value_json[3]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
+    - unique_id: noaa_space_weather_alert_5
+      name: NOAA Space Weather - Alert 5
+      value_template: '{{ value_json[4]["product_id"] }}'
+      attributes:
+        - name: Message
+          value_template: '{{ value_json[4]["message"] }}'
+        - name: Date
+          value_template: '{{ value_json[4]["issue_datetime"] }}'
+        - name: Summary
+          value_template: '{{ value_json[4]["message"]| regex_replace(find="Space Weather.*\n.*\n.*UTC", replace="") | regex_replace(find="Valid[\s\S]+", replace="") | regex_replace(find="Continuation[\s\S]+", replace="") | regex_replace(find="Observed[\s\S]+", replace="") }}'
+        - name: Potential Impacts
+          value_template: |
+            {{ iif( value_json[4]["message"] | regex_findall('Potential Impacts') != [], 
+              value_json[4]["message"] | regex_replace(find='[\S\s]+Potential Impacts: ', replace=''), '') }}
+
+
+# Get the next 5 launches from rocketlaunch.live free API.
+
+- name: Rocket Launch - Next 5
+  resource: https://fdo.rocketlaunch.live/json/launches/next/5
+  scan_interval: 43200
+  sensor:
+    - unique_id: rocketlaunch_live_next_1
+      name: Rocket Launch - Next 1
+      value_template: '{{ value_json.result[0].name }}'
+      attributes:
+        - name: Provider
+          value_template: '{{ value_json.result[0].provider.name }}'
+        - name: Vehicle
+          value_template: '{{ value_json.result[0].vehicle.name }}'
+        - name: Pad
+          value_template: '{{ value_json.result[0].pad.name }}'
+        - name: Pad Location
+          value_template: '{{ value_json.result[0].pad.location.name }}'
+        - name: Pad Location Country
+          value_template: '{{ value_json.result[0].pad.location.statename }} {{ value_json.result[0].pad.location.country }}'
+        - name: Missions
+          value_template: '{{ value_json.result[0].missions | map(attribute="name") | join(", ") }}'
+        - name: Launch Description
+          value_template: '{{ value_json.result[0].launch_description }}'
+        - name: Date
+          value_template: '{{ value_json.result[0].date_str }}'
+        - name: Date Exact
+          value_template: '{{ value_json.result[0].win_open }}'
+        - name: Tags
+          value_template: '{{ value_json.result[0].tags | map(attribute="text") | join(" / ") }}'
+        - name: Link
+          value_template: '{{ value_json.result[0].quicktext | regex_replace(find=".*(?=http)", replace="") | regex_replace(find=" for info.*", replace="") }}'
+    - unique_id: rocketlaunch_live_next_2
+      name: Rocket Launch - Next 2
+      value_template: '{{ value_json.result[1].name }}'
+      attributes:
+        - name: Provider
+          value_template: '{{ value_json.result[1].provider.name }}'
+        - name: Vehicle
+          value_template: '{{ value_json.result[1].vehicle.name }}'
+        - name: Pad
+          value_template: '{{ value_json.result[1].pad.name }}'
+        - name: Pad Location
+          value_template: '{{ value_json.result[1].pad.location.name }}'
+        - name: Pad Location Country
+          value_template: '{{ value_json.result[1].pad.location.statename }} {{ value_json.result[1].pad.location.country }}'
+        - name: Missions
+          value_template: '{{ value_json.result[1].missions | map(attribute="name") | join(", ") }}'
+        - name: Launch Description
+          value_template: '{{ value_json.result[1].launch_description }}'
+        - name: Date
+          value_template: '{{ value_json.result[1].date_str }}'
+        - name: Date Exact
+          value_template: '{{ value_json.result[1].win_open }}'
+        - name: Tags
+          value_template: '{{ value_json.result[1].tags | map(attribute="text") | join(" / ") }}'
+        - name: Link
+          value_template: '{{ value_json.result[1].quicktext | regex_replace(find=".*(?=http)", replace="") | regex_replace(find=" for info.*", replace="") }}'
+    - unique_id: rocketlaunch_live_next_3
+      name: Rocket Launch - Next 3
+      value_template: '{{ value_json.result[2].name }}'
+      attributes:
+        - name: Provider
+          value_template: '{{ value_json.result[2].provider.name }}'
+        - name: Vehicle
+          value_template: '{{ value_json.result[2].vehicle.name }}'
+        - name: Pad
+          value_template: '{{ value_json.result[2].pad.name }}'
+        - name: Pad Location
+          value_template: '{{ value_json.result[2].pad.location.name }}'
+        - name: Pad Location Country
+          value_template: '{{ value_json.result[2].pad.location.statename }} {{ value_json.result[2].pad.location.country }}'
+        - name: Missions
+          value_template: '{{ value_json.result[2].missions | map(attribute="name") | join(", ") }}'
+        - name: Launch Description
+          value_template: '{{ value_json.result[2].launch_description }}'
+        - name: Date
+          value_template: '{{ value_json.result[2].date_str }}'
+        - name: Date Exact
+          value_template: '{{ value_json.result[2].win_open }}'
+        - name: Tags
+          value_template: '{{ value_json.result[2].tags | map(attribute="text") | join(" / ") }}'
+        - name: Link
+          value_template: '{{ value_json.result[2].quicktext | regex_replace(find=".*(?=http)", replace="") | regex_replace(find=" for info.*", replace="") }}'
+    - unique_id: rocketlaunch_live_next_4
+      name: Rocket Launch - Next 4
+      value_template: '{{ value_json.result[3].name }}'
+      attributes:
+        - name: Provider
+          value_template: '{{ value_json.result[3].provider.name }}'
+        - name: Vehicle
+          value_template: '{{ value_json.result[3].vehicle.name }}'
+        - name: Pad
+          value_template: '{{ value_json.result[3].pad.name }}'
+        - name: Pad Location
+          value_template: '{{ value_json.result[3].pad.location.name }}'
+        - name: Pad Location Country
+          value_template: '{{ value_json.result[3].pad.location.statename }} {{ value_json.result[3].pad.location.country }}'
+        - name: Missions
+          value_template: '{{ value_json.result[3].missions | map(attribute="name") | join(", ") }}'
+        - name: Launch Description
+          value_template: '{{ value_json.result[3].launch_description }}'
+        - name: Date
+          value_template: '{{ value_json.result[3].date_str }}'
+        - name: Date Exact
+          value_template: '{{ value_json.result[3].win_open }}'
+        - name: Tags
+          value_template: '{{ value_json.result[3].tags | map(attribute="text") | join(" / ") }}'
+        - name: Link
+          value_template: '{{ value_json.result[3].quicktext | regex_replace(find=".*(?=http)", replace="") | regex_replace(find=" for info.*", replace="") }}'
+    - unique_id: rocketlaunch_live_next_5
+      name: Rocket Launch - Next 5
+      value_template: '{{ value_json.result[4].name }}'
+      attributes:
+        - name: Provider
+          value_template: '{{ value_json.result[4].provider.name }}'
+        - name: Vehicle
+          value_template: '{{ value_json.result[4].vehicle.name }}'
+        - name: Pad
+          value_template: '{{ value_json.result[4].pad.name }}'
+        - name: Pad Location
+          value_template: '{{ value_json.result[4].pad.location.name }}'
+        - name: Pad Location Country
+          value_template: '{{ value_json.result[4].pad.location.statename }} {{ value_json.result[4].pad.location.country }}'
+        - name: Missions
+          value_template: '{{ value_json.result[4].missions | map(attribute="name") | join(", ") }}'
+        - name: Launch Description
+          value_template: '{{ value_json.result[4].launch_description }}'
+        - name: Date
+          value_template: '{{ value_json.result[4].date_str }}'
+        - name: Date Exact
+          value_template: '{{ value_json.result[4].win_open }}'
+        - name: Tags
+          value_template: '{{ value_json.result[4].tags | map(attribute="text") | join(" / ") }}'
+        - name: Link
+          value_template: '{{ value_json.result[4].quicktext | regex_replace(find=".*(?=http)", replace="") | regex_replace(find=" for info.*", replace="") }}'
+

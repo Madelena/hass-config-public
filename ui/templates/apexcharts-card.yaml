@@ -39,7 +39,7 @@ environment_chart:
   yaxis:
     - id: main
       show: true
-      align_to: 5
+      align_to: 2
       decimals: 0
       apex_config:
         labels:
@@ -57,7 +57,6 @@ environment_chart:
       textAnchor: start
       formatter: |
         EVAL:function(value, { seriesIndex, dataPointIndex, w }) {
-          console.log(w.config)
           if (dataPointIndex == w.config.series[seriesIndex].data.length - 2) {
             return Math.round( value * 10 ) / 10 + " - " + w.config.series[seriesIndex].name  // + " " + dataPointIndex + " " + w.config.series[seriesIndex].data.length
           } else { return '' }

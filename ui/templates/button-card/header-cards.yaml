@@ -28,7 +28,7 @@ title_card_with_icon:
       - place-self: center
     icon:
       - opacity: 0.8
-      - color: white
+      - color: var(--primary-text-color)
       - width: 100%
     state:
       - font-size: 10pt

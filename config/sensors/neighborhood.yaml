@@ -1,0 +1,15 @@
+
+- platform: feedparser
+  name: Notify NYC
+  feed_url: 'https://a858-nycnotify.nyc.gov/RSS/NotifyNYC?lang=en'
+  date_format: '%d/%b/%Y %H:%M:%S'
+  show_topn: 5
+  scan_interval:
+    hours: .5
+            
+- platform: tgtg
+  username: !secret tgtg_username
+  access_token: !secret tgtg_access_token
+  refresh_token: !secret tgtg_refresh_token
+  user_id: !secret tgtg_user_id
+  scan_interval: 900

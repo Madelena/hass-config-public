@@ -1,0 +1,25 @@
+
+- platform: powercalc
+  entity_id: light.kitchen_spot_lights
+  linear:
+    max_power: 18
+- platform: powercalc
+  entity_id: light.kitchen_counter_lights
+  linear:
+    max_power: 17
+- platform: powercalc
+  entity_id: light.kitchen_sink_lights
+  linear:
+    max_power: 13
+- platform: powercalc
+  entity_id: light.living_room_chandelier_main
+  linear:
+    max_power: 40
+- platform: powercalc
+  entity_id: light.living_room_decor_lights
+  linear:
+    max_power: 3.5
+- platform: powercalc
+  entity_id: light.bedroom_ceiling_lights
+  linear:
+    max_power: 45

@@ -72,48 +72,76 @@ cards:
                 }
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
             view_layout:
               place-self: center start
             cards:
 
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
                   slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 3
+                      width: 360
+                    '1024':
+                      enabled: false
+                      slidesPerView: 3
+                      width: 600
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: device_tracker.netatmo_personal_weather_station
-                    name: Netatmo ↗
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://my.netatmo.com/app/station'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: device_tracker.netatmo_personal_weather_station
+                        name: Netatmo ↗
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://my.netatmo.com/app/station'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-fan-card'
-                    entity: fan.pure_hot_cool_link
-                    icon_animation: true
-                    name: Bedroom Dyson
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    hold_action:
-                      action: more-info
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-fan-card'
+                        entity: fan.pure_hot_cool_link
+                        icon_animation: true
+                        name: Bedroom Dyson
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        hold_action:
+                          action: more-info
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: switch.bedroom_humidifier
-                    icon_animation: true
-                    name: Bedroom Humidifier
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    hold_action:
-                      action: more-info
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                        type: 'custom:mushroom-entity-card'
+                        entity: switch.bedroom_humidifier
+                        icon_animation: true
+                        name: Bedroom Humidifier
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        hold_action:
+                          action: more-info
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-3
+                        layout: vertical
 
 
       # [Row] Controls
@@ -224,7 +252,7 @@ cards:
                           element: indicator-bedroom
                           style: |
                             >
-                            var x = (parseFloat(entity.state) + 20) / 65 * 1007 - 11;
+                            var x = (parseFloat(entity.state) + 20) / 65 * 1007 - 237;
                             var y = 665 - (parseFloat(states['sensor.thermal_comfort_netatmo_bedroom_absolutehumidity'].state) / 35 * 665) - 155; 
                             return `transform: translate(${x}px, ${y}px);`;
 
@@ -236,8 +264,32 @@ cards:
                           element: indicator-bathroom
                           style: |
                             >
-                            var x = (parseFloat(entity.state) + 20) / 65 * 1007 - 244;
+                            var x = (parseFloat(entity.state) + 20) / 65 * 1007 - 11;
                             var y = 665 - (parseFloat(states['sensor.thermal_comfort_bathroom_absolutehumidity'].state) / 35 * 665) - 155; 
+                            return `transform: translate(${x}px, ${y}px);`;
+
+                    - entity: sensor.living_room_env_sensor_temperature
+                      state_action:
+                        action: call-service
+                        service: floorplan.style_set
+                        service_data:
+                          element: indicator-livingroom
+                          style: |
+                            >
+                            var x = (parseFloat(entity.state) + 20) / 65 * 1007 - 11;
+                            var y = 665 - (parseFloat(states['sensor.thermal_comfort_living_room_absolutehumidity'].state) / 35 * 665) - 10; 
+                            return `transform: translate(${x}px, ${y}px);`;
+
+                    - entity: sensor.workspace_env_sensor_temperature
+                      state_action:
+                        action: call-service
+                        service: floorplan.style_set
+                        service_data:
+                          element: indicator-workspace
+                          style: |
+                            >
+                            var x = (parseFloat(entity.state) + 20) / 65 * 1007 - 256;
+                            var y = 665 - (parseFloat(states['sensor.thermal_comfort_workspace_absolutehumidity'].state) / 35 * 665) - 10; 
                             return `transform: translate(${x}px, ${y}px);`;
 
                     - entity: sensor.valhalla_apparent_temperature
@@ -381,16 +433,17 @@ cards:
                   - entity: sensor.sun_elevation
                     color: var(--primary-text-color)
                     opacity: .2
-                    stroke_width: .5
+                    stroke_width: 2
                     yaxis_id: sun
                     unit: °
                     show:
                       legend_value: false
 
+                  # Just to draw a flat line at 0 elevation.
                   - entity: sensor.sun_elevation
                     color: var(--primary-text-color)
                     opacity: .2
-                    stroke_width: .5
+                    stroke_width: 1
                     yaxis_id: sun
                     unit: °
                     data_generator: |
@@ -410,48 +463,15 @@ cards:
                       extremas: true
 
                   - entity: sensor.netatmo_strawberry_land_indoor_outdoor_temperature
-                    name: Outside Netatmo
+                    name: West Facade Netatmo
                     stroke_width: .5
                     color: gray
                     yaxis_id: main
                     group_by:
-                      func: avg
+                      func: first
                       duration: 30min
                     show:
                       datalabels: true
-
-                  - entity: sensor.netatmo_strawberry_land_indoor_temperature
-                    name: Bedroom Netatmo
-                    stroke_width: 1
-                    yaxis_id: main
-                    color: hotpink
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
-
-                  - entity: sensor.bedroom_hue_sensor_temperature
-                    name: Bedroom Hue
-                    stroke_width: 1
-                    yaxis_id: main
-                    color: hotpink
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
-
-                  - entity: sensor.workspace_room_hue_sensor_temperature
-                    name: Workspace
-                    stroke_width: 1
-                    yaxis_id: main
-                    color: orange
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
 
                   - entity: sensor.bathroom_env_sensor_temperature
                     name: Bathroom
@@ -461,10 +481,54 @@ cards:
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: first
                       duration: 30min
 
-                  - entity: sensor.living_room_air_purifier_temperature
+                  - entity: sensor.kitchen_stove_monitor_temperature
+                    name: Kitchen Stove
+                    stroke_width: 1
+                    color: purple
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.kitchen_counter_motion_sensor_temperature
+                    name: Kitchen Hue
+                    stroke_width: 1
+                    color: purple
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.workspace_env_sensor_temperature
+                    name: Workspace
+                    stroke_width: 1
+                    yaxis_id: main
+                    color: orange
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  # - entity: sensor.living_room_air_purifier_temperature
+                  #   name: Living Room Awair
+                  #   stroke_width: 1
+                  #   color: green
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
+
+                  - entity: sensor.living_room_env_sensor_temperature
                     name: Living Room
                     stroke_width: 1
                     color: green
@@ -472,18 +536,66 @@ cards:
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: first
                       duration: 30min
 
-                  - entity: sensor.living_room_hue_sensor_temperature
-                    name: Living Room Hue
+                  # - entity: sensor.living_room_hue_sensor_temperature
+                  #   name: Living Room Hue
+                  #   stroke_width: 1
+                  #   color: green
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
+
+                  - entity: sensor.bedroom_hue_sensor_temperature
+                    name: Bedroom Hue
                     stroke_width: 1
-                    color: green
                     yaxis_id: main
+                    color: hotpink
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.netatmo_strawberry_land_indoor_temperature
+                    name: Bedroom Netatmo
+                    stroke_width: 1
+                    yaxis_id: main
+                    color: hotpink
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.indoor_temperature_legal_limit
+                    name: Legal Limit
+                    color: var(--primary-text-color)
+                    yaxis_id: main
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.indoor_comfort_zone_temperature_minimum
+                    name: Comfort Zone Minimum
+                    color: var(--primary-text-color)
+                    stroke_width: .25
+                    yaxis_id: main
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.indoor_comfort_zone_temperature_maximum
+                    name: Comfort Zone Maximum
+                    color: var(--primary-text-color)
+                    stroke_width: .25
+                    yaxis_id: main
+                    group_by:
+                      func: first
                       duration: 30min
 
                   - entity: sensor.indoor_average_temperature
@@ -494,27 +606,107 @@ cards:
                       datalabels: true
                       extremas: true
 
-                  - entity: sensor.indoor_temperature_legal_limit
-                    name: Legal Limit
-                    color: var(--primary-text-color)
-                    yaxis_id: main
-
-                  - entity: weather.valhalla_hourly
+                  - entity: sensor.accuweather_temperature_hourly
                     type: area
-                    name: Meteo
-                    attribute: temperature
+                    name: Accuweather Forecast
                     yaxis_id: main
                     stroke_width: .5
-                    curve: straight
                     color: var(--primary-text-color)
                     opacity: .1
                     data_generator: |
                       const now = new Date();
-                      const data = [[now.getTime(), entity.attributes.temperature]];
+                      const data = [[now.getTime(), entity.state]];
                       for(let i = 0; i <= 12; i++) {
-                        data.push([new Date(entity.attributes.forecast[i].datetime).getTime() + i * 1000 * 60 * 60, entity.attributes.forecast[i].temperature] );
+                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
                       }
                       return data.reverse();
+
+
+          - type: custom:apexcharts-card
+            config_templates: environment_chart
+            update_interval: 15m
+            series:
+
+              - entity: sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                name: Bedroom A/C
+                type: area
+                group_by:
+                  func: first
+                  duration: 15m
+                yaxis_id: main
+                color: 'var(--primary-color)'
+                show:
+                  datalabels: true
+                unit: W
+
+              - entity: sensor.living_room_air_conditioner_plug_smartenergy_metering
+                name: Living Room A/C
+                type: area
+                group_by:
+                  func: first
+                  duration: 15m
+                yaxis_id: main
+                color: green
+                show:
+                  datalabels: true
+                unit: W
+
+            yaxis:
+              - id: main
+                min: 0
+                max: ~0
+                show: false
+
+            apex_config:
+              chart:
+                height: 80px
+
+            card_mod: &apexcharts-card-mod
+              style:
+                .: |
+                  #graph {margin-left: 0; margin-top: -16px;}
+                  .apexcharts-yaxis-label { font-family: var(--font-stack) !important; 
+                    font-size: var(--h6-font-size) !important;
+                    opacity: 0.15;}
+                  .apexcharts-yaxis-label:nth-child(5n+1) { opacity: .5;}
+                  .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); }
+                  .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
+                    font-size: var(--h6-font-size) !important; font-weight: 500 !important;}                          
+                  .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
+                    font-size: var(--h6-font-size) !important; font-weight: normal !important;}
+
+          - type: history-graph
+            entities:
+              - entity: binary_sensor.living_room_window_sensor_center_ias_zone
+                name: Living Rm C
+              - entity: binary_sensor.living_room_window_sensor_right_ias_zone
+                name: Living Rm R
+              - entity: binary_sensor.bedroom_window_sensor_left_ias_zone
+                name: Bedroom L
+              - entity: binary_sensor.bedroom_window_sensor_center_ias_zone
+                name: Bedroom C
+            hours_to_show: 36
+            title: Windows
+            card_mod: &history-graph-card-mod
+              style: >
+                ha-card {overflow: hidden;}
+
+                .content {
+                  padding: 0 0 16px 0 !important;
+                  margin: 0 0 0 -88px;
+                  width: calc(75% + 88px);
+                  border-right: 1px dashed red;
+                }
+
+                .card-header {
+                  padding: 16px !important;
+                  margin: 0 !important;
+                  font-size: var(--body-font-size);
+                  font-weight: var(--body-font-weight);
+                  line-height: var(--body-line-height);
+                }
+
+                state-history-charts {margin-left: 20px;}
 
 
           - type: vertical-stack
@@ -523,16 +715,31 @@ cards:
 
               - type: sensor
                 entity: sensor.valhalla_cloud_cover
+                name: Cloud Cover
 
               - type: custom:apexcharts-card
                 config_templates: environment_chart
                 series:
+
                   - entity: sensor.valhalla_cloud_cover
                     name: Brooklyn
                     yaxis_id: main
                     color: 'var(--primary-color)'
                     show:
                       datalabels: true
+
+                  - entity: sensor.accuweather_cloud_cover_hourly
+                    name: Accuweather Forecast
+                    yaxis_id: main
+                    color: var(--primary-color)
+                    data_generator: |
+                      const now = new Date();
+                      const data = [[now.getTime(), entity.state]];
+                      for(let i = 0; i <= 12; i++) {
+                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                      }
+                      return data.reverse();
+
                 yaxis:
                   - id: main
                     min: 0
@@ -540,7 +747,6 @@ cards:
                 apex_config:
                   chart:
                     height: 160px
-
 
         layout:
           margin: 0
@@ -610,7 +816,7 @@ cards:
                   - entity: sensor.sun_elevation
                     color: var(--primary-text-color)
                     opacity: .2
-                    stroke_width: .5
+                    stroke_width: 2
                     yaxis_id: sun
                     show:
                       legend_value: false
@@ -618,7 +824,7 @@ cards:
                   - entity: sensor.sun_elevation
                     color: var(--primary-text-color)
                     opacity: .2
-                    stroke_width: .5
+                    stroke_width: 1
                     yaxis_id: sun
                     data_generator: |
                       const now = new Date();
@@ -642,21 +848,10 @@ cards:
                     color: gray
                     yaxis_id: main
                     group_by:
-                      func: avg
+                      func: first
                       duration: 30min
                     show:
                       datalabels: true
-
-                  - entity: sensor.netatmo_strawberry_land_indoor_humidity
-                    name: Bedroom Netatmo
-                    stroke_width: 1
-                    yaxis_id: main
-                    color: hotpink
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: avg
-                      duration: 30min
 
                   - entity: sensor.bathroom_env_sensor_humidity
                     name: Bathroom
@@ -666,10 +861,32 @@ cards:
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.kitchen_stove_monitor_humidity
+                    name: Kitchen Stove
+                    stroke_width: 1
+                    color: purple
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
                       duration: 30min
 
                   - entity: sensor.living_room_air_purifier_humidity
+                    name: Living Room Awair
+                    stroke_width: 1
+                    color: green
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.living_room_env_sensor_humidity
                     name: Living Room
                     stroke_width: 1
                     color: green
@@ -677,7 +894,29 @@ cards:
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.workspace_env_sensor_humidity
+                    name: Workspace
+                    stroke_width: 1
+                    color: orange
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.netatmo_strawberry_land_indoor_humidity
+                    name: Bedroom Netatmo
+                    stroke_width: 1
+                    yaxis_id: main
+                    color: hotpink
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
                       duration: 30min
 
                   - entity: sensor.indoor_average_humidity
@@ -688,19 +927,22 @@ cards:
                       datalabels: true
                       extremas: true
 
-                card_mod:
-                  style:
-                    .: |
-                      #graph {margin-left: -44px; margin-top: -16px;}
-                      .apexcharts-yaxis-label { font-family: var(--font-stack) !important; 
-                        font-size: var(--h6-font-size) !important;
-                        opacity: 0.15;}
-                      .apexcharts-yaxis-label:nth-child(5n+1) { opacity: .5;}
-                      .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); }
-                      .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
-                        font-size: var(--h6-font-size) !important; font-weight: 500 !important;}                          
-                      .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
-                        font-size: var(--h6-font-size) !important; font-weight: normal !important;}
+                  - entity: sensor.accuweather_relative_humidity_hourly
+                    type: area
+                    name: Accuweather Forecast
+                    yaxis_id: main
+                    stroke_width: .5
+                    color: var(--primary-text-color)
+                    opacity: .1
+                    data_generator: |
+                      const now = new Date();
+                      const data = [[now.getTime(), entity.state]];
+                      for(let i = 0; i <= 12; i++) {
+                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                      }
+                      return data.reverse();
+
+                card_mod: *apexcharts-card-mod
 
           - type: vertical-stack
             in_card: true
@@ -718,20 +960,22 @@ cards:
                     color: 'var(--primary-color)'
                     show:
                       datalabels: true
-                  - entity: weather.valhalla_hourly
-                    name: Meteo
-                    attribute: precipitation
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.accuweather_total_precipitation_hourly
+                    name: Accuweather Forecast
                     yaxis_id: main
-                    curve: straight
-                    color: 'var(--primary-color)'
-                    opacity: .5
+                    color: var(--primary-color)
                     data_generator: |
                       const now = new Date();
-                      const data = [];
+                      const data = [[now.getTime(), entity.state]];
                       for(let i = 0; i <= 12; i++) {
-                        data.push([new Date(entity.attributes.forecast[i].datetime).getTime() + i * 1000 * 60 * 60, entity.attributes.forecast[i].precipitation] );
+                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
                       }
                       return data.reverse();
+
                 yaxis:
                   - id: main
                     min: 0
@@ -745,20 +989,8 @@ cards:
               - entity: sensor.bedroom_humidifier_power
             hours_to_show: 36
             title: Bedroom Humidifier
-            card_mod:
-              style: >
-                ha-card {overflow: hidden;}
+            card_mod: *history-graph-card-mod
 
-                .content {padding: 0 0 16px 0 !important; margin: 0 -10px 0
-                -16px; width: calc(75% + 16px); border-right: 1px dashed red;}
-
-                .card-header {
-                  padding: 16px !important;
-                  margin: 0 !important;
-                  font-size: var(--body-font-size);
-                  font-weight: var(--body-font-weight);
-                  line-height: var(--body-line-height);
-                }
 
       # [Column] Air Quality
       - type: vertical-stack
@@ -796,26 +1028,31 @@ cards:
                     yaxis_id: second
                     show:
                       datalabels: true
+
                   - entity: sensor.waqi_newyork_carbon_monoxide_co
                     name: Carbon Monoxide (CO)
                     yaxis_id: main
                     show:
                       datalabels: true
+
                   - entity: sensor.waqi_newyork_ozone_o3
                     name: Ozone (O₃)
                     yaxis_id: main
                     show:
                       datalabels: true
+
                   - entity: sensor.waqi_newyork_nitrogen_dioxide_no2
                     name: Nitrogen Dioxide (NO₂)
                     yaxis_id: main
                     show:
                       datalabels: true
+
                   - entity: sensor.waqi_newyork_particulate_matter_pm25
                     name: Particulate Matter (PM25)
                     yaxis_id: main
                     show:
                       datalabels: true
+
                 yaxis:
                   - id: main
                   - id: second
@@ -823,62 +1060,78 @@ cards:
                   chart:
                     height: 240px
 
-          - type: 'custom:button-card'
-            entity: weather.valhalla_2
-            name: Current Wind
-            icon: 'mdi:navigation'
-            color: var(--primary-color)
-            size: 24px
-            show_label: true
-            label: |
-              [[[
-                var mph = Math.round(entity.attributes.wind_speed * 2.236936 * 10) / 10
-                return `${mph}<span style="font-size: var(--h6-font-size); font-weight: 700; opacity: .8"> MPH</span>`
-              ]]]
-            custom_fields:
-              advisory: |
-                [[[
-                  var wb = entity.attributes.wind_bearing
-                  var mph = entity.attributes.wind_speed * 2.236936
-                  var wind = states['sensor.wind_direction'].state + ' &bull; ' + states['sensor.wind_strength'].state
-                  if ((wb <= 30) || (wb >= 280)) { return wind + ' blowing from exhaust' }
-                  if ((wb > 30) && (wb <= 90)) { return wind + ' blowing towards Living Room' }
-                  if ((wb > 90) && (wb <= 180)) { return wind + ' blowing towards Bedroom' }
-                  return wind
-                ]]]
-            styles:
-              grid:
-                - grid-template-columns: 1fr min-content
-                - grid-template-areas: '"n i" "l i" "advisory i"'
-              card:
-                - padding: 16px
-              name:
-                - font-size: var(--body-font-size)
-                - align-self: start
-                - justify-self: start
-              label:
-                - font-size: var(--h1-font-size)
-                - font-weight: var(--h1-font-weight)
-                - align-self: start
-                - justify-self: start
-              img_cell:
-                - transform: >-
-                    [[[ return "rotate(" + entity.attributes.wind_bearing +
-                    "deg)" ]]]
-              custom_fields:
-                advisory:
-                  - margin-top: 4px
-                  - font-size: var(--body-font-size)
-                  - align-self: start
-                  - justify-self: start
-                  - color: var(--secondary-text-color)
 
           - type: vertical-stack
             in_card: true
             cards:
 
-              - type: sensor
-                entity: sensor.valhalla_wind
+              - type: horizontal-stack
+                cards:
+
+                  - type: 'custom:button-card'
+                    entity: weather.valhalla_2
+                    name: '[[[ return states["sensor.wind_strength"].state ]]]'
+                    show_state: true
+                    state_display: |
+                      [[[
+                        var mph = Math.round(entity.attributes.wind_speed * 2.236936 * 10) / 10
+                        return `${mph}<span style="font-size: var(--h6-font-size); font-weight: 700; opacity: .8"> MPH</span>`
+                      ]]]
+                    styles:
+                      grid:
+                        - grid-template-columns: 1fr min-content
+                        - grid-template-areas: '"n i" "s s"'
+                      card:
+                        - padding: 16px
+                      name:
+                        - font-size: var(--body-font-size)
+                        - align-self: start
+                        - justify-self: start
+                      state:
+                        - font-size: var(--h1-font-size)
+                        - font-weight: var(--h1-font-weight)
+                        - align-self: start
+                        - justify-self: start
+                        - margin-top: -2px
+
+                  - type: sensor
+                    entity: sensor.valhalla_wind
+                    name: ' '
+
+                  - type: 'custom:button-card'
+                    entity: weather.valhalla_2
+                    name: |
+                      [[[
+                        var wb = entity.attributes.wind_bearing
+                        if ((wb <= 30) || (wb >= 280)) { return 'From exhaust' }
+                        if ((wb > 30) && (wb <= 90)) { return 'Towards Living Room' }
+                        if ((wb > 90) && (wb <= 180)) { return 'Towards Bedroom' }
+                      ]]]
+                    icon: 'mdi:navigation'
+                    color: var(--primary-color)
+                    size: 24px
+                    show_state: true
+                    state_display:  '[[[ return states["sensor.wind_direction"].state ]]]'
+                    styles:
+                      grid:
+                        - grid-template-columns: 1fr min-content
+                        - grid-template-areas: '"n i" "s s"'
+                      card:
+                        - padding: 16px
+                      name:
+                        - font-size: var(--body-font-size)
+                        - align-self: start
+                        - justify-self: start
+                      state:
+                        - font-size: var(--h1-font-size)
+                        - font-weight: var(--h1-font-weight)
+                        - align-self: start
+                        - justify-self: start
+                        - margin-top: -2px
+                      img_cell:
+                        - transform: >-
+                            [[[ return "rotate(" + entity.attributes.wind_bearing +
+                            "deg)" ]]]
 
               - type: custom:apexcharts-card
                 config_templates: environment_chart
@@ -890,22 +1143,22 @@ cards:
                     show:
                       datalabels: true
                     group_by:
-                      func: avg
+                      func: first
                       duration: 30min
-                  - entity: weather.valhalla_hourly
-                    name: Meteo
-                    attribute: wind_speed
+
+                  - entity: sensor.accuweather_wind_speed_hourly
+                    name: Accuweather Forecast
                     yaxis_id: main
-                    curve: straight
-                    color: 'var(--primary-color)'
+                    color: var(--primary-color)
                     opacity: .5
                     data_generator: |
                       const now = new Date();
-                      const data = [[now.getTime(), entity.attributes.wind_speed]];
+                      const data = [[now.getTime(), entity.state]];
                       for(let i = 0; i <= 12; i++) {
-                        data.push([new Date(entity.attributes.forecast[i].datetime).getTime() + i * 1000 * 60 * 60, parseFloat(entity.attributes.forecast[i].wind_speed)] );
+                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
                       }
                       return data.reverse();
+
                 yaxis:
                   - id: main
                     min: 0
@@ -934,20 +1187,42 @@ cards:
                 config_templates: environment_chart
                 series:
                   - entity: sensor.pure_hot_cool_link_particulates
-                    name: Particulates
+                    name: Bedroom Particulates
                     yaxis_id: second
                     show:
                       datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
                   - entity: sensor.pure_hot_cool_link_volatile_organic_compounds
-                    name: VOCs
+                    name: Bedroom VOC
                     yaxis_id: second
                     show:
                       datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.kitchen_stove_monitor_voc_level
+                    name: Kitchen VOC
+                    color: purple
+                    yaxis_id: second
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
                   - entity: sensor.netatmo_strawberry_land_indoor_co2
-                    name: CO₂
+                    name: Bedroom CO₂
                     yaxis_id: main
                     show:
                       datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
                 yaxis:
                   - id: main
                   - id: second
@@ -965,20 +1240,7 @@ cards:
               - entity: fan.pure_hot_cool_link
             hours_to_show: 36
             title: Bedroom Dyson Pure
-            card_mod:
-              style: >
-                ha-card {overflow: hidden;}
-
-                .content {padding: 0 0 16px 0 !important; margin: 0 -10px 0
-                -16px; width: calc(75% + 16px); border-right: 1px dashed red;}
-
-                .card-header {
-                  padding: 16px !important;
-                  margin: 0 !important;
-                  font-size: var(--body-font-size);
-                  font-weight: var(--body-font-weight);
-                  line-height: var(--body-line-height);
-                }
+            card_mod: *history-graph-card-mod
 
 
       # [Column] Noise
@@ -1002,11 +1264,16 @@ cards:
               - type: custom:apexcharts-card
                 config_templates: environment_chart
                 series:
+
                   - entity: sensor.netatmo_strawberry_land_indoor_noise
                     yaxis_id: main
                     color: 'var(--primary-color)'
                     show:
                       datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
                 yaxis:
                   - id: main
                 apex_config:

@@ -31,7 +31,7 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title.yaml
+        layout: !include snippets/layout-page-title-with-2-badges.yaml
         view_layout:
           grid-column: 1/-1
         cards:
@@ -53,40 +53,61 @@ cards:
                 }
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
             view_layout:
               place-self: center start
             cards:
 
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
                   slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 2
+                      width: 240
+                    '1024':
+                      enabled: false
+                      slidesPerView: 2
+                      width: 400
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_my_website
-                    name: My Website ↗
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://MadelenaMak.com'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_my_website
+                        name: My Website ↗
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://MadelenaMak.com'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: sensor.my_last_fm_play_count
-                    name: Last.fm ↗
-                    icon: 'mdi:music'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://last.fm/user/pakkei'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-entity-card'
+                        entity: sensor.my_last_fm_play_count
+                        name: Last.fm ↗
+                        icon: 'mdi:music'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://last.fm/user/pakkei'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
 
 
       # [Column] Body + Health
@@ -121,12 +142,76 @@ cards:
               - type: entity
                 entity: sensor.anniversary_days_on_earth
 
-              - hours_to_show: 240
-                graph: line
-                type: sensor
-                entity: sensor.withings_sleep_score_madelena
-                name: Sleep Score
-                detail: 1
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  show_states: true
+                graph_span: 14d
+                series:
+                  - entity: sensor.withings_sleep_score_madelena
+                    name: Sleep Score
+                    type: column
+                    group_by:
+                      duration: 1d
+                      func: max
+                yaxis:
+                  - id: main
+                    min: 0
+                    max: 100
+                    align_to: 10
+                    apex_config:
+                      axisTicks:
+                        show: true
+                        width: 54
+                        offsetX: -6
+                        borderType: dotted
+                        color: rgba(var(--rgb-primary-text-color),.25)
+                      labels:
+                        offsetX: 8
+                        align: right
+                        style:
+                          fontSize: var(--h6-font-size)
+                          fontFamily: var(--font-stack)
+                apex_config:
+                  grid:
+                    borderColor: rgba(var(--rgb-primary-text-color),.25)
+                    strokeDashArray:
+                      - 1
+                      - 1
+                  plotOptions:
+                    bar:
+                      columnWidth: 16%
+                  xaxis:
+                    axisBorder:
+                      color: rgba(var(--rgb-primary-text-color),.25)
+                      offsetY: -1
+                    axisTicks:
+                      color: rgba(var(--rgb-primary-text-color),.25)
+                    labels:
+                      hideOverlappingLabels: false
+                      style:
+                        fontSize: var(--h6-font-size)
+                        fontFamily: var(--font-stack)
+                      datetimeFormatter:
+                        month: MMM
+                        day: d
+                      xformatter: |
+                        EVAL:function(value, timestamp) {
+                          return moment(timestamp).format("dd").charAt(0) + "\n" + moment(timestamp).format("D")
+                        }
+                card_mod:
+                  style: >
+                    #graph { margin: -8px; } #states__state { flex-direction: column-reverse;
+                    display: flex;}
+
+                    #state__name  { font-size: var(--body-font-size) !important; font-weight:
+                    normal !important; padding: 4px 0 12px; }
+
+                    #state__value > #state { font-size: var(--h1-font-size) !important;
+                    font-weight: 100 !important; padding-right: 4px;}
+
+                    #state__value > #uom { font-size: var(--h6-font-size) !important;
+                    font-weight: 500 !important; text-transform: uppercase; }
 
           - type: vertical-stack
             cards:
@@ -146,6 +231,76 @@ cards:
                   - entity: sensor.google_fit_move_time
                   - entity: sensor.google_fit_sleep
                   - entity: sensor.google_fit_steps
+
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  show_states: true
+                graph_span: 14d
+                series:
+                  - entity: sensor.google_fit_steps
+                    type: column
+                    group_by:
+                      duration: 1d
+                      func: max
+                yaxis:
+                  - id: main
+                    min: 0
+                    align_to: 2000
+                    apex_config:
+                      axisTicks:
+                        show: true
+                        width: 54
+                        offsetX: -6
+                        borderType: dotted
+                        color: rgba(var(--rgb-primary-text-color),.25)
+                      labels:
+                        offsetX: 8
+                        align: right
+                        style:
+                          fontSize: var(--h6-font-size)
+                          fontFamily: var(--font-stack)
+                apex_config:
+                  grid:
+                    borderColor: rgba(var(--rgb-primary-text-color),.25)
+                    strokeDashArray:
+                      - 1
+                      - 1
+                  plotOptions:
+                    bar:
+                      columnWidth: 16%
+                  xaxis:
+                    axisBorder:
+                      color: rgba(var(--rgb-primary-text-color),.25)
+                      offsetY: -1
+                    axisTicks:
+                      color: rgba(var(--rgb-primary-text-color),.25)
+                    labels:
+                      hideOverlappingLabels: false
+                      style:
+                        fontSize: var(--h6-font-size)
+                        fontFamily: var(--font-stack)
+                      datetimeFormatter:
+                        month: MMM
+                        day: d
+                      xformatter: |
+                        EVAL:function(value, timestamp) {
+                          return moment(timestamp).format("dd").charAt(0) + "\n" + moment(timestamp).format("D")
+                        }
+                card_mod:
+                  style: >
+                    #graph { margin: -8px; } #states__state { flex-direction: column-reverse;
+                    display: flex;}
+
+                    #state__name  { font-size: var(--body-font-size) !important; font-weight:
+                    normal !important; padding: 4px 0 12px; }
+
+                    #state__value > #state { font-size: var(--h1-font-size) !important;
+                    font-weight: 100 !important; padding-right: 4px;}
+
+                    #state__value > #uom { font-size: var(--h6-font-size) !important;
+                    font-weight: 500 !important; text-transform: uppercase; }
+
 
 
       # [Column] Social Reach

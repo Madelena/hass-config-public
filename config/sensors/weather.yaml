@@ -1,0 +1,20 @@
+
+- platform: noaa_tides
+  station_id: 8518750
+
+- platform: nws_alerts
+  zone_id: "NYZ075"
+
+- platform: feedparser
+  name: NWS Alert RSS Feed
+  feed_url: !secret nws_alert_feed
+  date_format: "%a, %b %d %I:%M %p"
+  inclusions:
+    - title
+    - summary
+    - cap_expires
+
+# - platform: waqi
+#   token: !secret waqi_token
+#   locations:
+#     - New York
