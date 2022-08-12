@@ -13,3 +13,22 @@
 .fp-profile,.fp-line { fill:none;stroke:var(--primary-text-color); }
 .fp-profile { stroke-width:4px; }
 .fp-line { stroke-width:2px; }
+
+.icon-spinning {
+    fill:var(--primary-text-color); 
+    animation-name: spin;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

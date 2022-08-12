@@ -1,0 +1,198 @@
+
+# Various sensors for use in the Energy tab summary charts.
+
+# Runs every 10 seconds.
+# TODO: This should be rewrote to be triggered by state
+
+- trigger:
+    platform: time_pattern
+    seconds: "/10"
+  sensor:
+
+    - name: Total Energy Use
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.current_total_energy') 
+        | selectattr('attributes.unit_of_measurement', 'equalto', 'W')
+        | rejectattr('state', 'in', ['unavailable', 'unknown'])
+        | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Total Energy Use on Fossil Fuel
+      unit_of_measurement: W
+      state: >
+        {{ (states('sensor.total_energy_use')|float(0) * states('sensor.grid_fossil_fuel_percentage')|float(0) / 100) | round(2) }}
+
+    - name: Total Energy Use on Renewables
+      unit_of_measurement: W
+      state: >
+        {{ (states('sensor.total_energy_use')|float(0) * (100 - states('sensor.grid_fossil_fuel_percentage')|float(0)) / 100) | round(2) }}
+
+    - name: All Lights Energy Use
+      unit_of_measurement: W
+      state: >
+        {%- set data = namespace(entities=[]) -%}
+        {% for light in expand('group.all_lights') %}
+          {%- set sensor = states(light.entity_id | regex_replace(find='light\.', replace='sensor.') + '_power') -%}
+          {%- if ((sensor != 'unknown') and (sensor != 'unavailable')) -%}
+            {%- set data.entities = data.entities + [sensor | float(0)] %}
+          {%- endif -%}
+        {% endfor %}
+        {{ data.entities | sum | round(1) }}
+
+    - name: Workspace Lights Energy Use
+      unit_of_measurement: W
+      state: >
+        {%- set data = namespace(entities=[]) -%}
+        {% for light in expand('group.workspace_lights') %}
+          {%- set sensor = states(light.entity_id | regex_replace(find='light\.', replace='sensor.') + '_power') -%}
+          {%- if ((sensor != 'unknown') and (sensor != 'unavailable')) -%}
+            {%- set data.entities = data.entities + [sensor | float(0)] %}
+          {%- endif -%}
+        {% endfor %}
+        {{ data.entities | sum | round(1) }}
+
+    - name: Bedroom Lights Energy Use
+      unit_of_measurement: W
+      state: >
+        {%- set data = namespace(entities=[]) -%}
+        {% for light in expand('group.bedroom_lights') %}
+          {%- set sensor = states(light.entity_id | regex_replace(find='light\.', replace='sensor.') + '_power') -%}
+          {%- if ((sensor != 'unknown') and (sensor != 'unavailable')) -%}
+            {%- set data.entities = data.entities + [sensor | float(0)] %}
+          {%- endif -%}
+        {% endfor %}
+        {{ data.entities | sum | round(1) }}
+
+    - name: Living Room Lights Energy Use
+      unit_of_measurement: W
+      state: >
+        {%- set data = namespace(entities=[]) -%}
+        {% for light in expand(['group.living_room_lights', 'group.living_room_accents']) %}
+          {%- set sensor = states(light.entity_id | regex_replace(find='light\.', replace='sensor.') + '_power') -%}
+          {%- if ((sensor != 'unknown') and (sensor != 'unavailable')) -%}
+            {%- set data.entities = data.entities + [sensor | float(0)] %}
+          {%- endif -%}
+        {% endfor %}
+        {{ data.entities | sum | round(1) }}
+
+    - name: Kitchen Lights Energy Use
+      unit_of_measurement: W
+      state: >
+        {%- set data = namespace(entities=[]) -%}
+        {% for light in expand('group.kitchen_lights') %}
+          {%- set sensor = states(light.entity_id | regex_replace(find='light\.', replace='sensor.') + '_power') -%}
+          {%- if ((sensor != 'unknown') and (sensor != 'unavailable')) -%}
+            {%- set data.entities = data.entities + [sensor | float(0)] %}
+          {%- endif -%}
+        {% endfor %}
+        {{ data.entities | sum | round(1) }}
+
+    - name: Unaccounted Lights Energy Use
+      unit_of_measurement: W
+      state: >
+        {%- set data = namespace(entities=[]) -%}
+        {% for light in expand('group.unaccounted_lights') %}
+          {%- set sensor = states(light.entity_id | regex_replace(find='light\.', replace='sensor.') + '_power') -%}
+          {%- if ((sensor != 'unknown') and (sensor != 'unavailable')) -%}
+            {%- set data.entities = data.entities + [sensor | float(0)] %}
+          {%- endif -%}
+        {% endfor %}
+        {{ data.entities | sum | round(1) }}
+
+    - name: Total Energy Use (Hourly, Rounded)
+      unit_of_measurement: Wh
+      state: >
+        {{ states('sensor.total_energy_use_hourly') | round }}
+
+    - name: Total Energy Use (Daily, Rounded)
+      unit_of_measurement: kWh
+      state: >
+        {{ states('sensor.total_energy_use_daily') | round (-1) | float / 1000 }}
+
+    - name: Circuit North Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_north') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Circuit South Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_south') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Circuit Center Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_center') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Circuit Living Room Lights Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_living_room_lights') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Circuit Bedroom A/C Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_bedroom_ac') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Circuit Fridge Counter Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_fridge_counter') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: Circuit Living Room Projector Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_living_room_projector') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: All Climate Energy Use
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.all_climate_energy_use') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: All Computers Energy Use
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.all_computers_energy_use') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: All Entertainment Energy Use
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.all_entertainement_energy_use') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+    - name: All Kitchen Energy Use
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.all_kitchen_energy_use') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
+
+# Calculate the daily amount of power usage.
+
+- trigger:
+    platform: time
+    at: "23:59:59"
+  sensor:
+    - name: Total Energy Use (Daily Max)
+      unit_of_measurement: kWh
+      state: >
+        {{ states('sensor.total_energy_use_daily') | round (-1) | float / 1000 }}
+    - name: Total Energy Use (Daily CO2 Max)
+      unit_of_measurement: gCO₂
+      state: >
+        {{ states('sensor.total_energy_use_daily_co2') | round(-1) }}
+
+
+# Calculate the hourly amount of power usage.
+
+- trigger:
+    platform: time_pattern
+    minutes: 59
+    seconds: 58
+  sensor:
+    - name: Total Energy Use (Hourly Max)
+      unit_of_measurement: Wh
+      state: >
+        {{ states('sensor.total_energy_use_hourly') | round (2) }}}}
+    - name: Total Energy Use (Hourly CO2 Equivalent)
+      unit_of_measurement: gCO₂
+      state: >
+        {{ states('sensor.total_energy_use_hourly')|float(0) / 1000 * states('sensor.co2_intensity')|int }}

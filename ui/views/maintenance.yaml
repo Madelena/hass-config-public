@@ -27,30 +27,9 @@ cards:
 
           Peanut Hamper is {{ states('vacuum.peanut_hamper') }}{{ iif(
           is_state('binary_sensor.peanut_hamper_bin_full', 'on'), ' and
-          needs to be emptied. ', '. ') }} {%- set chore_done =
-          namespace(entities=[]) -%}
-
-          {%- set chore_todo = namespace(entities=[]) -%}
-
-          {%- set chore_overdue = namespace(entities=[]) -%}
-
-          {%- for chore in expand('group.chores') -%}
-            {%- if (chore.state != 'unknown') -%}
-              {%- set input = chore.entity_id|regex_replace(find='input_button', replace='input_text') -%}
-              {%- set diff = ( as_timestamp(now()) - as_timestamp(chore.state) ) / 60 / 60 / 24 %}
-              {%- set due = states(input)|float(-1) -%}
-              {%- if (diff < 1) and (as_datetime(chore.state).day == now().day) -%}{%- set chore_done.entities = chore_done.entities + [chore.entity_id] -%}{%- endif -%}
-              {%- if due > 0 -%}
-                {%- if (due < diff) -%}{%- set chore_overdue.entities = chore_overdue.entities + [chore.entity_id] -%}{%- else -%}
-                  {%- if (due < diff + (due / 4)) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}
-                {%- endif -%}
-              {%- endif -%}
-            {%- endif %}
-          {%- endfor -%}
-
-          There are {{ chore_done.entities|length }} chores done, {{
-          chore_todo.entities|length }} to do soon, and {{
-          chore_overdue.entities|length }} overdue.
+          needs to be emptied. ', '. ') }} There are {{ state_attr('sensor.chores_done', 'entities')|length }} chores done, {{
+          state_attr('sensor.chores_to_do', 'entities')|length }} to do soon, and {{
+          state_attr('sensor.chores_overdue', 'entities')|length }} overdue.
 
 
       # [Column] My Machines
@@ -134,68 +113,79 @@ cards:
       # [Column] Chores
 
       - type: vertical-stack
+        view_layout:
+          grid-column: 2/-2
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
               name: CHORES
-            view_layout:
-              grid-column: 1/-1
 
-          - type: 'custom:auto-entities'
-            filter:
-              include:
-                - group: group.chore_plants
-                  options:
-                    type: 'custom:button-card'
-                    template: chore_card
-            card:
-              type: entities
-              title: Plants
+          - type: 'custom:layout-card'
+            layout_type: 'custom:masonry-layout'
+            layout:
+              margin: 0 -16px
+              card_margin: 1px 16px
+              width: 360
 
-          - type: 'custom:auto-entities'
-            filter:
-              include:
-                - group: group.chore_kitchen
-                  options:
-                    type: 'custom:button-card'
-                    template: chore_card
-            card:
-              type: entities
-              title: Kitchen
 
-          - type: 'custom:auto-entities'
-            filter:
-              include:
-                - group: group.chore_bathroom
-                  options:
-                    type: 'custom:button-card'
-                    template: chore_card
-            card:
-              type: entities
-              title: Bathroom
+            cards:
 
-          - type: 'custom:auto-entities'
-            filter:
-              include:
-                - group: group.chore_living_room
-                  options:
-                    type: 'custom:button-card'
-                    template: chore_card
-            card:
-              type: entities
-              title: Living Room
+              - type: 'custom:auto-entities'
+                filter:
+                  include:
+                    - group: group.chore_plants
+                      options:
+                        type: 'custom:button-card'
+                        template: chore_card
+                card:
+                  type: entities
+                  title: Plants
 
-          - type: 'custom:auto-entities'
-            filter:
-              include:
-                - group: group.chore_personal
-                  options:
-                    type: 'custom:button-card'
-                    template: chore_card
-            card:
-              type: entities
-              title: Personal
+              - type: 'custom:auto-entities'
+                filter:
+                  include:
+                    - group: group.chore_kitchen
+                      options:
+                        type: 'custom:button-card'
+                        template: chore_card
+                card:
+                  type: entities
+                  title: Kitchen
+
+              - type: 'custom:auto-entities'
+                filter:
+                  include:
+                    - group: group.chore_bathroom
+                      options:
+                        type: 'custom:button-card'
+                        template: chore_card
+                card:
+                  type: entities
+                  title: Bathroom
+
+              - type: 'custom:auto-entities'
+                filter:
+                  include:
+                    - group: group.chore_living_room
+                      options:
+                        type: 'custom:button-card'
+                        template: chore_card
+                card:
+                  type: entities
+                  title: Living Room
+
+              - type: 'custom:auto-entities'
+                filter:
+                  include:
+                    - group: group.chore_personal
+                      options:
+                        type: 'custom:button-card'
+                        template: chore_card
+                card:
+                  type: entities
+                  title: Personal
 
 
       # [Column] Batteries
@@ -215,6 +205,7 @@ cards:
             variables:
               - entities:
                   - entity: sensor.front_door_camera_battery
+                  - entity: sensor.front_door_switchbot_contact_sensor_battery
                   - entity: sensor.kitchen_leak_sensor_power
               - title: Crucial
 
@@ -225,6 +216,7 @@ cards:
                   - entity: sensor.netatmo_strawberry_land_indoor_outdoor_battery_percent
                   - entity: sensor.living_room_window_sensor_center_power
                   - entity: sensor.living_room_window_sensor_right_power
+                  - entity: sensor.bedroom_window_sensor_left_power
                   - entity: sensor.bedroom_window_sensor_center_power
                   - entity: sensor.bedroom_hue_sensor_battery
                   - entity: sensor.living_room_hue_sensor_battery
@@ -238,8 +230,8 @@ cards:
             template: metro_bar_card_no_icon
             variables:
               - entities:
-                  - entity: sensor.037_switchbot_pakkeimak_com_battery
-                  - entity: sensor.037_switchbot_pakkeimak_com_battery_2
+                  - entity: sensor.bedroom_window_curtain_left_battery
+                  - entity: sensor.bedroom_window_curtain_right_battery
                   - entity: sensor.astralplane_hue_dimmer_battery_level
                   - entity: sensor.bedroom_hue_dimmer_battery_level
                   - entity: sensor.living_room_hue_dimmer_battery_level

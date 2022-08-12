@@ -1,0 +1,13 @@
+
+- platform: ics_calendar
+  calendars:
+
+    - name: "Astronomy Calendar"
+      url: "https://cantonbecker.com/astronomy-calendar/astrocal.ics"
+      include_all_day: true
+      download_interval: 21600
+    
+    - name: "Chinese Lunar Calendar"
+      url: "https://lwlsw.github.io/Chinese-Lunar-Calendar-ics/chinese_lunar_my.ics"
+      include_all_day: true
+      download_interval: 21600

@@ -1,0 +1,41 @@
+
+- binary_sensor:
+    - name: Kitchen Counter Kettle Boiling
+      state: >
+        {% if states('sensor.kitchen_counter_kettle_current_consumption') | float >= 1000 %}
+          on
+        {% else %}
+          off
+        {% endif %}
+      delay_on: '0:00:05'
+      delay_off: '0:00:02'
+      icon: mdi:kettle-pour-over
+
+- binary_sensor:
+    - name: Kitchen Counter Toaster Toasting
+      state: >
+        {% if states('sensor.kitchen_counter_toaster_current_consumption') | float >= 1000 %}
+          on
+        {% else %}
+          off
+        {% endif %}
+      delay_on: '0:00:05'
+      delay_off: '0:00:02'
+      icon: mdi:toaster
+
+- binary_sensor:
+    - name: Kitchen Stove Smokey
+      state: >
+        {% if states('sensor.kitchen_stove_monitor_voc_level') | float >= 100 %}
+          on
+        {% else %}
+          off
+        {% endif %}
+      delay_on: '0:00:05'
+      delay_off: '0:00:02'
+      device_class: smoke
+      icon: mdi:stove
+
+# Rice Cooker left on for too long
+# Rice Cooker cooking
+# Left someone in the microwave

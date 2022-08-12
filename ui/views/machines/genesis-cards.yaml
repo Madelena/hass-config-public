@@ -30,42 +30,70 @@ cards:
         show_state: true
 
       - type: 'custom:layout-card'
-        layout_type: 'custom:horizontal-layout'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
         view_layout:
-          place-self: center
+          place-self: center start
         cards:
 
           - type: 'custom:swipe-card'
             parameters:
-              breakpointBase: container
               enabled: true
               slidesPerView: 1.66
+              width: 480
               breakpoints:
-                '600':
+                '800':
                   enabled: false
                   slidesPerView: 3
+                  width: 360
+                '1024':
+                  enabled: false
+                  slidesPerView: 3
+                  width: 600
             cards:
 
-              - type: 'custom:mushroom-entity-card'
-                entity: button.octoprint_pause_job
-                name: Pause
-                icon: 'mdi:pause'
-                icon_color: pink
-                style: 'ha-card {background: none;}'
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                    type: 'custom:mushroom-entity-card'
+                    entity: button.octoprint_pause_job
+                    name: Pause
+                    icon: 'mdi:pause'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-1
+                    layout: vertical
 
-              - type: 'custom:mushroom-entity-card'
-                entity: button.octoprint_resume_job
-                name: Resume
-                icon: 'mdi:play'
-                icon_color: pink
-                style: 'ha-card {background: none;}'
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                    type: 'custom:mushroom-entity-card'
+                    entity: button.octoprint_resume_job
+                    name: Resume
+                    icon: 'mdi:play'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-2
+                    layout: vertical
 
-              - type: 'custom:mushroom-entity-card'
-                entity: button.octoprint_stop_job
-                name: Stop
-                icon: 'mdi:stop'
-                icon_color: pink
-                style: 'ha-card {background: none;}'
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                    type: 'custom:mushroom-entity-card'
+                    entity: button.octoprint_stop_job
+                    name: Stop
+                    icon: 'mdi:stop'
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-3
+                    layout: vertical
 
 
   - type: vertical-stack

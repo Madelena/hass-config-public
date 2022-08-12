@@ -23,8 +23,8 @@ layout:
   margin: 0
   card_margin: 0
   mediaquery:
-    '(min-width: 1544px)':
-      grid-template-columns: auto 1440px auto
+    '(min-width: 1704px)':
+      grid-template-columns: auto 1600px auto
       grid-template-areas: |
         ". cc ." ". . ."
     '(min-width: 1200px)':
@@ -40,12 +40,12 @@ cards:
 
     layout:
       grid-template-columns: >-
-        calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
-        25% - 24px )
+        calc( 20% - 24px ) calc( 20% - 24px ) calc( 20% - 24px ) calc( 20% - 24px ) calc(
+        20% - 24px )
       grid-column-gap: 32px
       grid-template-areas: |
-        "h h h h"
-        "c1 fp fp c2"
+        "h h h h h"
+        "c1 fp fp c2 c3"
       mediaquery:
         '(max-width: 512px)':
           grid-template-columns: 1fr
@@ -69,13 +69,20 @@ cards:
             "c1 fp fp"
             "c2 none none"
           margin: 0
+        '(max-width: 1440px)':
+          grid-template-columns: >-
+            calc( 25% - 24px ) calc( 25% - 24px ) calc( 25% - 24px ) calc(
+            25% - 24px )
+          grid-template-areas: |
+            "h h h h"
+            "c1 fp fp c2"
+          margin: 0
       margin: 0
 
     view_layout:
       grid-area: cc
 
     cards:
-
 
       # [Header] Greetings
 
@@ -88,8 +95,6 @@ cards:
           Maddy:
             type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout:
-              margin: -16px 0 0 0
 
           default:
             type: 'custom:layout-card'
@@ -97,10 +102,8 @@ cards:
             layout:
               grid-template-columns: auto min-content
               grid-template-rows: auto
-              margin: -1px -1px -16px -1px
+              margin: -1px -1px -1px -1px
               padding: 0
-            view_layout:
-              grid-area: h
             cards:
                 
               - type: markdown
@@ -121,7 +124,6 @@ cards:
                       font-weight: 500;
                       line-height: 1.1;
                       margin-left: -2px;
-                      margin-block-end: -8px;
                       margin-top: -12px !important;
                     }
 
@@ -172,12 +174,22 @@ cards:
           grid-area: fp
         cards:
 
-          - type: 'custom:button-card'
-            template: header_card
-            variables:
-              name: U.S.S. STRAWBERRY FIELDS
-              label: Areas
-              link: /config/areas/dashboard
+          - type: custom:state-switch
+            entity: user
+            default: default
+            states:
+              default: &summary-floorplan-header
+                type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: U.S.S. STRAWBERRY FIELDS
+                  label: Areas
+                  link: /config/areas/dashboard
+              Maddy:
+                <<: *summary-floorplan-header
+                styles:
+                  card:
+                    - margin-top: -20px
 
           - type: 'custom:floorplan-card'
             config:
@@ -305,6 +317,7 @@ cards:
                     - group.workspace_lights
                     - group.living_room_lights
                     - group.kitchen_lights
+                    - binary_sensor.bedroom_air_conditioner_power
                   state_action:
                     action: call-service
                     service: floorplan.text_set
@@ -399,6 +412,32 @@ cards:
                     service_data:
                       class: '${(entity.state > 27) || (entity.state < 20) ? "bg-on" : "bg-off"}'
 
+                - entity: binary_sensor.bedroom_air_conditioner_power
+                  element: bedroom.climate.icon
+                  tap_action: false
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "icon-spinning" : "icon"}'
+
+                - entity: >-
+                    binary_sensor.bedroom_air_conditioner_power
+                  element: >-
+                    bedroom.climate.bg
+                  state_action:
+                    action: call-service
+                    service: floorplan.class_set
+                    service_data:
+                      class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+                  tap_action:
+                    action: call-service
+                    service: homeassistant.toggle
+                    service_data:
+                      entity_id: switch.bedroom_air_conditioner
+                    confirmation:
+                      text: Switch Bedroom Air Conditioner?
+
                 - element: workspace.pointer
                   state_action:
                     action: call-service
@@ -483,14 +522,24 @@ cards:
               padding: 0
             cards:
 
-              - type: 'custom:button-card'
-                template: header_card
-                variables:
-                  name: ENERGY
-                  label: More
-                  link: /ui-dashboard/energy
+              - type: custom:state-switch
+                entity: user
+                default: default
                 view_layout:
                   grid-column: 1/-1
+                states:
+                  default: &summary-energy-header
+                    type: 'custom:button-card'
+                    template: header_card
+                    variables:
+                      name: ENERGY
+                      label: More
+                      link: /ui-dashboard/energy
+                  Maddy:
+                    <<: *summary-energy-header
+                    styles:
+                      card:
+                        - margin-top: -20px
 
               - type: 'custom:decluttering-card'
                 template: mini_graph_tile
@@ -529,10 +578,25 @@ cards:
                   - live_tile_card
                   - live_tile_with_long_state
                   - live_tile_with_state_countdown
-                entity: binary_sensor.front_door_contact_sensor_ias_zone
+                entity: binary_sensor.front_door_switchbot_contact_sensor_door_open
                 name: Front Door
+                triggers_update: all
+                state_display: |
+                  [[[
+                    var lockState = states["lock.front_door_lock"].state
+                    return (lockState.charAt(0).toUpperCase() + lockState.slice(1)) + " + " + ((entity.state == "on") ? "Open" : "Closed")
+                  ]]]
+                styles:
+                  grid:
+                    - background: |
+                        [[[
+                          if (entity.state == "on") { return "var(--accent-color)" }
+                          if (states["lock.front_door_lock"].state == "unlocked") { return "rgb(var(--rgb-primary-color), .5)" }
+                          return "var(--ha-card-background)"
+                        ]]]
                 variables:
                   aspect_ratio: '[[[ return Math.round(this.offsetWidth / 112) ]]]'
+                  duration: 300
                 view_layout:
                   grid-column: 1/-2
 
@@ -589,12 +653,12 @@ cards:
 
               - type: 'custom:button-card'
                 template: header_card
+                view_layout:
+                  grid-column: 1/-1
                 variables:
                   name: NETWORK
                   label: More
                   link: /ui-dashboard/1
-                view_layout:
-                  grid-column: 1/-1
 
               - type: 'custom:button-card'
                 template:
@@ -622,8 +686,9 @@ cards:
                 template: mini_graph_tile
                 variables:
                   - entities:
-                      - entity: sensor.asuswrt_devices_connected
+                      - entity: sensor.valhalla_router_connected_devices
                   - title: Devices Connected
+                  - unit: Devices
 
               - type: 'custom:decluttering-card'
                 template: mini_graph_tile
@@ -686,6 +751,212 @@ cards:
               card_margin: 1px
 
 
+      # [Column] Maintenance / Devices
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+        view_layout:
+          grid-area: c3
+          show:
+            mediaquery: '(min-width: 1440.01px)'
+        cards: &summary-column-maintenance-device-cards
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card_no_link
+                variables:
+                  name: MAINTENANCE
+                  label: More
+                  link: /ui-dashboard/maintenance
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                variables:
+                  aspect_ratio: 2
+                name: |
+                  [[[
+                    var choresOverdue = states["sensor.chores_overdue"].attributes.entities.length
+                    var choresToDo = states["sensor.chores_to_do"].attributes.entities.length
+                    if (choresOverdue > 0 || choresToDo > 0) {
+                      var chores = choresOverdue + choresToDo
+                      if (chores == 1) { return "Just 1 Chore!" } else { return chores + " Chores" }
+                    }
+                    return "Chores"
+                  ]]]
+                state_display: |
+                  [[[
+                    if (states["sensor.chores_overdue"].attributes.entities.length < 1 && states["sensor.chores_to_do"].attributes.entities.length < 1) { return "🦄 All Done!" }
+                  ]]]
+                xstate_display: |
+                  [[[
+                    var chores = ''
+                    var choresOverdue = states["sensor.chores_overdue"].attributes.entities.length
+                    var choresToDo = states["sensor.chores_to_do"].attributes.entities.length
+                    if (choresOverdue > 0) { chores = choresOverdue + " Overdue" }
+                    if (choresOverdue > 0 && choresToDo > 0) { chores = chores + " + " }
+                    if (choresToDo > 0) { chores = chores + choresToDo + " to Do" }
+                    return chores
+                  ]]]
+                label: |
+                  [[[
+                    var chores = ''
+                    var choresOverdue = states["sensor.chores_overdue"].attributes.entities
+                    for (let e in choresOverdue) {
+                      chores = chores + "<li>" + states[choresOverdue[e]].attributes.friendly_name + "</li>"
+                    }
+                    var choresToDo = states["sensor.chores_to_do"].attributes.entities
+                    for (let e in choresToDo) {
+                      chores = chores + "<li>" + states[choresToDo[e]].attributes.friendly_name + "</li>"
+                    }
+                    return chores
+                  ]]]
+                icon: mdi:clipboard-check-outline
+                styles:
+                  card:
+                    - background: |
+                        [[[
+                          if (states["sensor.chores_overdue"].attributes.entities.length > 0) { return "var(--primary-color)" }
+                          if (states["sensor.chores_to_do"].attributes.entities.length > 0) { return "rgba(var(--rgb-primary-color), .5)" }
+                          return "var(--ha-card-background)"
+                        ]]]
+                    - color: |
+                        [[[
+                          if (states["sensor.chores_overdue"].attributes.entities.length > 0) { return "var(--accent-text-color)" }
+                          if (states["sensor.chores_to_do"].attributes.entities.length > 0) { return "var(--primary-text-color)" }
+                          return "var(--disabled-text-color)"
+                        ]]]
+                  label:
+                    - padding-top: 8px
+                  state:
+                    - padding-top: 8px
+                tap_action:
+                  action: navigate
+                  navigation_path: /ui-dashboard/maintenance
+                triggers_update:
+                  - sensor.chores_overdue
+                  - sensor.chores_to_do
+                extra_styles: |
+                  li {
+                    list-style: square;
+                  }
+                  li:before {
+                    content: "";
+                    margin-left: -8px;
+                  }
+                view_layout:
+                  grid-column: span 2
+
+              # - type: 'custom:button-card'
+              #   template:
+              #     - live_tile_card
+              #   entity: sensor.octoprint_current_state
+              #   name: Plants
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include snippets/layout-live-tile.yaml
+            cards:
+
+              - type: 'custom:button-card'
+                template: header_card
+                variables:
+                  name: DEVICES
+                  label: All Devices
+                  link: /ui-machines
+                view_layout:
+                  grid-column: 1/-1
+
+              - type: 'custom:state-switch'
+                entity: binary_sensor.octoprint_printing
+                default: "off"
+                states:
+                  "on":
+                    type: 'custom:button-card'
+                    template:
+                      - live_tile_card
+                      - live_tile_with_accent_percent_bar
+                    entity: sensor.octoprint_job_percentage
+                    name: Genesis
+                    state_display: |
+                      [[[
+                        return Math.round(states['sensor.octoprint_job_percentage'].state * 10)/10 + '<span style="font-size: var(--h6-font-size); font-weight: 500; opacity: .66;"> %</span>'
+                      ]]]
+                    label: |
+                      [[[
+                        return 'Finishing ' + moment(states['sensor.octoprint_estimated_finish_time'].state).fromNow()
+                      ]]]
+                  "off":
+                    type: 'custom:button-card'
+                    template:
+                      - live_tile_card
+                      - live_tile_with_long_state
+                      - live_tile_with_last_changed_label
+                    entity: sensor.octoprint_current_state
+                    name: Genesis
+                    state:
+                      - value: Operational
+                        color: 'rgba(var(--rgb-primary-color),.33)'
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_last_changed_label
+                entity: vacuum.peanut_hamper
+                name: Peanut Hamper
+                state:
+                  - value: docked
+                    color: 'off'
+                  - value: cleaning
+                    color: 'rgb(var(--rgb-primary-color),.33)'
+                  - value: error
+                    color: 'rgba(var(--rgb-primary-color))'
+                  - value: idle
+                    color: 'rgba(var(--rgb-primary-color))'
+                  - value: returning
+                    color: 'rgb(var(--rgb-primary-color),.33)'
+                  - operator: default
+                    color: 'var(--primary-color)'
+                state_display: >-
+                  [[[ 
+                    if (entity.state == "error") { return entity.attributes.error }
+                    if (entity.attributes.bin_full) { return 'Bin full' }
+                    if (!entity.attributes.bin_present) { return 'Bin not present' }
+                  ]]]
+                styles:
+                  state:
+                    - text-transform: capitalize
+                  card:
+                    - background: |
+                        [[[
+                          if (entity.attributes.bin_full) { return 'var(--accent-color)' }
+                        ]]]
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.dorothy_intel_core_i5_750_load_cpu_total
+                  - title: Dorothy
+                  - icon: 'mdi:cpu-64-bit'
+
+              - type: 'custom:decluttering-card'
+                template: mini_graph_tile
+                variables:
+                  - entities:
+                      - entity: sensor.unison_processor_use
+                  - title: Unison
+
       # Begin Masonry Layout here.
 
       - type: 'custom:layout-card'
@@ -706,7 +977,7 @@ cards:
             layout:
               width: 256
               max_width: 512
-              max_cols: 4
+              max_cols: 5
               card_margin: 0 16px
               margin: 0 -16px
             view_layout:
@@ -729,82 +1000,16 @@ cards:
                 cards: *summary-column-network-cards
 
 
-              # [Column] Devices
+              # [Column] Maintenance (Repeat) / Devices (Repeat)
 
               - type: 'custom:layout-card'
                 layout_type: 'custom:grid-layout'
-                layout: !include snippets/layout-live-tile.yaml
-                cards:
-
-                  - type: 'custom:button-card'
-                    template: header_card_no_link
-                    variables:
-                      name: DEVICES
-                    view_layout:
-                      grid-column: 1/-1
-
-                  - type: 'custom:button-card'
-                    template:
-                      - live_tile_card
-                      - live_tile_with_long_state
-                      - live_tile_with_last_changed_label
-                    entity: sensor.octoprint_current_state
-                    name: Genesis
-                    state:
-                      - value: Printing
-                        color: 'rgb(var(--rgb-primary-color))'
-                      - value: Operational
-                        color: 'rgba(var(--rgb-primary-color),.33)'
-
-                  - type: 'custom:button-card'
-                    template:
-                      - live_tile_card
-                      - live_tile_with_long_state
-                      - live_tile_with_last_changed_label
-                    entity: vacuum.peanut_hamper
-                    name: Peanut Hamper
-                    state:
-                      - value: docked
-                        color: 'off'
-                      - value: cleaning
-                        color: 'rgb(var(--rgb-primary-color),.33)'
-                      - value: error
-                        color: 'rgba(var(--rgb-primary-color))'
-                      - value: idle
-                        color: 'rgba(var(--rgb-primary-color))'
-                      - value: returning
-                        color: 'rgb(var(--rgb-primary-color),.33)'
-                      - operator: default
-                        color: 'var(--primary-color)'
-                    state_display: >-
-                      [[[ 
-                        if (entity.state == "error") { return entity.attributes.error }
-                        if (entity.attributes.bin_full) { return 'Bin full' }
-                        if (!entity.attributes.bin_present) { return 'Bin not present' }
-                      ]]]
-                    styles:
-                      state:
-                        - text-transform: capitalize
-                      card:
-                        - background: |
-                            [[[
-                              if (entity.attributes.bin_full) { return 'var(--accent-color)' }
-                            ]]]
-
-                  - type: 'custom:decluttering-card'
-                    template: mini_graph_tile
-                    variables:
-                      - entities:
-                          - entity: sensor.dorothy_intel_core_i5_750_load_cpu_total
-                      - title: Dorothy
-                      - icon: 'mdi:cpu-64-bit'
-
-                  - type: 'custom:decluttering-card'
-                    template: mini_graph_tile
-                    variables:
-                      - entities:
-                          - entity: sensor.unison_processor_use
-                      - title: Unison
+                layout:
+                  margin: 0
+                view_layout:
+                  show:
+                    mediaquery: '(max-width: 1440px)'
+                cards: *summary-column-maintenance-device-cards
 
 
               # [Column] Light (Repeat) / Me
@@ -869,13 +1074,13 @@ cards:
                                   return 'linear-gradient( rgba(var(--rgb-primary-color),' + opacity + '), rgba(var(--rgb-primary-color),' + opacity + '))'
                                 ]]]
 
-                      # - type: 'custom:decluttering-card'
-                      #   template: mini_graph_tile
-                      #   variables:
-                      #     - entities:
-                      #         - entity: sensor.withings_sleep_score_madelena
-                      #     - title: Sleep Score
-                      #     - hours_to_show: 96
+                      - type: 'custom:decluttering-card'
+                        template: mini_graph_tile
+                        variables:
+                          - entities:
+                              - entity: sensor.withings_sleep_score_madelena
+                          - title: Sleep Score
+                          - hours_to_show: 96
 
                       - type: 'custom:decluttering-card'
                         template: mini_graph_tile
@@ -1108,9 +1313,9 @@ cards:
                     name: '[[[ return states["sensor.wind_strength"].state ]]]'
                     icon: 'mdi:navigation'
                     label: '[[[ return states["sensor.wind_direction"].state ]]]'
-                    state_display: '[[[ return entity.state.split(" ") ]]]'
+                    state_display: '[[[ return Math.round(parseFloat(states["sensor.valhalla_wind"].state) * 0.6213712 * 10) / 10 ]]]'
                     custom_fields:
-                      unit: '[[[ return entity.attributes.unit_of_measurement ]]]'
+                      unit: MPH
                     styles:
                       grid:
                         - background: var(--ha-card-background)
@@ -1242,7 +1447,10 @@ cards:
                       ]]]
                     state:
                       - value: Slow
-                        color: 'rgba(var(--rgb-primary-color), .33)'
+                        styles:
+                          card:
+                            - background: rgba(var(--rgb-primary-color), .33)
+                            - color: var(--primary-text-color)
                       - value: 'Not Good'
                         color: 'rgba(var(--rgb-primary-color), .5)'
                       - value: No Service
@@ -1295,7 +1503,11 @@ cards:
                           "").replace(/To view this message in.*/g, "") ]]]
                         styles:
                           card:
-                            - color: var(--primary-text)
+                            - color: |
+                                [[[
+                                  var diff = (new Date() - new Date(entity.attributes.entries[variables.slide].published)) / 1000
+                                  if (diff > 14472) { return "var(--primary-text-color)" } else { return "var(--accent-text-color)" }
+                                ]]]
                             - background-image: |
                                 [[[
                                   var diff = (new Date() - new Date(entity.attributes.entries[variables.slide].published)) / 1000
@@ -1343,24 +1555,9 @@ cards:
                     template: mini_graph_tile
                     variables:
                       - entities:
-                          - entity: sensor.waze_travel_time
-                      - title: Driving Time
-
-                  - type: 'custom:button-card'
-                    template:
-                      - live_tile_with_camera
-                    name: Traffic
-                    entity: camera.bing_maps_traffic
-                    show_state: false
-                    variables:
-                      picture: '[[[ return entity.attributes.entity_picture ]]]'
-
-                  - type: 'custom:decluttering-card'
-                    template: mini_graph_tile
-                    variables:
-                      - entities:
                           - entity: sensor.gasbuddy_average_gas_price
                       - title: Avg Gas Price
+                      - decimals: 2
 
                   - type: 'custom:button-card'
                     template:
@@ -1380,6 +1577,22 @@ cards:
                             - color: var(--disabled-text-color)
                       - operator: 'default'
                         color: var(--primary-color)
+
+                  - type: 'custom:decluttering-card'
+                    template: mini_graph_tile
+                    variables:
+                      - entities:
+                          - entity: sensor.waze_travel_time
+                      - title: Driving Time
+
+                  - type: 'custom:button-card'
+                    template:
+                      - live_tile_with_camera
+                    name: Traffic
+                    entity: camera.bing_maps_traffic
+                    show_state: false
+                    variables:
+                      picture: '[[[ return entity.attributes.entity_picture ]]]'
 
                 layout:
                   grid-template-columns: 'repeat(auto-fill, [col-start] minmax(112px, 1fr) [col-end])'
@@ -1556,7 +1769,7 @@ cards:
                           aspect_ratio: 2/1
                         styles:
                           card:
-                            - color: white
+                            - color: var(--primary-text-color)
                             - background-size: cover
                             - background-image: >
                                 [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
@@ -1586,7 +1799,7 @@ cards:
                           aspect_ratio: 2/1
                         styles:
                           card:
-                            - color: white
+                            - color: var(--primary-text-color)
                             - background-size: cover
                             - background-image: >
                                 [[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color), .5), rgba(var(--rgb-primary-background-color), .5)), url('" + 
@@ -1616,7 +1829,7 @@ cards:
                           aspect_ratio: 2/1
                         styles:
                           card:
-                            - color: white
+                            - color: var(--primary-text-color)
                             - background: var(--ha-card-background)
 
 
@@ -1734,9 +1947,17 @@ cards:
                     show_state: false
                     # state_display: '[[[ return entity.attributes.number_of_people_in_space ]]]'
                     show_label: true
-                    label: '[[[ return moment(entity.attributes.next_rise).fromNow() ]]]'
+                    label: '[[[ return moment(entity.attributes.next_rise).format("HH:mm") ]]]'
                     # custom_fields:
                     #  unit: People
+                    styles:
+                      card:
+                        - background: |
+                            [[[
+                              return "url('https://dev.virtualearth.net/REST/v1/Imagery/Map/CanvasDark/" + entity.attributes.latitude + "," + entity.attributes.longitude + "/3?mapSize=400,400&format=png&key=X')"
+                            ]]]
+                        - background-size: 120% 120%
+                        - background-position: center center
 
                   # - type: map
                   #   entities:
@@ -1774,14 +1995,18 @@ cards:
                           - live_tile_card
                           - live_tile_with_long_state
                         entity: sensor.noaa_space_weather_alert_1
-                        name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " + moment(entity.attributes.date).fromNow() ]]]'
+                        name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " + moment(entity.attributes.date).subtract(5, "h").fromNow() ]]]'
                         state_display: '[[[ return entity.attributes.summary.split(": ")[1] ]]]'
                         label: '[[[ return entity.attributes.potential_impacts ]]]'
                         color: var(--ha-card-background)
                         icon: mdi:alert-octagram
                         styles:
                           card:
-                            - color: var(--primary-text)
+                            - color: |
+                                [[[
+                                  var diff = (new Date() - new Date(entity.attributes.date)) / 1000
+                                  if (diff > 57888) { return "var(--primary-text-color)" } else { return "var(--accent-text-color)" }
+                                ]]]
                             - background-image: |
                                 [[[
                                   var diff = (new Date() - new Date(entity.attributes.date)) / 1000
@@ -1839,7 +2064,7 @@ popup_cards:
 
   sensor.dorothy_intel_core_i5_750_load_cpu_total:
     title: Dorothy
-    card: !include machines/dorothy-cards.yaml
+    card: !include machines/illinoise-cards.yaml
     style:
       .: |
         :host .content { width: 75vw; height: 75vh; }
@@ -1861,7 +2086,7 @@ popup_cards:
       layout:
         margin: 17px
       cards:
-        - !include machines/dorothy-plex-library.yaml
+        - !include machines/illinoise-plex-library.yaml
     style:
       .: |
         :host .content { width: 75vw; height: 75vh; }

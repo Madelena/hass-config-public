@@ -29,7 +29,7 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title.yaml
+        layout: !include snippets/layout-page-title-with-2-badges.yaml
         view_layout:
           grid-column: 1/-1
         cards:
@@ -54,40 +54,62 @@ cards:
                 }
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
             view_layout:
               place-self: center start
             cards:
+
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
                   slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 2
+                      width: 240
+                    '1024':
+                      enabled: false
+                      slidesPerView: 2
+                      width: 400
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_my_website
-                    name: OPAS Tynan ↗
-                    icon: mdi:rocket-launch
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://MadelenaMak.com'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_my_website
+                        name: OPAS Tynan ↗
+                        icon: mdi:rocket-launch
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://MadelenaMak.com'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_my_website
-                    name: Sky Watch ↗
-                    icon: 'mdi:cloud'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://www.astrospheric.com/'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_my_website
+                        name: Sky Watch ↗
+                        icon: 'mdi:cloud'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://www.astrospheric.com/'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
 
 
       # [Column] The Sun
@@ -158,6 +180,7 @@ cards:
                     - entity: sensor.noaa_space_weather_solar_wind_speed
                   - title: Solar Wind Speed
                   - aspect_ratio: 2/1
+                  - line_width: 2
                 view_layout:
                   grid-column: span 2
 
@@ -243,7 +266,7 @@ cards:
                 show_icon: false
                 show_state: true
                 show_label: true
-                name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " + moment(entity.attributes.date).fromNow() ]]]'
+                name: '[[[ return entity.state + " &bull; " + entity.attributes.summary.split(": ")[0] + " &bull; " + moment(entity.attributes.date).subtract(5, "h").fromNow() ]]]'
                 state_display: '[[[ return entity.attributes.summary.split(": ")[1] ]]]'
                 label: '[[[ return entity.attributes.potential_impacts ]]]'
                 styles:
@@ -254,7 +277,7 @@ cards:
                     - grid-template-areas: '"n" "s" "l"'
                     - grid-template-rows: min-content min-content min-content
                   name:
-                    - font-size: var(--h6-font-size)
+                    - font-size: var(--small-font-size)
                     - place-self: center start
                     - padding-bottom: 4px
                   state:
@@ -511,13 +534,91 @@ cards:
                 view_layout:
                   grid-row: span 2
 
+
+              - type: custom:button-card
+                template:
+                  - live_tile_mini
+                  - noaa_space_weather_prob
+                name: 3d
+                icon: mdi:alpha-r-box
+                entity: sensor.noaa_space_weather_r_majorprob_3day
+                variables:
+                  aspect_ratio: 2
+
+              - type: custom:button-card
+                template:
+                  - live_tile_mini
+                  - noaa_space_weather_prob
+                name: 3d
+                icon: mdi:alpha-r-box
+                entity: sensor.noaa_space_weather_r_minorprob_3day
+                variables:
+                  aspect_ratio: 2
+
+              - type: custom:button-card
+                template:
+                  - live_tile
+                  - noaa_space_weather_prob
+                name: 3d
+                icon: mdi:alpha-s-box
+                entity: sensor.noaa_space_weather_s_3day
+                view_layout:
+                  grid-row: span 2
+
+              - type: custom:button-card
+                template:
+                  - live_tile
+                  - noaa_space_weather_scale
+                name: 3d
+                icon: mdi:alpha-g-box
+                entity: sensor.noaa_space_weather_g_3day
+                view_layout:
+                  grid-row: span 2
+
+
       # Luna Location, Planetary Positions, Man Made Object locations (ISS, etc.)
+
+          - type: custom:list-card
+            entity: sensor.nasa_iss_station_report
+            title: Captain's Log
+            feed_attribute: entries
+            row_limit: 5
+            columns:
+              - field: published
+                style:
+                  - display: inline-block
+                  - font-size: var(--small-font-size)
+                  - padding: 0 0 2px
+              - field: author
+                prefix: '&nbsp;&bull; '
+                style:
+                  - display: inline-block
+                  - font-size: var(--small-font-size)
+                  - padding: 0 0 2px
+              - field: title
+                add_link: link
+                style:
+                  - display: block
+                  - font-weight: bold
+                  - font-size: var(--h5-font-size)
+                  - line-height: 1.5
+                  - padding: 0 0 4px 0
+              - field: summary
+                style:
+                  - display: block
+                  - padding: 0
+                  - padding: 0 0 16px
+            style: >
+              table tbody:first-child { display: none; }
+              tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+              background: none; }
+              td.title a {font-weight: 500;}
 
 
       # [Column] Look Up The Stars
       - type: vertical-stack
         view_layout:
-          grid-column: span 2
+          grid-column: span 1
         cards:
           - type: 'custom:button-card'
             template: header_card
@@ -560,8 +661,8 @@ cards:
                         show_icon: false
                         show_state: true
                         show_label: true
-                        name: '[[[ return entity.attributes.date ]]]'
-                        state_display: '[[[ return entity.attributes.missions ]]]'
+                        name: '[[[ return `${entity.attributes.date} &bull; ${entity.attributes.tags}` ]]]'
+                        state_display: '[[[ return entity.attributes.name ]]]'
                         label: '[[[ return entity.attributes.launch_description ]]]'
                         styles:
                           card:
@@ -571,7 +672,7 @@ cards:
                             - grid-template-areas: '"n" "s" "l"'
                             - grid-template-rows: min-content min-content min-content
                           name:
-                            - font-size: var(--h6-font-size)
+                            - font-size: var(--small-font-size)
                             - place-self: center start
                             - padding-bottom: 4px
                           state:
@@ -586,6 +687,13 @@ cards:
                             - place-self: center start
                             - white-space: normal
                             - text-align: left
+                        tap_action:
+                          action: url
+                          url_path: '[[[ return entity.attributes.link ]]]'
+                        hold_action:
+                          action: more-info
+                        confirmation:
+                          text: '[[[ return `Open link for ${entity.state}?` ]]]'
                       - <<: *astrometrics-rocket-launch
                         entity: sensor.rocketlaunch_live_next_2
                       - <<: *astrometrics-rocket-launch

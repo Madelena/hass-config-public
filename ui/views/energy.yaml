@@ -47,54 +47,78 @@ cards:
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
             layout:
-              grid-template-columns: 600px
-              mediaquery:
-                '(max-width: 800px)':
-                  grid-template-columns: 100%
+              margin: 0
             view_layout:
               place-self: center start
             cards:
 
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
                   slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 3
+                      width: 360
+                    '1024':
+                      enabled: false
+                      slidesPerView: 3
+                      width: 600
+
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: group.all_on_off
-                    name: All Switches ↗
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: more-info
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: group.all_on_off
+                        name: All Switches ↗
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: more-info
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-template-card'
-                    primary: CO₂ Intensity ↗
-                    secondary: >
-                      {{ states('sensor.co2_intensity') + 'g (' +
-                      states('sensor.grid_fossil_fuel_percentage') + '%)' }}
-                    icon: 'mdi:home-lightning-bolt'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: 'https://app.electricitymap.org/zone/US-NY-NYIS'
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-template-card'
+                        primary: CO₂ Intensity ↗
+                        secondary: >
+                          {{ states('sensor.co2_intensity') + 'g (' +
+                          states('sensor.grid_fossil_fuel_percentage') + '%)' }}
+                        icon: 'mdi:home-lightning-bolt'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: 'https://app.electricitymap.org/zone/US-NY-NYIS'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
 
-                  - type: 'custom:mushroom-template-card'
-                    primary: ConEdison ↗
-                    icon: 'mdi:transmission-tower'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: >-
-                        https://www.coned.com/en/accounts-billing/dashboard?tab1=billingandusage-1&tab2=sectionEnergyBillingUsage-1&tab3=sectionEnergyHistory-2
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                        type: 'custom:mushroom-template-card'
+                        primary: ConEdison ↗
+                        icon: 'mdi:transmission-tower'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: >-
+                            https://www.coned.com/en/accounts-billing/dashboard?tab1=billingandusage-1&tab2=sectionEnergyBillingUsage-1&tab3=sectionEnergyHistory-2
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-3
+                        layout: vertical
 
 
       # [Row] Summary + Totals
@@ -586,7 +610,8 @@ cards:
                         {'title': name},
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
-                        {'height': 128}
+                        {'height': 128},
+                        {'show_extrema': true}
                       ],
                     }
                   }},
@@ -631,7 +656,8 @@ cards:
                         {'title': name},
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
-                        {'height': 128}
+                        {'height': 128},
+                        {'show_extrema': true}
                       ],
                     }
                   }},
@@ -676,7 +702,8 @@ cards:
                         {'title': name},
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
-                        {'height': 128}
+                        {'height': 128},
+                        {'show_extrema': true}
                       ],
                     }
                   }},
@@ -721,7 +748,8 @@ cards:
                         {'title': name},
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
-                        {'height': 128}
+                        {'height': 128},
+                        {'show_extrema': true}
                       ],
                     }
                   }},
@@ -796,7 +824,8 @@ cards:
                         {'title': name},
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
-                        {'height': 128}
+                        {'height': 128},
+                        {'show_extrema': true}
                       ],
                     }
                   }},

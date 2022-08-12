@@ -1,0 +1,388 @@
+
+# Get PANYNJ traffic data.
+
+- name: PANYNJ Bridges and Tunnels Crossing Times
+  resource: https://www.panynj.gov/bin/portauthority/crossingtimesapi.json
+  scan_interval: 600
+  sensor:
+    - unique_id: panynj_bt_crossing_bayonne_bridge_westbound
+      name: Bayonne Bridge Westbound (To NJ)
+      icon: mdi:bridge
+      value_template: '{{ value_json[0].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[0].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[0].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[0].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[0].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[0].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[0].timeStamp }}'
+    - unique_id: panynj_bt_crossing_bayonne_bridge_eastbound
+      name: Bayonne Bridge Eastbound (To NY)
+      icon: mdi:bridge
+      value_template: '{{ value_json[1].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[1].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[1].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[1].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[1].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[1].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[1].timeStamp }}'
+    - unique_id: panynj_bt_crossing_george_washington_bridge_upper_westbound
+      name: George Washington Bridge Upper Westbound (To NJ)
+      icon: mdi:bridge
+      value_template: '{{ value_json[2].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[2].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[2].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[2].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[2].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[2].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[2].timeStamp }}'
+    - unique_id: panynj_bt_crossing_george_washington_bridge_upper_eastbound
+      name: George Washington Bridge Upper Eastbound (To NY)
+      icon: mdi:bridge
+      value_template: '{{ value_json[3].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[3].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[3].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[3].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[3].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[3].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[3].timeStamp }}'
+    - unique_id: panynj_bt_crossing_george_washington_bridge_lower_westbound
+      name: George Washington Bridge Lower Westbound (To NJ)
+      icon: mdi:bridge
+      value_template: '{{ value_json[4].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[4].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[4].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[4].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[4].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[4].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[4].timeStamp }}'
+    - unique_id: panynj_bt_crossing_george_washington_bridge_lower_eastbound
+      name: George Washington Bridge Lower Eastbound (To NY)
+      icon: mdi:bridge
+      value_template: '{{ value_json[5].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[5].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[5].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[5].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[5].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[5].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[5].timeStamp }}'
+    - unique_id: panynj_bt_crossing_goethals_bridge_westbound
+      name: Goethals Bridge Westbound (To NJ)
+      icon: mdi:bridge
+      value_template: '{{ value_json[6].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[6].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[6].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[6].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[6].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[6].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[6].timeStamp }}'
+    - unique_id: panynj_bt_crossing_goethals_bridge_eastbound
+      name: Goethals Bridge Eastbound (To NY)
+      icon: mdi:bridge
+      value_template: '{{ value_json[7].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[7].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[7].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[7].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[7].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[7].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[7].timeStamp }}'
+    - unique_id: panynj_bt_crossing_holland_tunnel_westbound
+      name: Holland Tunnel Westbound (To NJ)
+      icon: mdi:tunnel
+      value_template: '{{ value_json[8].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[8].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[8].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[8].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[8].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[8].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[8].timeStamp }}'
+    - unique_id: panynj_bt_crossing_holland_tunnel_eastbound
+      name: Holland Tunnel Eastbound (To NY)
+      icon: mdi:tunnel
+      value_template: '{{ value_json[9].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[9].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[9].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[9].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[9].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[9].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[9].timeStamp }}'
+    - unique_id: panynj_bt_crossing_lincoln_tunnel_westbound
+      name: Lincoln Tunnel Westbound (To NJ)
+      icon: mdi:tunnel
+      value_template: '{{ value_json[10].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[10].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[10].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[10].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[10].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[10].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[10].timeStamp }}'
+    - unique_id: panynj_bt_crossing_lincoln_tunnel_eastbound
+      name: Lincoln Tunnel Eastbound (To NY)
+      icon: mdi:tunnel
+      value_template: '{{ value_json[11].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[11].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[11].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[11].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[11].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[11].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[11].timeStamp }}'
+    - unique_id: panynj_bt_crossing_outerbridge_crossing_westbound
+      name: Outerbridge Crossing Westbound (To NJ)
+      icon: mdi:bridge
+      value_template: '{{ value_json[12].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[12].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[12].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[12].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[12].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[12].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[12].timeStamp }}'
+    - unique_id: panynj_bt_crossing_outerbridge_crossing_eastbound
+      name: Outerbridge Crossing Eastbound (To NY)
+      icon: mdi:bridge
+      value_template: '{{ value_json[13].infomationalText|title }}'
+      attributes:
+        - name: Travel Time
+          value_template: '{{ value_json[13].routeTravelTime }}'
+        - name: Speed
+          value_template: '{{ value_json[13].routeSpeed }}'
+        - name: Travel Time History
+          value_template: '{{ value_json[13].routeTravelTimeHist }}'
+        - name: Speed History
+          value_template: '{{ value_json[13].routeSpeedHist }}'
+        - name: Is Crossing Closed
+          value_template: '{{ value_json[13].isCrossingClosed }}'
+        - name: Timestamp
+          value_template: '{{ value_json[13].timeStamp }}'
+
+
+# Get MTA traffic data.
+
+- name: MTA Bridges and Tunnels Alerts
+  resource: https://new.mta.info/api/v1/bt-alerts
+  scan_interval: 600
+  sensor:
+    - unique_id: mta_bt_alerts_bronx_whitestone_bridge
+      name: Bronx-Whitestone Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(1) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(1) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(1) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(1) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_cross_bay_bridge
+      name: Cross Bay Veterans Memorial Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(2) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(2) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(2) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(2) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_henry_hudson_bridge
+      name: Henry Hudson Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(3) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(3) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(3) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(3) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_battery_tunnel
+      name: Hugh L. Carey Brooklyn-Battery Tunnel
+      icon: mdi:tunnel
+      select: 'BT > line:nth-child(4) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(4) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(4) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(4) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_marine_parkway_bridge
+      name: Marine Parkway - Gil Hodges Memorial Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(5) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(5) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(5) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(5) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_queens_midtown_tunnel
+      name: Queens Midtown Tunnel
+      icon: mdi:tunnel
+      select: 'BT > line:nth-child(6) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(6) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(6) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(6) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_triboro_bridge
+      name: Robert F. Kennedy Triborough Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(7) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(7) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(7) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(7) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_throgs_neck_bridge
+      name: Throgs Neck Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(8) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(8) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(8) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(8) > Time'
+          value_template: '{{ value }}'
+    - unique_id: mta_bt_alerts_verrazzano_narrows_bridge
+      name: Verrazzano-Narrows Bridge
+      icon: mdi:bridge
+      select: 'BT > line:nth-child(9) > status'
+      value_template: '{{ value|title }}'
+      attributes:
+        - name: Text
+          select: 'BT > line:nth-child(9) > text'
+          value_template: '{{ value }}'
+        - name: Date
+          select: 'BT > line:nth-child(9) > Date'
+          value_template: '{{ value }}'
+        - name: Time
+          select: 'BT > line:nth-child(9) > Time'
+          value_template: '{{ value }}'

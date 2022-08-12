@@ -1,0 +1,33 @@
+
+# Get indoor temperature and humidity trends.
+
+- platform: trend
+  sensors:
+
+    netatmo_indoor_temperature_rising:
+      entity_id: sensor.netatmo_strawberry_land_indoor_temperature
+      sample_duration: 7200
+      max_samples: 120
+      min_gradient: 0.00002755
+      device_class: heat
+
+    netatmo_indoor_temperature_falling:
+      entity_id: sensor.netatmo_strawberry_land_indoor_temperature
+      sample_duration: 7200
+      max_samples: 120
+      min_gradient: -0.00002755
+      device_class: cold
+
+    netatmo_indoor_humidity_wetting:
+      entity_id: sensor.netatmo_strawberry_land_indoor_humidity
+      sample_duration: 7200
+      max_samples: 120
+      min_gradient: 0.0008
+      device_class: moisture
+
+    netatmo_indoor_humidity_drying:
+      entity_id: sensor.netatmo_strawberry_land_indoor_humidity
+      sample_duration: 7200
+      max_samples: 120
+      min_gradient: -0.0008
+      device_class: moisture

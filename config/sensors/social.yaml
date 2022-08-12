@@ -1,0 +1,24 @@
+
+- platform: rest
+  name: My Twitter Followers Count
+  json_attributes_path: "$.[0]"
+  json_attributes:
+    - name
+    - screen_name
+  resource: https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=MadelenaMak
+  value_template: "{{ value_json[0].followers_count | int }}"
+  unit_of_measurement: "followers"
+
+- platform: rest
+  name: Reddit Profile (mmakes)
+  resource: http://reddit.com/user/mmakes/about.json
+  value_template: "{{ value_json.data.total_karma | int }}"
+  unit_of_measurement: "karma"
+  json_attributes_path: "$.data"
+  json_attributes:
+    - total_karma
+    - link_karma
+    - comment_karma
+    - awardee_karma
+    - awarder_karma
+

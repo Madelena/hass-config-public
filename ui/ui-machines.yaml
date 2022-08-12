@@ -10,8 +10,10 @@ views:
   - !include views/machines/terpsichora.yaml
   - !include views/machines/genesis.yaml
   - !include views/machines/dorothy.yaml
+  - !include views/machines/illinoise.yaml
   - !include views/machines/astralplane.yaml
   - !include views/machines/printers.yaml
+# Car, and maybe Fridge, Microwave
 
 decluttering_templates: !include templates/decluttering-card.yaml
 button_card_templates: !include_dir_merge_named templates/button-card/

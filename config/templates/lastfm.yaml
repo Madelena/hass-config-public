@@ -1,0 +1,208 @@
+
+# Turn JSON from last.fm API into sensors.
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - sensor.last_fm_top_artists_json
+
+  sensor:
+    - name: Last.fm Top Artists
+      state: >
+        {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[0].name }}
+      attributes:
+        artist_1: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[0].name }}
+        artist_2: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[1].name }}
+        artist_3: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[2].name }}
+        artist_4: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[3].name }}
+        artist_5: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[4].name }}
+        artist_6: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[5].name }}
+        artist_7: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[6].name }}
+        artist_8: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[7].name }}
+        artist_9: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[8].name }}
+        artist_10: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[9].name }}
+        artist_1_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[0].playcount }}
+        artist_2_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[1].playcount }}
+        artist_3_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[2].playcount }}
+        artist_4_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[3].playcount }}
+        artist_5_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[4].playcount }}
+        artist_6_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[5].playcount }}
+        artist_7_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[6].playcount }}
+        artist_8_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[7].playcount }}
+        artist_9_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[8].playcount }}
+        artist_10_playcount: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[9].playcount }}
+        artist_1_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[0].url }}
+        artist_2_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[1].url }}
+        artist_3_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[2].url }}
+        artist_4_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[3].url }}
+        artist_5_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[4].url }}
+        artist_6_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[5].url }}
+        artist_7_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[6].url }}
+        artist_8_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[7].url }}
+        artist_9_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[8].url }}
+        artist_10_url: >
+          {{ state_attr('sensor.last_fm_top_artists_json', 'artist')[9].url }}
+
+    - name: Last.fm Top Tracks
+      state: >
+        {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[0].name }}
+      attributes:
+        track_1: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[0].name }}
+        track_2: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[1].name }}
+        track_3: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[2].name }}
+        track_4: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[3].name }}
+        track_5: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[4].name }}
+        track_6: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[5].name }}
+        track_7: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[6].name }}
+        track_8: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[7].name }}
+        track_9: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[8].name }}
+        track_10: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[9].name }}
+        track_1_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[0].playcount }}
+        track_2_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[1].playcount }}
+        track_3_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[2].playcount }}
+        track_4_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[3].playcount }}
+        track_5_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[4].playcount }}
+        track_6_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[5].playcount }}
+        track_7_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[6].playcount }}
+        track_8_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[7].playcount }}
+        track_9_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[8].playcount }}
+        track_10_playcount: >
+          {{ state_attr('sensor.last_fm_top_tracks_json', 'track')[9].playcount }}
+
+    - name: Last.fm Top Albums
+      state: >
+        {{ state_attr('sensor.last_fm_top_albums_json', 'album')[0].name }}
+      attributes:
+        album_1: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[0].name }}
+        album_2: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[1].name }}
+        album_3: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[2].name }}
+        album_4: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[3].name }}
+        album_5: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[4].name }}
+        album_6: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[5].name }}
+        album_7: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[6].name }}
+        album_8: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[7].name }}
+        album_9: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[8].name }}
+        album_10: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[9].name }}
+        album_1_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[0].playcount }}
+        album_2_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[1].playcount }}
+        album_3_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[2].playcount }}
+        album_4_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[3].playcount }}
+        album_5_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[4].playcount }}
+        album_6_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[5].playcount }}
+        album_7_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[6].playcount }}
+        album_8_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[7].playcount }}
+        album_9_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[8].playcount }}
+        album_10_playcount: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[9].playcount }}
+        album_1_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[0].image[3]['#text'] }}
+        album_1_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[0].url }}
+        album_2_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[1].image[3]['#text'] }}
+        album_2_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[1].url }}
+        album_3_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[2].image[3]['#text'] }}
+        album_3_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[2].url }}
+        album_4_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[3].image[3]['#text'] }}
+        album_4_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[3].url }}
+        album_5_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[4].image[3]['#text'] }}
+        album_5_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[4].url }}
+        album_6_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[5].image[3]['#text'] }}
+        album_6_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[5].url }}
+        album_7_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[6].image[3]['#text'] }}
+        album_7_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[6].url }}
+        album_8_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[7].image[3]['#text'] }}
+        album_8_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[7].url }}
+        album_9_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[8].image[3]['#text'] }}
+        album_9_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[8].url }}
+        album_10_image: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[9].image[3]['#text'] }}
+        album_10_url: >
+          {{ state_attr('sensor.last_fm_top_albums_json', 'album')[9].url }}
+

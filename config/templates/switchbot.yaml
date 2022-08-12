@@ -1,0 +1,7 @@
+
+- sensor:
+    - name: "Front Door Switchbot Sensor"
+      state: "OK"
+      attributes:
+        motion: "OK"
+        last_updated: "OK"

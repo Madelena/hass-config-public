@@ -48,6 +48,7 @@ rail_station_row:
       - text-align: left
       - min-height: 56px
       - xoverflow: visible
+      - border-radius: 0
     name:
       - place-self: center start
       - margin-left: 80px
@@ -57,10 +58,13 @@ rail_station_row:
       - place-self: center start
       - margin-left: 80px
       - color: var(--secondary-text-color)
+      - font-size: var(--small-font-size)
       - xtransform-origin: center left
       - xtransform: translateX(12px) translateY(-8px) rotate(-45deg)
     state:
       - place-self: center end
+      - font-size: var(--h5-font-size)
+      - font-weight: 400
     custom_fields:
       station:
         - position: absolute
@@ -192,6 +196,7 @@ rail_interchange_row:
       - text-align: left
       - min-height: 56px
       - xoverflow: visible
+      - border-radius: 0
     name:
       - place-self: center start
       - margin-left: 80px
@@ -201,10 +206,13 @@ rail_interchange_row:
       - place-self: center start
       - margin-left: 80px
       - color: var(--secondary-text-color)
+      - font-size: var(--small-font-size)
       - xtransform-origin: center left
       - xtransform: translateX(12px) translateY(-8px) rotate(-45deg)
     state:
       - place-self: center end
+      - font-size: var(--h5-font-size)
+      - font-weight: 400
     custom_fields:
       station:
         - position: absolute

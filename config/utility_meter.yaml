@@ -1,0 +1,14 @@
+
+daily_energy:
+  name: Total Energy Use (Daily)
+  source: sensor.total_energy_use_over_time
+  cycle: daily
+quarter_hourly_energy:
+  name: Total Energy Use (Hourly)
+  source: sensor.total_energy_use_over_time
+  cycle: hourly
+daily_co2:
+  name: Total Energy Use (Daily CO₂)
+  source: sensor.total_energy_use_hourly_co2_equivalent
+  cycle: daily
+

@@ -1,0 +1,14 @@
+
+- platform: integration
+  source: sensor.total_energy_use
+  name: Total Energy Use Over Time
+  scan_interval: 120
+  unit_time: h
+
+- platform: statistics
+  name: "Total Energy Use (Hourly Max)"
+  entity_id: sensor.total_energy_use_hourly
+  state_characteristic: value_max
+  max_age:
+    hours: 1
+  sampling_size: 360

@@ -20,7 +20,7 @@ cards:
       
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title.yaml
+        layout: !include snippets/layout-page-title-with-2-badges.yaml
         view_layout:
           grid-column: 1/-1
         cards:
@@ -37,39 +37,87 @@ cards:
               == 1), 'is', 'are') }}  turned on. There are {{ daylight | round(1) }} hours of daylight and {{ 24 - daylight | round(1) }} hours of nighttime today.
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
             view_layout:
               place-self: center start
             cards:
 
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
-                  slidesPerView: 2
+                  slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 2
+                      width: 240
+                    '1024':
+                      enabled: false
+                      slidesPerView: 2
+                      width: 400
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_valhalla_rainbow
-                    name: Rainbow Hub ↗
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: !secret rainbow_hub_url
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_valhalla_rainbow
+                        name: Rainbow Hub ↗
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: !secret rainbow_hub_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_valhalla_insteon
-                    name: Insteon Hub ↗
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: !secret insteon_hub_url
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_valhalla_insteon
+                        name: Insteon Hub ↗
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: !secret insteon_hub_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
+
+
+      # [Column] Daylight
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: DAYLIGHT
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:vertical-layout'
+            cards:
+
+              - type: 'custom:decluttering-card'
+                template: multi_graph_card
+                variables:
+                  - entities:
+                      - entity: sensor.south_facade_hue_sensor_light_level
+                        name: South Facade
+                  - title: Light Level
+                  - line_width: 1
 
 
       # [Column] Living Room

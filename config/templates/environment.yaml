@@ -1,0 +1,72 @@
+
+# Change legal limit of indoor temperature according to NYC laws.
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id: sensor.valhalla_apparent_temperature
+  sensor:
+    - name: Indoor Temperature Legal Limit
+      unit_of_measurement: "°C"
+      state: >
+        {% if (now() > today_at("06:00:00")) and (now() < today_at("22:00:00")) %}
+          {% if states('sensor.valhalla_apparent_temperature') | float < 12.7778 %}
+            20
+          {% else %}
+            null
+          {% endif %}
+        {% else %}
+          {% if states('sensor.valhalla_apparent_temperature') | float < 20 %}
+            16.6667
+          {% else %}
+            null
+          {% endif %}
+        {% endif %}
+
+# Change legal limit of indoor temperature according to NYC laws.
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id: sensor.indoor_average_humidity
+  sensor:
+    - name: Indoor Comfort Zone Temperature Minimum
+      unit_of_measurement: "°C"
+      state: >
+        {% if (states('sensor.indoor_average_humidity') | float <= 80 ) and (states('sensor.indoor_average_humidity') | float >= 20 ) %}
+          20
+        {% else %}
+          null
+        {% endif %}
+    - name: Indoor Comfort Zone Temperature Maximum
+      unit_of_measurement: "°C"
+      state: >
+        {% if (states('sensor.indoor_average_humidity') | float <= 80 ) and (states('sensor.indoor_average_humidity') | float >= 20 ) %}
+          {% if (states('sensor.indoor_average_humidity') | float >= 50 ) %}
+            {{ (2 - (states('sensor.indoor_average_humidity') | float - 50) / 30 * 2) + 25 }}
+          {% else %}
+            27
+          {% endif %}
+        {% else %}
+          null
+        {% endif %}
+
+- trigger:
+    - platform: state
+      entity_id: sensor.bedroom_air_conditioner_plug_smartenergy_metering
+  binary_sensor:
+    - name: Bedroom Air Conditioner Power
+      state: >
+        {% if states('sensor.bedroom_air_conditioner_plug_smartenergy_metering') | float >= 30 %}
+          on
+        {% else %}
+          off
+        {% endif %}
+      delay_on: '0:00:05'
+      delay_off: '0:00:05'

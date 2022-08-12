@@ -65,6 +65,9 @@ live_tile_card:
       - font-weight: var(--h3-font-weight)
       - align-self: start
       - text-overflow: clip
+      - display: -webkit-box
+      - -webkit-line-clamp: 2
+      - -webkit-box-orient: vertical
     img_cell:
       - align-self: end
       - text-align: right
@@ -306,11 +309,25 @@ live_tile_with_percent_bar:
   color: var(--primary-background-color)
   styles:
     card:
-      - background-color: var(--ha-card-background)
-      - background-repeat: no-repeat
-      - background-size: '[[[ return entity.state + "% 4px" ]]]'
-      - background-position: left bottom
-      - background-image: 'linear-gradient( var(--primary-color), var(--accent-color) )'
+      - background: |
+          [[[
+            return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${entity.state}% 4px no-repeat,
+              linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background)) top left / ${entity.state}% 100% no-repeat, 
+              linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background))`
+          ]]]
+        color: var(--accent-text-color)
+
+live_tile_with_accent_percent_bar:
+  color: var(--primary-background-color)
+  styles:
+    card:
+      - background: |
+          [[[
+            return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${entity.state}% 4px no-repeat,
+              linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5)) top left / ${entity.state}% 100% no-repeat, 
+              linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5))`
+          ]]]
+        color: var(--accent-text-color)
 
 
 # Media Player Live Tile

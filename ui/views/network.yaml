@@ -56,50 +56,78 @@ cards:
                 }
 
           - type: 'custom:layout-card'
-            layout_type: 'custom:horizontal-layout'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
             view_layout:
               place-self: center start
             cards:
 
               - type: 'custom:swipe-card'
                 parameters:
-                  breakpointBase: container
                   enabled: true
                   slidesPerView: 1.66
+                  width: 480
                   breakpoints:
-                    '600':
+                    '800':
                       enabled: false
                       slidesPerView: 3
+                      width: 360
+                    '1024':
+                      enabled: false
+                      slidesPerView: 3
+                      width: 600
                 cards:
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_cloudflare
-                    name: WAN ↗
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: !secret modem_url
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_cloudflare
+                        name: WAN ↗
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: !secret modem_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: sensor.asuswrt_devices_connected
-                    name: Router ↗
-                    icon: 'mdi:router-wireless'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: !secret router_url
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-entity-card'
+                        entity: sensor.valhalla_router_connected_devices
+                        name: Router ↗
+                        icon: 'mdi:router-wireless'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: !secret router_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
 
-                  - type: 'custom:mushroom-entity-card'
-                    entity: binary_sensor.ping_valhalla_outlet
-                    name: Outlet ↗
-                    icon: 'mdi:power-socket-us'
-                    icon_color: pink
-                    style: 'ha-card {background: none;}'
-                    tap_action:
-                      action: url
-                      url_path: !secret outlet_home_url
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_valhalla_outlet
+                        name: Outlet ↗
+                        icon: 'mdi:power-socket-us'
+                        icon_color: pink
+                        style: 'ha-card {background: none;}'
+                        tap_action:
+                          action: url
+                          url_path: !secret outlet_home_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-3
+                        layout: vertical
 
 
       # [Column] Network Map
@@ -301,72 +329,85 @@ cards:
 
 
       # [Column] Download
+
       - type: vertical-stack
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
-              name: DOWNLOAD
+              name: WAN DOWNLOAD
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
+
           - type: sensor
             entity: sensor.speedtest_download
             graph: line
             detail: 2
+
           - hours_to_show: 24
             graph: line
             type: sensor
-            entity: sensor.asuswrt_download_speed
+            entity: sensor.valhalla_router_wan_download_speed
             detail: 2
             name: Router Download Speed
+
           - type: sensor
             entity: sensor.network_throughput_out_eth0
             graph: line
             name: Unison Network Out
             detail: 2
+            
           - hours_to_show: 24
             graph: line
             type: sensor
-            entity: sensor.asuswrt_download
+            entity: sensor.valhalla_router_wan_download
             detail: 2
             name: Router Download
 
 
       # [Column] Upload
+
       - type: vertical-stack
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
-              name: UPLOAD
+              name: WAN UPLOAD
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
+
           - type: sensor
             entity: sensor.speedtest_upload
             graph: line
             detail: 2
+
           - hours_to_show: 24
             graph: line
             type: sensor
-            entity: sensor.asuswrt_upload_speed
+            entity: sensor.valhalla_router_wan_upload_speed
             detail: 2
             name: Router Upload Speed
+
           - type: sensor
             entity: sensor.network_throughput_in_eth0
             graph: line
             detail: 2
             name: Unison Network In
+
           - hours_to_show: 24
             graph: line
             type: sensor
-            entity: sensor.asuswrt_upload
+            entity: sensor.valhalla_router_wan_upload
             detail: 2
             name: Router Upload
 
 
       # [Column] T'Ping
+
       - type: vertical-stack
         cards:
 
@@ -400,92 +441,277 @@ cards:
             blink: {}
 
 
-      # [Column] Router
+      # [Column] LAN Download
+
       - type: vertical-stack
         cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LAN DOWNLOAD
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wired_download_speed
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wired_download_speed
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wired_download_speed
+                    name: Bedroom Node
+              - title: Download Speed (Wired)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wired_download
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wired_download
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wired_download
+                    name: Bedroom Node
+              - title: Download (Wired)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan0_download_speed
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan0_download_speed
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan0_download_speed
+                    name: Bedroom Node
+              - title: Download Speed (2.4GHz)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan0_download
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan0_download
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan0_download
+                    name: Bedroom Node
+              - title: Download (2.4GHz)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan1_download_speed
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan1_download_speed
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan1_download_speed
+                    name: Bedroom Node
+              - title: Download Speed (5GHz)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan1_download
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan1_download
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan1_download
+                    name: Bedroom Node
+              - title: Download (5GHz)
+              - height: 120
+
+
+      # [Column] LAN Upload
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LAN UPLOAD
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wired_upload_speed
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wired_upload_speed
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wired_upload_speed
+                    name: Bedroom Node
+              - title: Upload Speed (Wired)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wired_upload
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wired_upload
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wired_upload
+                    name: Bedroom Node
+              - title: Upload (Wired)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan0_upload_speed
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan0_upload_speed
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan0_upload_speed
+                    name: Bedroom Node
+              - title: Upload Speed (2.4GHz)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan0_upload
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan0_upload
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan0_upload
+                    name: Bedroom Node
+              - title: Upload (2.4GHz)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan1_upload_speed
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan1_upload_speed
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan1_upload_speed
+                    name: Bedroom Node
+              - title: Upload Speed (5GHz)
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_wlan1_upload
+                    name: Router
+                  - entity: sensor.workspace_mesh_node_wlan1_upload
+                    name: Workspace Node
+                  - entity: sensor.bedroom_mesh_node_wlan1_upload
+                    name: Bedroom Node
+              - title: Upload (5GHz)
+              - height: 120
+
+
+      # [Column] Router
+
+      - type: vertical-stack
+        cards:
+
           - type: 'custom:button-card'
             template: header_card
             variables:
               name: VALHALLA ROUTER
-              label: More
+              label: Open
               arrow: 'mdi:arrow-top-right'
               action: url
               link: !secret router_url
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
-          - type: sensor
-            graph: line
-            entity: sensor.asuswrt_devices_connected
-            name: Devices Connected
-            detail: 2
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.asuswrt_load_avg_1m
-            name: Router Load
-            detail: 2
-            unit: '%'
+
           - type: 'custom:decluttering-card'
             template: multi_graph_card
             variables:
               - entities:
-                  - entity: sensor.asuswrt_cpu_temperature
-                    name: CPU
-                  - entity: sensor.asuswrt_2_4ghz_temperature
-                    name: 2.4GHz
-                  - entity: sensor.asuswrt_5ghz_temperature
-                    name: 5GHz
-              - title: Temperatures
+                  - entity: sensor.valhalla_router_cpu
+              - title: CPU
+              - height: 120
 
-      # [Column] AdGuard
-      - type: vertical-stack
-        cards:
-          - type: 'custom:button-card'
-            template: header_card
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
             variables:
-              name: ADGUARD
-              label: Manage
-              link: /a0d7b954_adguard
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
+              - entities:
+                  - entity: sensor.valhalla_router_temperature_cpu
+              - title: CPU Temperature
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.valhalla_router_ram
+              - title: RAM
+              - height: 120
+
           - type: sensor
             graph: line
-            entity: sensor.adguard_dns_queries
+            entity: sensor.valhalla_router_connected_devices
+            name: Devices Connected
             detail: 2
-          - type: sensor
-            graph: line
-            entity: sensor.adguard_dns_queries_blocked_ratio
-            detail: 2
-          - type: sensor
-            graph: line
-            entity: sensor.adguard_average_processing_speed
+
 
       # [Column] Unison
+
       - type: vertical-stack
         cards:
+
           - type: 'custom:button-card'
             template: header_card
             variables:
               name: UNISON
               label: More
-              link: /lovelace-machines/unison
+              arrow: 'mdi:arrow-right'
+              action: navigate
+              link: /ui-machines/unison
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.unison_processor_temperature
-            detail: 2
-            name: Unison Processor Temperature
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.unison_processor_use
-            name: Unison Processor Use
-            detail: 2
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.unison_processor_use
+              - title: CPU
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.unison_processor_temperature
+              - title: CPU Temperature
+              - height: 120
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.unison_glances_ram_used_percent
+              - title: RAM
+              - height: 120
+
 
       # [Column] Outlet
       - type: vertical-stack
@@ -498,9 +724,6 @@ cards:
               arrow: 'mdi:arrow-top-right'
               action: url
               link: !secret outlet_home_url
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
           - type: entities
             entities:
               - entity: binary_sensor.valhalla_outlet_modem
@@ -544,3 +767,102 @@ cards:
                 name: '[[[ return entity.attributes.event_5_time ]]]'
                 state_display: '[[[ return entity.attributes.event_5 ]]]'
             title: Event Log
+
+
+      # [Column] Devices
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: CONNECTED DEVICES
+              label: All Devices
+              action: more-info
+              link: all_network_devices
+
+          - type: custom:auto-entities
+            filter:
+              include:
+                - domain: device_tracker
+                  integration: asusrouter
+                  state: home
+                  options:
+                    type: custom:multiple-entity-row
+                    show_state: false
+                    secondary_info:
+                      attribute: connection_time
+                      format: relative
+                    entities:
+                      - attribute: ip
+                        styles:
+                          font-size: var(--h5-font-size)
+                          font-weight: 400
+                    card_mod:
+                      style:
+                        hui-generic-entity-row$: >
+                          :host {--mdc-icon-size: 24px;}
+
+                          .secondary {font-size: var(--h6-font-size); font-weight:
+                          var(--h6-font-weight); text-transform: uppercase;}
+              exclude: []
+            card:
+              type: entities
+              state_color: true
+            sort:
+              method: friendly_name
+
+
+      # [Column] Signal Strength
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: WIFI SIGNAL STRENGTH
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.weatherman_wifi_signal_sensor
+            detail: 2
+            name: Weatherman
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.kaleidoscape_wifi_signal_strength
+            detail: 2
+            name: Kaleidoscape
+
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.zuneth_wifi_signal_strength
+            detail: 2
+            name: Zuneth
+
+
+
+      # [Column] AdGuard
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: ADGUARD
+              label: Manage
+              link: /a0d7b954_adguard
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+          - type: sensor
+            graph: line
+            entity: sensor.adguard_dns_queries
+            detail: 2
+          - type: sensor
+            graph: line
+            entity: sensor.adguard_dns_queries_blocked_ratio
+            detail: 2
+          - type: sensor
+            graph: line
+            entity: sensor.adguard_average_processing_speed

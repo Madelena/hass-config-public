@@ -1,0 +1,41 @@
+
+# Run when Home Assistant starts.
+
+- trigger:
+    - platform: homeassistant
+      event: start
+  sensor:
+
+    - name: Zero
+      state: "0"
+
+    - name: OpenSky Flight in Vicinity
+      state: ''
+
+    - name: Crashplan Status
+      state: ''
+      attributes:
+        body: ''
+        date: ''
+
+
+# Run every minute.
+
+- trigger:
+    platform: time_pattern
+    minutes: "/1"
+  sensor:
+
+    # My First Template!
+    # - name: Active NWS Alert
+    #   state: >
+    #     {% if states('sensor.nws_alerts') | int > 0 %}
+    #     on
+    #     {% else %}
+    #     off
+    #     {% endif %}
+
+    - name: Sun Elevation
+      state: >
+        {{ state_attr('sun.sun', 'elevation') | float }}
+      unit_of_measurement: "°"

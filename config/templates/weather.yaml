@@ -1,0 +1,178 @@
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - weather.valhalla_hourly
+  sensor:
+
+    # - name: Weather Forecast Temperature
+    #   state: >
+    #     {{ state_attr('weather.valhalla_hourly', 'forecast')[23].temperature }}
+    #   unit_of_measurement: °C
+
+    # - name: Weather Forecast Precipitation
+    #   state: >
+    #     {{ state_attr('weather.valhalla_hourly', 'forecast')[23].wind_speed }}
+
+    # - name: Weather Forecast Condition
+    #   state: >
+    #     {{ state_attr('weather.valhalla_hourly', 'forecast')[23].condition }}
+
+    # - name: Weather Forecast Wind Bearing
+    #   state: >
+    #     {{ state_attr('weather.valhalla_hourly', 'forecast')[23].wind_bearing }}
+
+    # - name: Weather Forecast Wind Speed
+    #   state: >
+    #     {{ state_attr('weather.valhalla_hourly', 'forecast')[23].wind_speed }}
+
+    - name: Wind Direction
+      state: >
+        {% set wind_bearing = state_attr('weather.valhalla_hourly', 'wind_bearing') %}
+        {% if wind_bearing | float<=11 %}N
+        {% elif wind_bearing | float>348 %}N
+        {% elif wind_bearing | float<=34 | float>11 %}NNE
+        {% elif wind_bearing | float<=56 | float>34 %}NE
+        {% elif wind_bearing | float<=79 | float>56 %}ENE
+        {% elif wind_bearing | float<=101 | float>79 %}E
+        {% elif wind_bearing | float<=124 | float>101 %}ESE
+        {% elif wind_bearing | float<=146 | float>124 %}SE
+        {% elif wind_bearing | float<=169 | float>146 %}SSE
+        {% elif wind_bearing | float<=191 | float>169 %}S
+        {% elif wind_bearing | float<=214 | float>191 %}SSW
+        {% elif wind_bearing | float<=236 | float>214 %}SW
+        {% elif wind_bearing | float<=259 | float>236 %}WSW
+        {% elif wind_bearing | float<=281 | float>259 %}W
+        {% elif wind_bearing | float<=304 | float>281 %}WNW
+        {% elif wind_bearing | float<=326 | float>304 %}NW
+        {% elif wind_bearing | float<=348 | float>326 %}NNW
+        {%- endif %}
+        
+    - name: Wind Strength
+      state: >
+        {% set wind_speed_mph = states('sensor.valhalla_wind') | float * 0.6213712 %}
+        {% if wind_speed_mph | float<=1 %}No wind
+        {% elif wind_speed_mph | float<=3 | float>1 %}Light air
+        {% elif wind_speed_mph | float<=7 | float>3 %}Light breeze
+        {% elif wind_speed_mph | float<=12 | float>7 %}Gentle breeze
+        {% elif wind_speed_mph | float<=17 | float>12 %}Moderate breeze
+        {% elif wind_speed_mph | float<=24 | float>17 %}Fresh breeze
+        {% elif wind_speed_mph | float<=30 | float>24 %}Strong breeze
+        {% elif wind_speed_mph | float<=38 | float>30 %}High wind
+        {% elif wind_speed_mph | float<=46 | float>38 %}Fresh gale
+        {% elif wind_speed_mph | float<=54 | float>46 %}Strong gale
+        {% elif wind_speed_mph | float<=63 | float>54 %}Storm
+        {% elif wind_speed_mph | float<=72 | float>63 %}Violent storm
+        {% elif wind_speed_mph | float>72 %}Hurricane
+        {%- endif %}
+
+    - name: Valhalla Hourly Forecast Temperature Rising
+      state: >
+        {{ iif (state_attr('weather.valhalla_hourly', 'temperature') < ((state_attr('weather.valhalla_hourly', 'forecast') | map(attribute='temperature') | slice(6) | first() | sum / 4)), 'Rising', 'Falling') }}
+
+    - name: Valhalla Hourly Forecast Wind Speed Increasing
+      state: >
+        {{ iif (state_attr('weather.valhalla_hourly', 'wind_speed') < ((state_attr('weather.valhalla_hourly', 'forecast') | map(attribute='wind_speed') | slice(6) | first() | sum / 4)), 'Increasing', 'Decreasing') }}
+
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - weather.valhalla_2
+  sensor:
+        
+    - name: Accuweather Temperature
+      state: >
+        {{ state_attr('weather.valhalla_2', 'temperature') }}
+      unit_of_measurement: °C
+      icon: mdi:thermometer
+
+    - name: Accuweather Relative Humidity
+      state: >
+        {{ state_attr('weather.valhalla_2', 'humidity') }}
+      unit_of_measurement: '%'
+      icon: mdi:water-percent
+
+    - name: Accuweather Ozone
+      state: >
+        {{ state_attr('weather.valhalla_2', 'ozone') }}
+      unit_of_measurement: µg/m³
+      icon: mdi:molecule
+
+    - name: Accuweather Air Pressure
+      state: >
+        {{ state_attr('weather.valhalla_2', 'pressure') }}
+      unit_of_measurement: Pa
+      icon: mdi:weather-fog
+
+    - name: Accuweather Wind Speed
+      state: >
+        {{ states('sensor.valhalla_wind') | float * 0.6213712 }}
+      unit_of_measurement: mph
+      icon: mdi:windsock
+
+    - name: Accuweather Visibility
+      state: >
+        {{ state_attr('weather.valhalla_2', 'visibility') }}
+      unit_of_measurement: km
+      icon: mdi:weather-hazy
+
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - group.indoor_temperature_sensors
+        - sensor.valhalla_apparent_temperature
+    - platform: time_pattern
+      minutes: "/1"
+  sensor:
+
+    - name: Indoor Average Temperature
+      state: >
+        {{ expand('group.indoor_temperature_sensors') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | average | round(1) }}
+      unit_of_measurement: °C
+
+    - name: Indoor Outdoor Temperature Difference
+      state: >
+        {{ (states('sensor.indoor_average_temperature') | float - states('sensor.valhalla_apparent_temperature') | float) | round(1) }}
+      unit_of_measurement: °C
+      attributes:
+        description: >
+          {{ iif( states('sensor.valhalla_apparent_temperature') | float >= states('sensor.indoor_average_temperature') | float, 'cooler', 'warmer') }}
+
+
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - group.indoor_humidity_sensors
+        - sensor.accuweather_relative_humidity
+  sensor:
+
+    - name: Indoor Average Humidity
+      state: >
+        {{ expand('group.indoor_humidity_sensors') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | average | round(1) }}
+      unit_of_measurement: '%'
+
+    - name: Indoor Outdoor Humidity Difference
+      state: >
+        {{ (states('sensor.indoor_average_humidity') | float - states('sensor.accuweather_relative_humidity') | float) | round(1) }}
+      unit_of_measurement: '%'
+      attributes:
+        description: >
+          {{ iif( states('sensor.accuweather_relative_humidity') | float >= states('sensor.indoor_average_humidity') | float, 'drier', 'wetter') }}
