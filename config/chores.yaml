@@ -6,6 +6,12 @@ chore_water_plants:
 chore_fertilize_plants:
   name: Fertilize Plants
   icon: mdi:flower
+chore_refill_reservoir:
+  name: Refill Reservoir
+  icon: mdi:water-boiler
+chore_apply_insecticide:
+  name: Apply Insecticide
+  icon: mdi:bug
 
 # Kitchen
 chore_clean_kitchen_sink:
@@ -38,6 +44,18 @@ chore_clean_kitchen_floor:
 chore_change_kitchen_hand_towels:
   name: Change Kitchen Hand Towels
   icon: mdi:hand-water
+chore_change_empty_trash:
+  name: Empty Trash
+  icon: mdi:delete-empty
+chore_change_water_filter:
+  name: Change Water Filter
+  icon: mdi:air-filter
+chore_pest_exterminator:
+  name: Pest Exterminator Visit
+  icon: mdi:bug
+chore_vacuum_mop_pad:
+  name: Change Vacuum Mop Pad
+  icon: mdi:robot-vacuum
 
 # Bathroom
 chore_clean_bathroom_floor:
@@ -104,4 +122,21 @@ chore_wash_hair:
 chore_body_deep_clean:
   name: Body Deep Clean
   icon: mdi:shower
+chore_pluck_eyebrows:
+  name: Pluck Eyebrows
+  icon: mdi:eye
+chore_mouthwash:
+  name: Full Mouthwash
+  icon: mdi:tooth
+chore_facial:
+  name: Facial
+  icon: mdi:face-woman-shimmer
+
+# Car
+chore_car_oil_change:
+  name: Oil Change
+  icon: mdi:engine
+chore_car_car_wash:
+  name: Car Wash
+  icon: mdi:car-wash
 

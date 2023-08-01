@@ -1,0 +1,132 @@
+
+sun_card:
+  template:
+    - live_tile_card
+    - sun_variables
+  entity: sun.sun
+  show_icon: false
+  color_type: icon
+  state_display: |
+    [[[
+      return variables.time_to_next_sun + "<span style='font-size: var(--h6-font-size); font-weight: 600; opacity: .5; text-transform: uppercase;'> " + variables.time_to_next_sun_unit + "</span>"
+    ]]]
+  name: '[[[ return "To " + variables.next_state ]]]'
+  label: '[[[ return variables.next_sun_time ]]]'
+  custom_fields:
+    sun_card:
+      card:
+        type: 'custom:sun-card'
+        style: >
+          ha-card { aspect-ratio: 3/1; background: transparent; }
+          .sun-card {padding: 0 !important; }
+          .sun-card-header, .sun-card-footer {display: none
+          !important; }
+          .sun-card-body {
+            padding-top: 0 !important;
+            filter: sepia(1) saturate(5) hue-rotate(calc(var(--hue-primary-color) - 39deg));
+          }
+          .sun-card-light {
+            --sun-card-lines: var(--primary-text-color) !important;
+          }
+  styles:
+    grid:
+      - grid-template-areas: '"s s" "sun_card sun_card" "n l"'
+    card:
+      - background-image: |
+          [[[
+            var opacity = 1 - (variables.time_to_next_sun / 90)
+            if (variables.time_to_next_sun_unit != "min") { return '' }
+            return 'linear-gradient( to top, rgba(var(--rgb-primary-color),' + opacity + ') 0%, rgba(var(--rgb-primary-color),' + opacity + ') 100%)'
+          ]]]
+      - color: |
+          [[[
+            if (variables.time_to_next_sun_unit != "min") { return 'var(--primary-text-color)' } else { return 'var(--accent-text-color)'}
+          ]]]
+    label:
+      - position: absolute
+      - right: 12px
+      - top: calc( 100% - 28px )
+      - text-align: right
+      - color: var(--primary-text-color)
+      - opacity: 0.5
+      - padding: 0 0 10px 0
+      - justify-self: end
+      - align-self: end
+    custom_fields:
+      sun_card:
+        - position: absolute
+        - top: 33%
+        - left: 0
+        - height: 33%
+        - width: 100%
+        - mix-blend-mode: lighten
+
+sun_variables:
+  entity: sun.sun
+  variables:
+    time_to_next_sun: |-
+      [[[
+        if (entity.attributes.elevation >= 0) {
+          var diff = -(new Date() - new Date(entity.attributes.next_setting)) / 1000 / 60 / 60
+          if (diff > 1.5) {
+            return Math.round(diff)
+          } else {
+            return Math.round(diff * 60)
+          }
+        } else {
+          var diff = -(new Date() - new Date(entity.attributes.next_rising)) / 1000 / 60 / 60
+          if (diff > 1.5) {
+            return Math.round(diff)
+          } else {
+            return Math.round(diff * 60)
+          }
+        }
+      ]]]
+
+    time_to_next_sun_unit: |-
+      [[[
+        if (entity.attributes.elevation >= 0) {
+          var diff = -(new Date() - new Date(entity.attributes.next_setting)) / 1000 / 60 / 60
+          if (diff > 1.5) {
+            return "hr"
+          } else {
+            return "min"
+          }
+        } else {
+          var diff = -(new Date() - new Date(entity.attributes.next_rising)) / 1000 / 60 / 60
+          if (diff > 1.5) {
+            return "hr"
+          } else {
+            return "min"
+          }
+        }
+      ]]]
+
+    next_state: |-
+      [[[
+        if (entity.attributes.elevation >= 0) {
+          return "Sunset"
+        } else {
+          return "Sunrise"
+        }
+      ]]]
+
+    next_state_icon: |-
+      [[[
+        if (entity.attributes.elevation >= 0) {
+          return "mdi:weather-sunset-down"
+        } else {
+          return "mdi:weather-sunset-up"
+        }
+      ]]]
+
+    next_sun_time: |-
+      [[[
+        if (entity.attributes.elevation >= 0) {
+          var time = new Date(entity.attributes.next_setting)
+          return moment(time).format("H:mm")
+        } else {
+          var time = new Date(entity.attributes.next_rising)
+          return moment(time).format("H:mm")
+        }
+      ]]]

@@ -1,0 +1,45 @@
+
+chores_variables:
+  variables:
+    chores_count_text: |
+      [[[
+        var choresOverdue = states["sensor.chores_overdue"].attributes.entities.length
+        var choresToDo = states["sensor.chores_to_do"].attributes.entities.length
+        var choresText = ""
+        var choresToDoNoun = true
+        if (choresOverdue > 0) {
+          if (choresOverdue == 1) { choresText += "1 Chore Overdue" } else {  choresText += choresOverdue + " Chores Overdue" }                      
+        }
+        if (choresToDo > 0 && choresOverdue > 0) {
+          choresText += " + "
+          choresToDoNoun = false
+        }
+        if (choresToDo > 0) {
+          if (choresToDo == 1) { choresText += "1 " + (choresToDoNoun ? "Chore " : "") + "To Do" } else { choresText += choresToDo + (choresToDoNoun ? " Chores " : " ") + "To Do" }
+        }
+        if (choresText != "") { return choresText } else { return "Chores" }
+      ]]]
+    chores_all_done_text: |
+      [[[
+        if (states["sensor.chores_overdue"].attributes.entities.length < 1 && states["sensor.chores_to_do"].attributes.entities.length < 1) { return "🦄 All Done!" }
+      ]]]
+    chores_to_do_list: |
+      [[[
+        var chores = ''
+        var choresOverdue = states["sensor.chores_overdue"].attributes.entities
+        var choresToDo = states["sensor.chores_to_do"].attributes.entities
+        if (choresOverdue.length > 0) {
+          for (let e in choresOverdue) {
+            chores = chores + "<li>" + states[choresOverdue[e]].attributes.friendly_name + "</li>"
+          }
+          return chores
+        } else {
+          for (let e in choresToDo) {
+            chores = chores + "<li>" + states[choresToDo[e]].attributes.friendly_name + "</li>"
+          }
+          return chores
+        }
+      ]]]
+  triggers_update:
+    - sensor.chores_overdue
+    - sensor.chores_to_do

@@ -38,6 +38,18 @@ live_tile_card:
         label:
           - color: var(--disabled-text-color)
           - opacity: 0.67
+    - operator: default
+      styles:
+        card:
+          - background-color: var(--ha-card-background)
+        state:
+          - color: var(--primary-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+  state_display: '[[[ if (entity != undefined) { return entity.state.replace("_", " ") } ]]]'
   hold_action:
     action: more-info
   styles:
@@ -53,7 +65,7 @@ live_tile_card:
       - padding: 0
     name:
       - font-size: var(--body-font-size)
-      - padding: 4px 4px 12px 12px
+      - padding: 4px 4px 10px 12px
       - white-space: normal
       - text-align: left
       - justify-self: start
@@ -61,17 +73,18 @@ live_tile_card:
     state:
       - font-size: var(--h3-font-size)
       - justify-self: start
-      - padding: 2px 0 2px 12px
+      - padding: 4px 12px 0px 12px
       - font-weight: var(--h3-font-weight)
       - align-self: start
       - text-overflow: clip
       - display: -webkit-box
       - -webkit-line-clamp: 2
       - -webkit-box-orient: vertical
+      - text-transform: capitalize
     img_cell:
       - align-self: end
       - text-align: right
-      - padding: 4px 8px 8px 8px
+      - padding: 4px 8px 4px 4px
       - height: 28px
     label:
       - font-size: var(--body-font-size)
@@ -117,14 +130,14 @@ live_tile:
       - text-transform: capitalize
       - position: absolute
     label:
-      - line-height: 16px
       - position: absolute
-      - right: 8px
-      - top: calc( 100% - 28px )
+      - right: 12px
+      - bottom: 10px
+      - height: auto
       - text-align: right
       - color: var(--primary-text-color)
       - opacity: 0.5
-      - padding: 0 0 12px 0
+      - padding: 0
       - justify-self: end
       - align-self: end
 
@@ -157,7 +170,7 @@ live_tile_with_unit:
   template:
     - live_tile
   custom_fields:
-    unit: ''
+    unit: '[[[ return entity.attributes.unit_of_measurement ]]]'
   styles:
     grid:
       - grid-template-areas: '". i s ." ". i unit ." "n n l l"'
@@ -221,24 +234,62 @@ live_tile_with_picture:
     state:
       - place-self: end end
       - z-index: 1
-      - padding: 4px 12px 12px 4px
+      - padding: 4px 12px 10px 4px
       - font-size: var(--body-font-size)
       - font-weight: var(--body-font-weight)
       - opacity: .667
     custom_fields:
       picture:
         - position: absolute
-        - top: 12px
-        - left: 12px
+        - top: 16px
+        - left: 16px
         - width: calc( 100% - 32px )
         - height: calc( 100% - 32px )
         - padding: 0
         - aspect-ratio: 1/1
         - border-radius: 50%
-        - border: '4px solid rgba(0,0,0,.25)'
+        # - border: '4px solid rgba(0,0,0,.25)'
         - background: '[[[ return "url(" + variables.picture + ")" ]]]'
         - background-size: cover
         - background-position: center center
+        - background-repeat: no-repeat
+        - box-shadow: 0 0 0 2px rgba(var(--rgb-primary-text-color), .1)
+
+
+# Live Tile (with Small Round Picture)
+
+live_tile_with_small_picture:
+  variables:
+    picture: '[[[ return entity.attributes.entity_picture ]]]'
+  template:
+    - live_tile_card
+    - live_tile_with_long_state
+  custom_fields:
+    picture: ''
+  state:
+    - value: 'idle'
+      color: 'off'
+  styles:
+    grid:
+      - grid-template-areas: '"s s" "l l" "picture picture" "n i"'
+      - grid-template-columns: 1fr min-content
+      - grid-template-rows: min-content min-content auto min-content
+    custom_fields:
+      picture:
+        - width: 40%
+        - height: 40%
+        - top: 30%
+        - left: 30%
+        - position: absolute
+        - padding: 0
+        - aspect-ratio: 1/1
+        - border-radius: 50%
+        # - border: '4px solid rgba(0,0,0,.25)'
+        - background: '[[[ return "url(" + variables.picture + ")" ]]]'
+        - background-size: cover
+        - background-position: center center
+        - background-repeat: no-repeat
+        - box-shadow: 0 0 0 2px rgba(var(--rgb-primary-text-color), .1)
 
 
 # Live Tile (with Last Changed Label)
@@ -267,13 +318,18 @@ live_tile_with_state_countdown:
       styles:
         card: null
   styles:
-    card:
-      - background-image: |
+    grid:
+      - background: |
           [[[
             var diff = (new Date() - new Date(entity.last_changed)) / 1000
             var opacity = 1 - (diff / variables.duration)
             if (diff > variables.duration) { return '' }
-            return 'linear-gradient( to top, rgba(var(--rgb-primary-color),' + opacity + ') 0%, rgba(var(--rgb-primary-color),' + opacity + ') 100%)'
+            return 'rgba(var(--rgb-primary-color),' + opacity + ')'
+          ]]]
+      - color: |
+          [[[
+            var diff = (new Date() - new Date(entity.last_changed)) / 1000
+            if (diff > variables.duration / 2) { return 'var(--primary-text-color)' } else { return 'var(--accent-text-color)'}
           ]]]
 
 
@@ -284,7 +340,7 @@ live_tile_with_long_state:
     state:
       - font-size: var(--h4-font-size)
       - font-weight: 100
-      - padding: 6px 12px 2px 12px
+      - padding: 8px 12px 2px 12px
       - white-space: normal
       - text-align: left
       - line-height: 24px
@@ -297,34 +353,235 @@ live_tile_with_longer_state:
     state:
       - font-size: var(--h5-font-size)
       - font-weight: 400
-      - padding: 8px 12px 2px 12px
+      - padding: 10px 12px 2px 12px
       - white-space: normal
       - text-align: left
       - line-height: 20px
 
 
+# Live Tile (with State Unit)
+
+live_tile_with_state_unit:
+  variables:
+    unit: '[[[ return entity.attributes.unit_of_measurement ]]]'
+    state_display: '[[[ return Math.round(entity.state) ]]]'
+  state_display: |
+    [[[
+      return variables.state_display + "<span style='font-size: var(--h6-font-size); font-weight: var(--h6-font-weight); text-transform: uppercase; opacity: .6;'> " + variables.unit + "</span>"
+    ]]]
+  styles:
+    state:
+      - text-overflow: inherit
+
+
+# Live Tile (with Detailed Label)
+
+live_tile_with_detailed_label:
+  card_mod:
+    style: |
+      #label h6 { text-transform: uppercase; margin: 0; opacity: .67; }
+      #label p { margin: 0 0 8px; }
+
+
+# Live Tile (with Reversed State Colors)
+
+live_tile_with_reversed_state_colors:
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background-color: var(--ha-card-background)
+        state:
+          - color: var(--primary-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+    - value: 'off'
+      styles:
+        card:
+          - background-color: var(--primary-color)
+        state:
+          - color: var(--primary-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+
+
+# Live Tile (with Graph)
+
+live_tile_with_graph:
+  variables:
+    picture: '[[[ return entity.attributes.entity_picture ]]]'
+    hours_to_show: 12
+    group_by: interval
+    points_per_hour: 4
+    graph_height: 144
+    line_width: 4
+    line_color: var(--rgb-accent-color)
+    graph: line
+    lower_bound: ~10000
+    upper_bound: ~0
+    bar_spacing: 50
+    aggregate_func: avg
+  template: live_tile_card
+  custom_fields:
+    graph:
+      card:
+        type: custom:mini-graph-card
+        entities:
+          - entity: '[[[ return entity.entity_id ]]]'
+            aggregate_func: '[[[ return variables.aggregate_func ]]]'
+        show:
+          graph: '[[[ return variables.graph ]]]'
+          name: false
+          icon: false
+          state: false
+          labels: false
+          points: false
+        line_width: '[[[ return variables.line_width ]]]'
+        line_color: '[[[ return `rgb(${variables.line_color}` ]]]'
+        hours_to_show: '[[[ return variables.hours_to_show ]]]'
+        group_by: '[[[ return variables.group_by ]]]'
+        points_per_hour: '[[[ return variables.points_per_hour ]]]'
+        animate: true
+        upper_bound: '[[[ return variables.upper_bound ]]]'
+        lower_bound: '[[[ return variables.lower_bound ]]]'
+        height: '[[[ return variables.graph_height ]]]'
+        bar_spacing: '[[[ return variables.bar_spacing ]]]'
+        card_mod:
+          style: |
+            ha-card { background: none; border-radius: 0; }
+  styles:
+    grid:
+      - grid-template-areas: '"s s" "l l" "graph graph" "n i"'
+      - grid-template-columns: 1fr min-content
+      - grid-template-rows: min-content auto 0 min-content
+    card:
+      - color: var(--primary-text-color)
+      - background: var(--ha-card-background)
+    custom_fields:
+      graph:
+        - position: absolute
+        - bottom: 0
+        - width: 100%
+        - border-bottom: |
+            [[[
+              if (variables.graph == "line") { return `3.25rem solid rgba(${variables.line_color}, .15)` } else { return "3.25rem solid transparent" }
+            ]]]
+        - border-radius: 0
+        #   # rgba(var(--rgb-accent-color),.15)
+    name:
+      - z-index: 2
+    icon:
+      - z-index: 2
+
+
+# Live Tile (with Graph Threshold)
+# Card becomes increasingly highlighted as entity state reaches the upper or lower bound.
+
+live_tile_with_graph_threshold:
+  variables:
+    line_color_upper_bound: 75
+    line_color_upper_bound_max: 100
+    line_color_lower_bound: 25
+    line_color_lower_bound_min: 0
+  custom_fields:
+    graph:
+      card:
+        line_color: |
+          [[[
+            if (parseFloat(entity.state) >= variables.line_color_upper_bound_max) { return "var(--primary-text-color)" }
+            if (parseFloat(entity.state) <= variables.line_color_lower_bound_min) { return "var(--primary-text-color)" }
+            return `rgb(${variables.line_color}`
+          ]]]
+        # color_thresholds_transition: hard
+        color_thresholds: |
+          [[[
+            var stateValue = parseFloat(entity.state)
+            if ((stateValue >= variables.line_color_upper_bound_max) || (stateValue <= variables.line_color_lower_bound_min)) {
+              return []
+            } else {
+              var primaryTextColor = '#' + getComputedStyle(document.body).getPropertyValue('--rgb-primary-text-color').split(',').map(x => parseInt(x).toString(16).padStart(2, '0')).join('')
+              var accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color')
+            
+              return [
+                {
+                  value: variables.line_color_lower_bound,
+                  color: accentColor
+                },
+                {
+                  value: variables.line_color_lower_bound,
+                  color: primaryTextColor
+                },
+                {
+                  value: variables.line_color_upper_bound,
+                  color: primaryTextColor
+                },
+                {
+                  value: variables.line_color_upper_bound,
+                  color: accentColor
+                }            
+              ]
+            }
+          ]]]
+  styles:
+    grid:
+      - background: |
+          [[[
+            var stateValue = parseFloat(entity.state)
+            if (stateValue >= variables.line_color_upper_bound_max) { return "var(--accent-color)"}
+            if (stateValue <= variables.line_color_lower_bound_min) { return "var(--accent-color)"}
+            if (stateValue >= variables.line_color_upper_bound) {
+              var percent = (Math.min((stateValue - variables.line_color_upper_bound) / (variables.line_color_upper_bound_max - variables.line_color_upper_bound), 1) * .5)
+              return `rgba(var(--rgb-primary-color), ${percent})`
+            }
+            if (stateValue <= variables.line_color_lower_bound) {
+              var percent = (Math.min((variables.line_color_lower_bound - stateValue) / (variables.line_color_lower_bound - variables.line_color_lower_bound_min), 1) * .5)
+              return `rgba(var(--rgb-primary-color), ${percent})`
+            }
+            return "var(--ha-card-background)"
+          ]]]
+    custom_fields:
+      graph:
+        - border-bottom: |
+            [[[
+              var lineColor = "var(--rgb-accent-color)"
+              if (parseFloat(entity.state) >= variables.line_color_upper_bound_max) { lineColor = "var(--rgb-primary-text-color)" }
+              if (parseFloat(entity.state) <= variables.line_color_lower_bound_min) { lineColor = "var(--rgb-primary-text-color)" }
+              if (variables.graph == "line") { return `3.25rem solid rgba(${lineColor}, .15)` } else { return "3.25rem solid transparent" }
+            ]]]
+
+
 # Live Tile (with Percent Bar)
 
 live_tile_with_percent_bar:
+  variables:
+    percent: '[[[ return entity.state ]]]'
   color: var(--primary-background-color)
   styles:
     card:
       - background: |
           [[[
-            return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${entity.state}% 4px no-repeat,
-              linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background)) top left / ${entity.state}% 100% no-repeat, 
+            return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${variables.percent}% 4px no-repeat,
+              linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background)) top left / ${variables.percent}% 100% no-repeat, 
               linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background))`
           ]]]
-        color: var(--accent-text-color)
+        color: var(--primary-text-color)
 
 live_tile_with_accent_percent_bar:
+  variables:
+    percent: '[[[ return entity.state ]]]'
   color: var(--primary-background-color)
   styles:
     card:
       - background: |
           [[[
-            return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${entity.state}% 4px no-repeat,
-              linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5)) top left / ${entity.state}% 100% no-repeat, 
+            return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${variables.percent}% 4px no-repeat,
+              linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5)) top left / ${variables.percent}% 100% no-repeat, 
               linear-gradient(to bottom, rgba(var(--rgb-primary-color), .5), rgba(var(--rgb-primary-color), .5))`
           ]]]
         color: var(--accent-text-color)
@@ -347,9 +604,16 @@ live_tile_media_player:
     [[[
       if (entity.attributes.media_content_type != undefined) {
         if (entity.attributes.media_content_type == "music") {
-          if (entity.attributes.media_artist && entity.attributes.media_album_name) {
-            return entity.attributes.media_artist + "<br>" + entity.attributes.media_album_name
-            }
+          var label
+          if (entity.attributes.media_artist) {
+            label = entity.attributes.media_artist + "<br>"
+          } else if (entity.attributes.media_album_artist) {
+            label = entity.attributes.media_album_artist + "<br>"
+          }
+          if (entity.attributes.media_album_name) {
+            label += entity.attributes.media_album_name
+          }
+          return label
         } else if (entity.attributes.media_content_type == "tvshow") {
           if (entity.attributes.media_series_title) { return entity.attributes.media_series_title }
         }
@@ -416,6 +680,130 @@ live_tile_media_player:
             ]]]
         - border-radius: 50%
         - aspect-ratio: 1/1
+        - box-shadow: |-
+            [[[ 
+              if (entity.attributes.entity_picture != undefined) {
+                return "0 0 0 2px rgba(var(--rgb-primary-text-color), .1)"
+              }
+            ]]]
+
+
+# Live Tile with Map
+
+live_tile_with_map:
+  variables:
+    zoom_level: 2
+    hours_to_show: 1
+  custom_fields:
+    map_overlay: ''
+    map_overlay1: ''
+    map_overlay2: ''
+    map_overlay3: ''
+    map_overlay4: ''
+    map_overlay5: ''
+    map:
+      card:
+        type: map
+        entities:
+          - entity: '[[[ return entity.entity_id ]]]'
+        default_zoom: '[[[ return variables.zoom_level ]]]'
+        auto_fit: true
+        hours_to_show: '[[[ return variables.hours_to_show ]]]'
+        aspect_ratio: .5
+        card_mod:
+          style:
+            .: |
+              ha-icon-button {display: none;}
+            ha-map$: |
+              .leaflet-control-container {display: none;}
+              ha-entity-marker {display: none;}
+              .leaflet-interactive {stroke-width: 1;}
+  styles:
+    card:
+      - background-size: 120% 120%
+      - background-position: center center
+      - z-index: 3
+    custom_fields:
+      map:
+        - position: absolute
+        - z-index: 1
+        - top: 0
+        - left: 0
+        - width: 100%
+        - height: 100%
+        - filter: |
+            [[[
+              if (variables.zoom_level > 5) {
+                return 'sepia(1) saturate(1.2) hue-rotate(calc(var(--hue-primary-color) - 39deg)) brightness(1.6) contrast(1.8)'
+              } else {
+                return 'brightness(1.2) contrast(1.5)'
+              }
+            ]]]
+      map_overlay:
+        - position: absolute
+        - z-index: 2
+        - top: 0
+        - left: 0
+        - width: 100%
+        - height: 100%
+        - background-color: var(--ha-card-background)
+        - mix-blend-mode: color
+      map_overlay1:
+        - position: absolute
+        - z-index: 2
+        - top: 0
+        - left: 0
+        - width: 100%
+        - height: 100%
+      map_overlay2:
+        - position: absolute
+        - z-index: 2
+        - top: 16px
+        - left: 16px
+        - width: calc(100% - 32px)
+        - height: calc(100% - 32px)
+        - border-radius: 50%
+        - background-color: rgba(var(--rgb-primary-color),.5)
+        - mix-blend-mode: color
+      map_overlay3:
+        - position: absolute
+        - z-index: 2
+        - top: 16px
+        - left: 16px
+        - width: calc(100% - 32px)
+        - height: calc(100% - 32px)
+        - border-radius: 50%
+        - border: 1px solid rgba(var(--rgb-primary-color),.6)
+      map_overlay4:
+        - position: absolute
+        - z-index: 2
+        - top: calc(16.66% + 16px)
+        - left: calc(16.66% + 16px)
+        - width: calc(66.66% - 32px)
+        - height: calc(66.66% - 32px)
+        - border-radius: 50%
+        - background-color: rgba(var(--rgb-primary-color),1)
+        - mix-blend-mode: color
+      map_overlay5:
+        - position: absolute
+        - z-index: 2
+        - top: calc(16.66% + 16px)
+        - left: calc(16.66% + 16px)
+        - width: calc(66.66% - 32px)
+        - height: calc(66.66% - 32px)
+        - border-radius: 50%
+        - background-color: rgba(var(--rgb-primary-color),.1)
+        - border: 1px solid rgba(var(--rgb-primary-color),.8)
+    name:
+      - z-index: 4
+    img_cell:
+      - z-index: 4
+    label:
+      - z-index: 4
+    state:
+      - z-index: 4
+  tap_action:
+    action: more-info
 
 
 # Large Tile Card
@@ -429,6 +817,7 @@ large_tile_card:
     card:
       - padding: 16px
       - background-size: cover
+      - background-position: center center
     name:
       - padding: 0
     img_cell:
@@ -483,7 +872,7 @@ light_button_card_group:
                 })
                 totalColor.forEach((col, index) => totalColor[index] = Math.round( totalColor[index] / totalLights ))
                 if (isNaN(totalColor[0])) { var finalColor = 'var(--rgb-primary-color)' } else { var finalColor = totalColor.toString() }
-                return 'linear-gradient(0deg, var(--ha-card-background), var(--ha-card-background)), linear-gradient( 0deg, rgb(' + finalColor + ') 4px, rgba(' + finalColor + ', .1) 4px )'
+                return 'linear-gradient( 0deg, rgb(' + finalColor + ') 4px, rgba(' + finalColor + ', .1) 4px )'
               }
             } else {
               return 'var(--slider-thumb-color)'
@@ -547,6 +936,6 @@ hue_scene_card_mini:
   styles:
     name:
       - font-size: var(--h6-font-size)
-      - font-weight: 500
+      - font-weight: 600
       - text-transform: uppercase
 

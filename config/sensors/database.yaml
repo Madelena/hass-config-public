@@ -1,4 +1,5 @@
 
+# From https://www.home-assistant.io/integrations/sql/
 - platform: sql
   db_url: !secret mariadb_url
   scan_interval: 3600
@@ -8,18 +9,18 @@
       column: "value"
       unit_of_measurement: MB
 
-- platform: influxdb
-  host: localhost
-  port: 8086
-  username: !secret influxdb_user
-  password: !secret influxdb_pw
-  scan_interval: 3600
-  queries:
-    - name: InfluxDB Database Size
-      unit_of_measurement: MB
-      value_template: "{{ (value | float(0) / 1024 /1024) | round(1) }}"
-      group_function: sum
-      measurement: '"monitor"."shard"'
-      database: _internal
-      where: '"database"=''unison'' AND time > now() - 5m'
-      field: diskBytes
+# - platform: influxdb
+#   host: localhost
+#   port: 8086
+#   username: !secret influxdb_user
+#   password: !secret influxdb_pw
+#   scan_interval: 3600
+#   queries:
+#     - name: InfluxDB Database Size
+#       unit_of_measurement: MB
+#       value_template: "{{ (value | float(0) / 1024 /1024) | round(1) }}"
+#       group_function: sum
+#       measurement: '"monitor"."shard"'
+#       database: _internal
+#       where: '"database"=''unison'' AND time > now() - 5m'
+#       field: diskBytes

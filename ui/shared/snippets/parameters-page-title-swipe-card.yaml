@@ -1,0 +1,13 @@
+enabled: true
+slidesPerView: auto
+width: 480
+# spaceBetween: 16
+breakpoints:
+  '800':
+    enabled: false
+    slidesPerView: 3
+    width: 360
+  '1024':
+    enabled: false
+    slidesPerView: auto
+    width: 600

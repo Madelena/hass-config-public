@@ -1,0 +1,57 @@
+- type: 'custom:mushroom-light-card'
+  entity: light.workspace_studio_light_left
+  show_brightness_control: true
+  show_color_temp_control: true
+  show_color_control: true
+  use_light_color: true
+
+- type: 'custom:mushroom-light-card'
+  entity: light.workspace_studio_light_center
+  show_brightness_control: true
+  use_light_color: true
+  show_color_temp_control: true
+  show_color_control: true
+
+- type: 'custom:mushroom-light-card'
+  entity: light.workspace_studio_light_right
+  show_brightness_control: true
+  show_color_temp_control: true
+  show_color_control: true
+  use_light_color: true
+
+- type: 'custom:mushroom-light-card'
+  entity: light.workspace_makery_lights
+  use_light_color: true
+
+- type: 'custom:layout-card'                  
+  layout_type: 'custom:grid-layout'
+  layout: !include ../../shared/snippets/layout-live-tile.yaml
+  entities:
+
+    - type: 'custom:button-card'
+      template: hue_scene_card
+      entity: scene.workbench_studio_lights_energize
+      variables:
+        name: Energize
+        color: 'rgb(222,222,222)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card
+      entity: scene.workbench_studio_lights_bright
+      variables:
+        name: Bright
+        color: 'rgb(250, 207, 125)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card
+      entity: scene.workbench_studio_lights_relax
+      variables:
+        name: Relax
+        color: 'rgb(195, 150, 71)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card
+      entity: scene.workbench_studio_lights_soho
+      variables:
+        name: Soho
+        color: 'rgb(107, 28, 203)'

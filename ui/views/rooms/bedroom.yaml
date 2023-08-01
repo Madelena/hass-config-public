@@ -6,12 +6,12 @@ title: Bedroom
 path: bedroom
 
 type: 'custom:grid-layout'
-layout: !include ../snippets/layout-page-margin.yaml
+layout: !include ../../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
     layout_type: 'custom:grid-layout'
-    layout: !include ../snippets/layout-page-columns.yaml
+    layout: !include ../../shared/snippets/layout-page-columns.yaml
     view_layout:
       grid-area: cc
     cards:
@@ -20,13 +20,13 @@ cards:
       
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include ../snippets/layout-page-title.yaml
+        layout: !include ../../shared/snippets/layout-page-title.yaml
         view_layout:
           grid-column: 1/-1
         cards:
 
           - type: markdown
-            style: !include ../snippets/style-markdown-page-title.yaml
+            style: !include ../../shared/snippets/style-markdown-page-title.yaml
             content: >
               # Bedroom
 
@@ -49,8 +49,8 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include ../snippets/layout-live-tile.yaml
-            cards: !include ../columns/lights-bedroom.yaml
+            layout: !include ../../shared/snippets/layout-live-tile.yaml
+            cards: !include ../../shared/columns/lights-bedroom.yaml
 
 
       # [Column] Energy
@@ -73,14 +73,13 @@ cards:
                   {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='Bedroom', replace='') | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
                   {{
                     { 'entity': sensor.entity_id,
-                      'type': 'custom:decluttering-card',
-                      'template': 'mini_graph_tile',
-                      'variables': [
-                        {'entities': [sensor.entity_id]},
-                        {'title': name},
-                        {'lower_bound': 0},
-                        {'upper_bound': '~200'}
-                      ],
+                      'type': 'custom:button-card',
+                      'template': ['live_tile_with_graph', 'live_tile_with_state_unit'],
+                      'name': name,
+                      'variables': {
+                        'lower_bound': 0,
+                        'upper_bound': '~200'
+                      }
                     }
                   }},
                 {%- endfor %}
@@ -91,7 +90,7 @@ cards:
             card:
               type: 'custom:layout-card'
               layout_type: 'custom:grid-layout'
-              layout_options: !include ../snippets/layout-live-tile.yaml
+              layout_options: !include ../../shared/snippets/layout-live-tile.yaml
 
 
       # [Column] Security
@@ -111,7 +110,7 @@ cards:
             layout_type: 'custom:grid-layout'
             layout:
               margin: -1        
-            cards: !include ../secret/security-bedroom.yaml
+            cards: !include ../../shared/secret/security-bedroom.yaml
 
 
       # [Column] Chores
@@ -137,14 +136,14 @@ cards:
             card:
               type: 'custom:layout-card'
               layout_type: 'custom:grid-layout'
-              layout_options: !include ../snippets/layout-live-tile.yaml
+              layout_options: !include ../../shared/snippets/layout-live-tile.yaml
 
 
       # [Column] Environment
 
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include ../snippets/layout-live-tile.yaml     
+        layout: !include ../../shared/snippets/layout-live-tile.yaml     
         cards:
 
           - type: 'custom:button-card'
@@ -154,12 +153,50 @@ cards:
             view_layout:
               grid-column: 1/-1
 
-          - type: 'custom:decluttering-card'
-            template: mini_graph_tile
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.netatmo_strawberry_land_indoor_temperature
+            name: Bedside Temperature
             variables:
-              - entities:
-                  - entity: sensor.bedroom_hue_sensor_temperature
-              - title: Temperature
-              - aspect_ratio: 2
+              aspect_ratio: 2
+              line_width: 2
+              graph_height: 80
             view_layout:
               grid-column: span 2
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.netatmo_strawberry_land_indoor_humidity
+            name: Humidity
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.bedroom_hue_sensor_temperature
+            name: Bedroom Temperature
+            variables:
+              aspect_ratio: 2
+              line_width: 2
+              graph_height: 80
+            view_layout:
+              grid-column: span 2
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.netatmo_strawberry_land_indoor_co2
+            name: CO₂ 
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.netatmo_strawberry_land_indoor_noise
+            name: Noise
+

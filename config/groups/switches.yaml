@@ -1,0 +1,44 @@
+
+# SWITCHES
+
+switches_bedroom:
+  name: Bedroom Switches
+  entities:
+    - switch.bedroom_air_conditioner_on_off
+    - switch.bedroom_devices_plug_on_off
+    - switch.dorothy_devices_plug_on_off
+    - switch.dorothy_plug_on_off
+
+switches_workspace:
+  name: Workspace Switches
+  entities:
+    - switch.astralplane_plug_on_off
+    - switch.makery_plug_on_off
+    - switch.quattro_plug_on_off
+
+switches_living_room:
+  name: Living Room Switches
+  entities:
+    - switch.living_room_air_conditioner_plug_on_off
+    - switch.living_room_projector_plug_on_off
+    - switch.terpsichora_plug_on_off
+
+switches_kitchen:
+  name: Kitchen Switches
+  entities:
+    - switch.kitchen_aerogardens_plug_on_off
+    - switch.kitchen_counter_echo_plug_on_off
+    - switch.kitchen_counter_hand_blender_on_off
+    - switch.kitchen_counter_kettle_on_off
+    - switch.kitchen_counter_plug_3_on_off
+    - switch.kitchen_counter_rice_cooker_on_off
+    - switch.kitchen_counter_toaster_on_off
+    - switch.kitchen_fridge_plug_on_off
+    - switch.kitchen_microwave_plug_on_off
+
+switches_storage:
+  name: Storage Switches
+  entities:
+    - switch.valhalla_plug_on_off
+    - switch.valhalla_rainbow_plug_switch
+    - switch.valhalla_insteon_plug_switch

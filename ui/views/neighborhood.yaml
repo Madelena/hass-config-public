@@ -6,7 +6,7 @@ title: Neighborhood
 path: neighborhood
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
@@ -24,7 +24,7 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title.yaml
+        layout: !include ../shared/snippets/layout-page-title.yaml
         view_layout:
           grid-column: 1/-1
         cards:
@@ -33,21 +33,7 @@ cards:
             content: >
               # {{ states('input_text.neighborhood_name') }}
 
-              {{ state_attr('sensor.nws_alert_rss_feed', 'entries')[0].title
-              }}. Parking restrictions are {{
-              states('sensor.nyc_311_alternate_side_parking_0d') | lower }}. Trains are in {{
-              states('sensor.goodserviceio_l_service') | lower }} currently.
-              {%- set is_cold =  state_attr('weather.valhalla_hourly',
-              'forecast')|map(attribute='temperature')|average < 18 -%} {%-
-              set is_freezing =  state_attr('weather.valhalla_hourly',
-              'forecast')|map(attribute='temperature')|average < 8 -%} {%-
-              set is_rainy = 'rainy' in
-              state_attr('weather.valhalla_hourly',
-              'forecast')|map(attribute='condition')|join(',') -%} {{ iif(
-              is_cold or is_rainy, ' You should', '') }} {{ iif( is_cold, '
-              wear a jacket', '') }} {{ iif( is_freezing, ' and a scarf, and
-              also', ' and') }} {{ iif( is_rainy, ' bring an umbrella.',
-              '.') }}
+              Parking restrictions are {{states('sensor.nyc_311_alternate_side_parking_0d') | lower }}. Trains on the Canarsie Line are {{states('sensor.goodserviceio_l_service') | lower }} currently.
             style:
               .: |
                 ha-card {
@@ -56,7 +42,7 @@ cards:
               ha-markdown$: |
                 h1 {
                   font-size: var(--title-font-size);
-                  font-weight: 500;
+                  font-weight: 600;
                   line-height: 1.1;
                   margin-left: -2px;
                   margin-block-end: -8px;
@@ -67,23 +53,12 @@ cards:
             layout:
               margin: 0
             view_layout:
-              place-self: center start
+              place-self: center auto
             cards:
 
               - type: 'custom:swipe-card'
-                parameters:
-                  enabled: true
-                  slidesPerView: 1.66
-                  width: 480
-                  breakpoints:
-                    '800':
-                      enabled: false
-                      slidesPerView: 3
-                      width: 360
-                    '1024':
-                      enabled: false
-                      slidesPerView: 3
-                      width: 600
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
                 cards:
 
 
@@ -98,7 +73,7 @@ cards:
                         tap_action:
                           action: url
                           url_path: !secret weekendest_url
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                       "(min-width: 800px) and (max-width: 1023.99px)":
                         <<: *title-badge-1
                         layout: vertical
@@ -110,7 +85,7 @@ cards:
                         type: 'custom:mushroom-template-card'
                         primary: Citizen ↗
                         icon: 'mdi:police-badge'
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         icon_color: pink
                         tap_action:
                           action: url
@@ -128,7 +103,7 @@ cards:
                         secondary: null
                         icon: 'mdi:shield-alert'
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: 'https://portal.311.nyc.gov/'
@@ -137,9 +112,9 @@ cards:
                         layout: vertical
 
 
-      # [Column] Transit
+      # [Column] Subway
       - type: vertical-stack
-        cards: !include secret/neighborhood-transit.yaml
+        cards: !include ../shared/secret/neighborhood-subway.yaml
 
 
       # [Column] Traffic
@@ -149,7 +124,7 @@ cards:
           - type: 'custom:button-card'
             template: header_card
             variables:
-              name: TRAFFIC
+              name: DRIVING
               label: Waze
               arrow: 'mdi:arrow-top-right'
               action: url
@@ -190,28 +165,94 @@ cards:
                     color: 'rgba(255,255,255,.25)'
 
           - type: entities
+            title: Driving Time
             entities:
               - entity: sensor.waze_travel_time
                 type: 'custom:multiple-entity-row'
-                name: Driving to
+                name: Union Square
+                # secondary_info:
+                #   attribute: route
+                #   name: via
                 show_state: false
                 entities:
+                  - entity: sensor.waze_travel_time_from_union_square
+                    name: FROM
+                    styles:
+                      text-align: left
+                  - entity: sensor.waze_travel_time
+                    name: TO
+                    styles:
+                      text-align: left
+              - entity: sensor.waze_travel_time_to_hicksville
+                type: 'custom:multiple-entity-row'
+                name: Hicksville
+                # secondary_info:
+                #   attribute: route
+                #   name: via
+                show_state: false
+                entities:
+                  - entity: sensor.waze_travel_time_from_hicksville
+                    name: FROM
+                    styles:
+                      text-align: left
                   - entity: sensor.waze_travel_time_to_hicksville
-                    name: HICKSVILLE
+                    name: TO
+                    styles:
+                      text-align: left
+              - entity: sensor.waze_travel_time_to_newark
+                type: 'custom:multiple-entity-row'
+                name: Newark
+                # secondary_info:
+                #   attribute: route
+                #   name: via
+                show_state: false
+                entities:
+                  - entity: sensor.waze_travel_time_from_newark
+                    name: FROM
                     styles:
                       text-align: left
                   - entity: sensor.waze_travel_time_to_newark
-                    name: NEWARK
+                    name: TO
+                    styles:
+                      text-align: left
+              - entity: sensor.waze_travel_time_to_tappan_zee
+                type: 'custom:multiple-entity-row'
+                name: Tappan Zee
+                # secondary_info:
+                #   attribute: route
+                #   name: via
+                show_state: false
+                entities:
+                  - entity: sensor.waze_travel_time_from_tappan_zee
+                    name: FROM
                     styles:
                       text-align: left
                   - entity: sensor.waze_travel_time_to_tappan_zee
-                    name: TAPPAN ZEE
+                    name: TO
                     styles:
                       text-align: left
 
-    #      - !include cards/traffic-cameras.yaml
+    #      - !include ../shared/cards/traffic-cameras.yaml
 
-          - !include cards/traffic-bridges-and-tunnels.yaml
+          - !include ../shared/cards/traffic-bridges-and-tunnels.yaml
+
+
+      # [Column] Stores
+      
+      - !include ../shared/secret/neighborhood-stores.yaml
+
+
+      # [Column] Parking
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: PARKING
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
 
           - type: entities
             title: Parking Rules
@@ -267,14 +308,24 @@ cards:
           #     - entity: sensor.next_parking_rule_suspension
 
 
-      # [Column] Weather
+      # [Column] Gas
+
+      - !include ../shared/secret/neighborhood-gas.yaml
+
+
+      # [Column] Transit
+      - type: vertical-stack
+        cards: !include ../shared/secret/neighborhood-transit.yaml
+
+
+      # [Column] Airports
       - type: vertical-stack
         cards:
 
           - type: 'custom:button-card'
             template: header_card
             variables:
-              name: WEATHER
+              name: AIRPORTS
               label: More
               arrow: 'mdi:arrow-top-right'
               action: url
@@ -282,73 +333,6 @@ cards:
             view_layout:
               grid-column-start: 1
               grid-column-end: -1
-
-          - type: picture
-            image: //s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/usbgm/animate.png
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-
-          - type: 'custom:weather-chart-card'
-            entity: weather.valhalla_hourly
-
-          - type: weather-forecast
-            entity: weather.valhalla_2
-            show_forecast: true
-            title: Daily Forecast
-            card_mod:
-              style: |
-                .content {display: none !important;}
-                .forecast {padding-top: 0 !important;}
-
-          - type: entities
-            entities:
-              - entity: sun.sun
-                type: 'custom:multiple-entity-row'
-                show_state: false
-                secondary_info:
-                  entity: sun.sun
-                entities:
-                  - attribute: next_rising
-                    format: relative
-                    name: SUNRISE
-                    styles:
-                      text-align: left
-                  - attribute: next_setting
-                    format: relative
-                    name: SUNSET
-                    styles:
-                      text-align: left
-
-              - entity: sensor.valhalla_uv_index
-                name: UV Index
-
-              - entity: sensor.moon
-
-              - entity: sensor.noaa_tides
-                name: Tides
-                icon: 'mdi:waves'
-
-          - type: vertical-stack
-            in_card: true
-            cards:
-
-              - type: entities
-                entities:
-                  - entity: sensor.nws_alert_rss_feed
-                    type: custom:template-entity-row
-                    state: ''
-                    name: "{{states('sensor.nws_alert_rss_feed')}} Alert{% if states('sensor.nws_alert_rss_feed') | int > 1 %}s{% endif %} "
-                title: NWS Alerts
-
-              - !include cards/nws-alerts.yaml
-
-          - type: entities
-            entities:
-              - entity: sensor.tomorrow_io_valhalla_fire_index
-                name: Fire Index
-
 
 
       # [Column] Notices  
@@ -374,7 +358,7 @@ cards:
                 field: title
                 style:
                   - display: block
-                  - font-weight: 500
+                  - font-weight: 600
                   - font-size: var(--h4-font-size)
                   - xwhite-space: nowrap
                   - padding: 16px 0 2px
@@ -400,190 +384,6 @@ cards:
 
               tbody tr:nth-child(odd), tbody tr:nth-child(even) {
               background: none; }
-
-
-      # [Column] Public Health  
-
-      - type: vertical-stack
-        cards:
-          - type: 'custom:button-card'
-            template: header_card
-            variables:
-              name: PUBLIC HEALTH
-              label: NYC Health
-              arrow: 'mdi:arrow-top-right'
-              action: url
-              link: 'https://twitter.com/NotifyNYC'
-            view_layout:
-              grid-column-start: 1
-              grid-column-end: -1
-
-          - type: entities
-            title: Cold + Flu Index
-            entities:
-
-              - entity: sensor.cold_flu_forecasted_average
-                type: 'custom:multiple-entity-row'
-                name: Forecasted Average
-                secondary_info:
-                  attribute: rating
-                entities:
-                  - attribute: trend
-
-              - entity: sensor.cold_flu_index_today
-                type: 'custom:multiple-entity-row'
-                name: Today
-                secondary_info:
-                  attribute: rating
-
-              - entity: sensor.cold_flu_index_today
-                type: 'custom:multiple-entity-row'
-                icon: ' '
-                name: ' '
-                show_state: false
-                entities:
-                  - attribute: flu_index
-                    name: FLU
-                    styles:
-                      text-align: left
-                  - attribute: fever_index
-                    name: FEVER
-                    styles:
-                      text-align: left
-                  - attribute: strep_index
-                    name: STREP
-                    styles:
-                      text-align: left
-                  - attribute: cough_index
-                    name: COUGH
-                    styles:
-                      text-align: left
-
-          - type: entities
-            title: Allergy Index
-            entities:
-              - entity: sensor.allergy_index_forecasted_average
-                type: 'custom:multiple-entity-row'
-                name: Forecasted Average
-                secondary_info:
-                  attribute: rating
-                entities:
-                  - attribute: trend
-
-              - entity: sensor.allergy_index_forecasted_average
-                type: 'custom:multiple-entity-row'
-                icon: ' '
-                name: Season
-                show_state: false
-                entities:
-                  - attribute: season
-
-              - entity: sensor.allergy_index_forecasted_average
-                type: 'custom:multiple-entity-row'
-                icon: ' '
-                name: ' '
-                show_state: false
-                secondary_info:
-                  attribute: outlook
-
-              - entity: sensor.allergy_index_today
-                type: 'custom:multiple-entity-row'
-                name: Today
-                secondary_info:
-                  attribute: rating
-
-              - entity: sensor.allergy_index_tomorrow
-                type: 'custom:multiple-entity-row'
-                name: Tomorrow
-                secondary_info:
-                  attribute: rating
-
-          - type: entities
-            title: Pollen
-            entities:
-              - entity: sensor.tomorrow_io_valhalla_grass_pollen_index
-                name: Grass Pollen Index
-              - entity: sensor.valhalla_grass_pollen_0d
-                name:  Grass Pollen
-              - entity: sensor.tomorrow_io_valhalla_tree_pollen_index
-                name: Tree Pollen Index
-              - entity: sensor.valhalla_tree_pollen_0d
-                name: Tree Pollen
-              - entity: sensor.tomorrow_io_valhalla_weed_pollen_index
-                name: Weed Pollen Index
-              - entity: sensor.valhalla_mold_pollen_0d
-                name: Mold Pollen
-              - entity: sensor.valhalla_ragweed_pollen_0d
-                name: Ragweed Pollen
-
-          - type: entities
-            title: Asthma Index
-            entities:
-
-              - entity: sensor.asthma_index_forecasted_average
-                type: 'custom:multiple-entity-row'
-                name: Forecasted Average
-                secondary_info:
-                  attribute: rating
-                entities:
-                  - attribute: trend
-
-              - entity: sensor.asthma_index_today
-                type: 'custom:multiple-entity-row'
-                name: Today
-                secondary_info:
-                  attribute: rating
-
-              - entity: sensor.asthma_index_today
-                type: 'custom:multiple-entity-row'
-                icon: ' '
-                name: ' '
-                show_state: false
-                entities:
-                  - attribute: allergen_amount_1
-                    name: OZONE
-                    styles:
-                      text-align: left
-                  - attribute: allergen_amount_2
-                    name: PM2.5
-                    styles:
-                      text-align: left
-                  - attribute: allergen_amount_3
-                    name: PM10
-                    styles:
-                      text-align: left
-
-              - entity: sensor.asthma_index_tomorrow
-                type: 'custom:multiple-entity-row'
-                name: Tomorrow
-                secondary_info:
-                  attribute: rating
-
-              - entity: sensor.asthma_index_tomorrow
-                type: 'custom:multiple-entity-row'
-                icon: ' '
-                name: ' '
-                show_state: false
-                entities:
-                  - attribute: allergen_amount_1
-                    name: OZONE
-                    styles:
-                      text-align: left
-                  - attribute: allergen_amount_2
-                    name: PM2.5
-                    styles:
-                      text-align: left
-
-
-
-      # [Column] Gas
-
-      - !include secret/neighborhood-gas.yaml
-
-
-      # [Column] Stores
-      
-      - !include secret/neighborhood-stores.yaml
 
 
       # [Column] Bird Watch

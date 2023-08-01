@@ -1,0 +1,7 @@
+.: |
+  @media screen and (max-width: 799.99px) {
+    .swiper-slide {width: auto !important;}
+  }
+  @media screen and (min-width: 1024px) {
+    .swiper-slide {width: auto !important;}
+  }

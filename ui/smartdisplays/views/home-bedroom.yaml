@@ -1,0 +1,184 @@
+# AMBIENT DASHBOARD
+# Home Page
+# Made by Madelena Mak 2022
+
+title: Home
+path: slides
+type: 'custom:grid-layout'
+layout:
+  margin: -1px
+  grid-template-areas: '"slides" "topbar"'
+  grid-template-rows: 100% 0
+  grid-template-columns: 100%
+cards:
+
+  # The Slides
+
+  - type: 'custom:swipe-card'
+    view_layout:
+      grid-area: slides
+    parameters:
+      effect: cube
+      speed: 2000
+      cubeEffect:
+        - slideShadows: false
+      loop: true
+      autoHeight: true
+      autoplay:
+        delay: 8000
+        disableOnInteraction: false
+      pagination:
+        type: progressbar
+      keyboard:
+        enabled: true
+    card_mod:
+      style: |
+        .swiper-container-cube { overflow: hidden !important; z-index: 100 !important; }
+        .swiper-slide { transition: opacity 2s, transform !important; }
+        .swiper-slide-prev, .swiper-slide-next { opacity: 0; }
+        .swiper-slide-active { opacity: 1; }
+        .swiper-container-horizontal > .swiper-pagination-progressbar, .swiper-container-vertical > .swiper-pagination-progressbar.swiper-pagination-progressbar-opposite {
+          top: auto !important; bottom: -1px !important; height: 1vh !important;
+        }
+    cards: !include ../slides-bedroom.yaml
+
+
+  # Top Bar
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: topbar
+      card_margin: 0
+    layout:
+      grid-template-rows: auto
+      grid-template-columns: '15vw auto 15vw'
+      margin: '-100vh 0 0 0'
+      padding: 0
+    cards:
+      - !include ../snippets/topbar-start-button.yaml
+      - # Badges and Media Controls
+
+        type: custom:button-card
+        show_name: false
+        show_state: false
+        show_label: false
+        show_icon: false
+        custom_fields:
+          badge:
+            card:
+              type: 'custom:swipe-card'
+              parameters:
+                direction: vertical
+                autoHeight: true
+                height: 94
+                effect: cube
+                xautoplay:
+                  xdelay: 5000
+                cubeEffect:
+                  - slideShadows: false
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:mushroom-light-card
+                      entity: light.bedroom_cloud_light
+                      primary_info: none
+                      secondary_info: none
+                      use_light_color: true
+                      card_mod: &topbar-badges-light-card-mod
+                        style:
+                          .: |
+                            ha-card {
+                              border-radius: 100px;
+                              background: rgba(var(--rgb-primary-background-color),.33);
+                              margin: 22px 1vw;
+                              padding: 4px !important;
+                              width: fit-content;
+                            }
+                            mushroom-state-item { flex-grow: 10; }
+                            .actions { margin-right: 0; flex-basis: 0px; }
+                    - type: custom:mushroom-light-card
+                      entity: light.bedroom_hue_bowl
+                      primary_info: none
+                      secondary_info: none
+                      use_light_color: true
+                      card_mod: *topbar-badges-light-card-mod
+                    - type: custom:mushroom-light-card
+                      entity: light.bedroom_ceiling_lights
+                      primary_info: none
+                      secondary_info: none
+                      use_light_color: true
+                      card_mod: *topbar-badges-light-card-mod
+
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.netatmo_strawberry_land_indoor_temperature
+                      layout: horizontal
+                      icon_color: var(--primary-color)
+                      name: Bedroom Temperature
+                      primary_info: state
+                      secondary_info: none
+                      card_mod: &topbar-badges-card-mod
+                        style:
+                          .: |
+                            ha-card {
+                              border-radius: 100px;
+                              background: rgba(var(--rgb-primary-background-color),.33);
+                              margin: 22px 1vw;
+                              padding: 4px !important;
+                            }
+                            mushroom-state-item { flex-grow: 10; }
+                            .actions { margin-right: 0; flex-basis: 0px; }
+                          mushroom-media-player-media-control$mushroom-button$: |
+                            button { border-radius: 100px !important; }
+                          mushroom-state-info$: |
+                            .primary {font-size: 2vw !important; line-height: 2.2vw; font-weight: 600 !important; margin-top: -.2vw !important;}
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.total_energy_use
+                      layout: horizontal
+                      icon_color: var(--primary-color)
+                      icon: mdi:lightning-bolt
+                      primary_info: state
+                      secondary_info: none
+                      card_mod: *topbar-badges-card-mod
+
+                - entity: media_player.dorothy_echo_link
+                  type: custom:mushroom-media-player-card
+                  use_media_info: true
+                  layout: horizontal
+                  # icon_type: entity-picture
+                  media_controls:
+                    - play_pause_stop
+                  card_mod:
+                    style:
+                      .: |
+                        ha-card {
+                          border-radius: 100px;
+                          background: rgba(var(--rgb-accent-color),.5);
+                        }
+                        mushroom-state-item { flex-grow: 10; }
+                        .actions { margin-right: 0; flex-basis: 0px; }
+                      mushroom-media-player-media-control$mushroom-button$: |
+                        button { border-radius: 100px !important; }
+
+        styles:
+          grid:
+            - grid-template-areas: '". badge ."'
+            - grid-template-columns: auto 50vw auto
+            - align-items: middle
+            - justify-content: space-around
+          card:
+            - background: none
+            - z-index: 100
+            - padding: 0
+            - height: 15vw
+            - overflow: visible
+          # custom_fields:
+          #   badge:
+          #     - transform: scale(1.5)
+
+
+      - !include ../snippets/topbar-clock-simple.yaml
+
+

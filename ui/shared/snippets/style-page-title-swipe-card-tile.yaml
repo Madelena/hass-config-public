@@ -1,0 +1,5 @@
+.: |
+  ha-card {background: none;}
+  @media screen and (max-width: 799.99px), @media screen and (min-width: 1024px) {
+    ha-card, mushroom-card, mushroom-state-item, mushroom-state-info {width: fit-content;}
+  }

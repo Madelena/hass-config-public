@@ -1,0 +1,11 @@
+# NYC 311 Alt Side Parking slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_colored_on_state
+entity: sensor.nyc_311_alternate_side_parking_0d
+name: Alternate Side Parking - Today
+icon: mdi:car-brake-parking
+show_label: true
+label: '[[[ return entity.attributes.details ]]]'

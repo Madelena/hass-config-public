@@ -1,0 +1,28 @@
+# Chores slide
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+  - slide_with_big_state
+  - slide_with_colored_conditional
+  - chores_variables
+show_state: true
+show_label: true
+name: '[[[ return variables.chores_count_text ]]]'
+state_display: '[[[ return variables.chores_all_done_text ]]]'
+label: '[[[ return variables.chores_to_do_list ]]]'
+icon: mdi:clipboard-check-outline
+variables:
+  condition: '[[[ return (states["sensor.chores_overdue"].attributes.entities.length > 0) ]]]'
+extra_styles: |
+  li {
+    list-style: square;
+    margin-left: .5vw;
+  }
+  li:before {
+    content: "";
+    margin-left: -2.5vw;
+  }
+tap_action:
+  action: navigate
+  navigation_path: /ui-smart-displays/chores

@@ -1,0 +1,5 @@
+grid-template-columns:  'repeat(auto-fit, [col-start] 33.33vh [col-end])'
+grid-template-rows: auto auto
+grid-auto-flow: column
+grid-auto-columns: 33.33vh
+margin: 0

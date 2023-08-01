@@ -1,0 +1,499 @@
+# METROLOGY FOR HOME ASSISTANT
+# Button Card Templates
+# Made by Madelena Mak 2022
+
+
+# SLIDES FOR SMART DISPLAY
+
+# Basic Slide
+
+slide_basic:
+  template: slide_base
+  show_state: true
+  styles:
+    grid:
+      - grid-template-areas: '"i" "n" "s" "l"'
+      - grid-template-rows: 1fr min-content min-content min-content
+
+slide_base:
+  styles:
+    card:
+      - xwidth: 100vw
+      - height: 100vh
+      - padding: 4vw
+      - background: 'linear-gradient(to bottom, rgba(var(--rgb-primary-background-color),0) 0%, rgba(var(--rgb-primary-background-color),1) 100%)'
+      - overflow: hidden
+      - color: var(--primary-text-color)
+    img_cell:
+      - position: absolute
+    icon:
+      - bottom: '-15vh'
+      - right: '-15vw'
+      - width: 66vw
+      - height: auto
+      - z-index: 0
+      - opacity: 0.1
+      - color: var(--primary-text-color)
+    name:
+      - place-self: start
+      - font-size: 3vw
+      - font-weight: 600
+      - letter-spacing: .1vw
+      - text-transform: uppercase
+      - padding: 0 0 2vw 1.33vw
+      - z-index: 2
+    state:
+      - place-self: start
+      - font-size: 6vw
+      - font-weight: 600
+      - white-space: normal
+      - text-align: left
+      - line-height: 1.1
+      - padding: 0 0 2vw 1vw
+      - overflow: visible
+      - z-index: 2
+    label:
+      - place-self: start
+      - font-size: 6vw
+      - font-weight: 100
+      - white-space: normal
+      - text-align: left
+      - line-height: 1.1
+      - overflow: hidden
+      - padding: 0 0 .5vw 1vw
+      - display: '-webkit-box'
+      - '-webkit-line-clamp': 3
+      - '-webkit-box-orient': vertical
+      - z-index: 2
+      - max-height: 19.8vw
+
+slide_with_state_unit:
+  state_display: |
+    [[[
+      return entity.state + "<span style='font-size: .5em; opacity: .5;'>&nbsp;" + entity.attributes.unit_of_measurement + "</span>"
+    ]]]
+
+slide_with_big_state:
+  template: slide_basic
+  styles:
+    name:
+      - padding: 0 0 1vw .5vw
+    state:
+      - font-size: 12vw
+      - line-height: 1
+      - padding: 0 0 1vw 0
+
+slide_with_colored_on_state:
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background: >-
+              linear-gradient(to bottom, rgba(var(--rgb-primary-background-color),0) 0%,
+              rgba(var(--rgb-primary-color),1) 75%)         
+
+slide_with_colored_conditional:
+  styles:
+    card:
+      - background: |
+          [[[
+            if (variables.condition) {
+              return 'linear-gradient(to bottom, rgba(var(--rgb-primary-background-color),0) 0%, rgba(var(--rgb-accent-color),1) 50%)'
+            } else {
+              return 'linear-gradient(to bottom, rgba(var(--rgb-primary-background-color),0) 0%, rgba(var(--rgb-primary-background-color),1) 100%)'
+            }
+          ]]]
+
+
+# Picture Slide
+
+slide_with_picture:
+  custom_fields:
+    picture: ' '
+  styles:
+    custom_fields:
+      picture:
+        - background: '[[[ return "linear-gradient(to bottom, rgba(var(--rgb-primary-background-color),0) 0%, rgba(var(--rgb-primary-background-color),1) 100%), url(" + variables.picture + ")" ]]]'
+        - position: absolute
+        - top: 0
+        - left: 0
+        - bottom: 0
+        - right: 0
+        - background-repeat: no-repeat, no-repeat
+        - background-size: cover, 125%
+        - background-position-x: center, center
+        - animation-name: background
+        - animation-duration: 40s
+        - animation-direction: alternate
+        - animation-iteration-count: infinite
+  extra_styles: |
+    @keyframes background {
+      0% {background-position-y: center, top; background-size: cover, 133%}
+      50% {background-position-y: center, center; background-size: cover, 100%}
+      100% {background-position-y: center, bottom; background-size: cover, 133%}
+    }
+
+# Graph Slide
+
+slide_with_graph:
+  variables:
+    hours_to_show: 12
+    group_by: interval
+    points_per_hour: 2
+  custom_fields:
+    graph:
+      card:
+        type: custom:mini-graph-card
+        entities:
+          - '[[[ return entity.entity_id ]]]'
+        show:
+          name: false
+          icon: false
+          state: false
+          labels: false
+          fill: false
+          points: false
+        line_width: 10
+        line_color: rgba(var(--rgb-accent-color), .5)
+        hours_to_show: '[[[ return variables.hours_to_show ]]]'
+        group_by: '[[[ return variables.group_by ]]]'
+        points_per_hour: '[[[ return variables.points_per_hour ]]]'
+        animate: true
+        height: '[[[ return (window.innerHeight * .25) ]]]'
+        card_mod:
+          style: |
+            ha-card { background: none; }
+  styles:
+    grid:
+      - grid-template-areas: '"i" "n" "s" "l" "graph"'
+      - grid-template-rows: 1fr min-content min-content min-content min-content
+    custom_fields:
+      graph:
+        - position: absolute
+        - bottom: 0
+        - left: 0
+        - width: 100%
+        - z-index: 1
+        - border-bottom: 40vh solid transparent
+          # rgba(var(--rgb-accent-color),.15)
+
+
+# Live Camera Slide
+
+slide_with_live_camera:
+  custom_fields:
+    live_camera:
+      card:
+        type: picture-entity
+        camera_view: live
+        entity: '[[[ return entity.entity_id ]]]'
+        show_name: false
+        show_state: false
+  show_state: false
+  styles:
+    custom_fields:
+      live_camera:
+        - position: absolute
+        - top: 0
+        - left: 0
+        - right: 0
+        - bottom: 0
+
+
+# Weather Forecast Slide
+
+slide_with_weather_forecast:
+  template: slide_base
+  variables:
+    format: "ddd"
+  show_state: false
+  show_label: false
+  show_icon: false
+  custom_fields:
+    day1:
+      card:
+        type: custom:button-card
+        template: slide_with_weather_forecast_day
+        entity: '[[[ return entity.entity_id ]]]'
+        variables:
+          day: 0
+          format: '[[[ return variables.format ]]]'
+    day2:
+      card:
+        type: custom:button-card
+        template: slide_with_weather_forecast_day
+        entity: '[[[ return entity.entity_id ]]]'
+        variables:
+          day: 1
+          format: '[[[ return variables.format ]]]'
+    day3:
+      card:
+        type: custom:button-card
+        template: slide_with_weather_forecast_day
+        entity: '[[[ return entity.entity_id ]]]'
+        variables:
+          day: 2
+          format: '[[[ return variables.format ]]]'
+    day4:
+      card:
+        type: custom:button-card
+        template: slide_with_weather_forecast_day
+        entity: '[[[ return entity.entity_id ]]]'
+        variables:
+          day: 3
+          format: '[[[ return variables.format ]]]'
+  styles:
+    grid:
+      - grid-template-areas: '"i i i i" "n n n n" "day1 day2 day3 day4"'
+      - grid-template-rows: 1fr min-content min-content min-content
+      - grid-template-columns: 1fr 1fr 1fr 1fr
+
+slide_with_weather_forecast_day:
+  variables:
+    day: 0
+    format: "ddd"
+  show_state: false
+  show_label: true
+  icon: |
+      [[[
+        var weatherIconDict = {
+          'partlycloudy': 'partly-cloudy',
+          'clear-night': 'night'
+        }
+        var weatherIcon = weatherIconDict[entity.attributes.forecast[variables.day].condition]
+        if (weatherIcon == null) {weatherIcon = entity.attributes.forecast[variables.day].condition}
+        return "mdi:weather-" + weatherIcon
+      ]]]
+  xstate_display: |
+      [[[ 
+        var weatherNameDict = {
+          'partlycloudy': 'Partly Cloudy',
+          'clear-night': 'Clear Night',
+          'lightning-rainy': 'Lightning + Rainy'
+        }
+        var weatherName = weatherNameDict[entity.attributes.forecast[variables.day].condition]
+        if (weatherName == null) {weatherName = entity.attributes.forecast[variables.day].condition}
+        return weatherName
+      ]]]
+  name: '[[[ return moment(entity.attributes.forecast[variables.day].datetime).format(variables.format) ]]]'
+  label: '[[[ return entity.attributes.forecast[variables.day].temperature + " °C" ]]]'
+  styles:
+    grid:
+      - grid-template-areas: '"n" "i" "l"'
+    card:
+      - background: none
+      - color: var(--primary-text-color)
+    icon:
+      - width: 12.5vw
+      - height: auto
+      - color: var(--primary-text-color)
+      - padding: 0 0 2vw 0
+    name:
+      - place-self: center
+      - font-size: 3vw
+      - font-weight: 700
+      - letter-spacing: .1vw
+      - text-transform: uppercase
+      - padding: 5vh 0 2.5vw 0
+      - z-index: 2
+    state:
+      - place-self: center
+      - font-size: 3vw
+      - font-weight: 600
+      - white-space: nowrap
+      - text-align: center
+      - line-height: 1.1
+      - padding: 0 0 1vw 0
+      - text-transform: capitalize
+    label:
+      - place-self: center
+      - font-size: 4.5vw
+      - font-weight: 100
+      - white-space: nowrap
+      - text-align: center
+      - padding: 0 0 5vh 0    
+
+
+# Start Menu Items
+
+menu_item:
+  styles:
+    card:
+      - background: transparent
+      - color: var(--primary-text-color)
+      - padding: 0
+      - margin: '-1.5vw 0'
+      - '--mdc-ripple-color': white
+    name:
+      - font-size: 18vh
+      - font-weight: 100
+      - text-align: left
+      - justify-self: start
+      - white-space: nowrap
+      - overflow: visible
+
+
+# Page Title
+
+slide_page_title:
+  styles:
+    grid:
+      - grid-template-areas: '"n"'
+    card:
+      - background: none
+      - height: 15vw
+      - z-index: 100
+    name:
+      - font-size: 5vh
+      - font-weight: 600
+      - text-transform: uppercase
+      - place-self: start
+      - text-align: left
+      - align-self: center
+      - padding: 0
+      - white-space: nowrap
+      - overflow: visible
+  tap_action:
+    action: none
+
+
+# Tile Headers
+
+slide_header_card_no_link:
+  variables:
+    name: ''
+
+  name: '[[[ return variables.name ]]]'
+  show_state: false
+  show_label: false
+
+  tap_action:
+    action: none
+
+  styles:
+    grid:
+      - grid-template-columns: auto
+      - grid-template-rows: 3.33vh
+      - grid-template-areas: '"n"'
+    card:
+      - padding: 0 0 1vh 0
+      - background: none
+      - cursor: default
+    name:
+      - text-align: left
+      - align-self: center
+      - justify-self: start
+      - font-size: 3.33vh
+      - font-weight: 600
+      - color: var(--secondary-text-color)
+
+
+slide_topbar_timer:
+  variables:
+    diff: '[[[ return moment(entity.state).diff(moment(), "seconds") ]]]'
+  styles:
+    grid:
+      - grid-template-areas: '"i s n"'
+      - grid-template-columns: '10vw auto 10vw'
+    card:
+      - border-radius: 100px
+      - background: |
+          [[[
+            var diff = variables.diff
+            if (diff <= 0) { return "var(--accent-color)" } else {
+              return "rgba(var(--rgb-primary-background-color), .5)"
+            }
+          ]]]
+      - animation: |
+          [[[
+            var diff = variables.diff
+            if (diff <= 0) { return "blinks .5s linear 0s 20 alternate" } else {
+              return "none"
+            }
+          ]]]
+      - padding: 0
+    icon:
+      - width: 4vw
+    img_cell:
+      - width: 2vw
+      - padding: 2vw
+    state:
+      - font-size: 4vw
+      - font-weight: 600
+      - padding: .5vw 0 1vw
+    name:
+      - font-size: 1vw
+      - text-transform: uppercase
+      - white-space: normal
+      - margin-right: 2vw
+  extra_styles: |
+    @keyframes blinks {
+      from { background: rgba(var(--rgb-primary-background-color), .5) }
+      to { background: return "var(--accent-color)" }
+    }
+  
+slide_topbar_prompt:
+  variables:
+    time_since_prompt: |
+      [[[ return moment(entity.attributes.last_called_timestamp).diff(moment(), "seconds") ]]]
+  show_state: false
+  show_name: false
+  show_icon: false
+  show_label: true
+  triggers_update: all
+  label: '[[[ if (variables.time_since_prompt >= -60) {return "&ldquo;" + entity.attributes.last_called_summary + "&rdquo;"} ]]]'
+  styles:
+    grid:
+      - grid-template-areas: '"l"'
+    card:
+      - border-radius: 100px
+      - background: |
+          [[[
+            if ((entity.attributes.last_called_summary != "") && (variables.time_since_prompt >= -60)) {
+              return "rgba(var(--rgb-primary-background-color), .5)"
+            } else { return "transparent" }
+          ]]]
+      - padding: 1vw
+      - margin: 10px
+      - height: 74px
+    label:
+      - white-space: normal
+      - font-size: 2vw
+      - font-style: italic
+
+
+# Buttons
+
+slide_button_icon_only:
+  show_name: false
+  show_label: false
+  show_state: false
+  styles:
+    grid:
+      - grid-template-areas: "i"
+    card:
+      - border-radius: 5vh
+      - width: 10vh
+      - height: 10vh
+      - margin: 1vh
+    img_cell:
+      - width: 5vh
+      - height: 5vh
+    icon:
+      - width: 5vh
+      - height: 5vh
+
+slide_button_text_only:
+  show_name: false
+  show_label: false
+  show_icon: false
+  show_state: true
+  styles:
+    card:
+      - border-radius: 5vh
+      - width: 10vh
+      - height: 10vh
+      - margin: 1vh
+    state:
+      - font-size: 2.5vh
+      - font-weight: 600

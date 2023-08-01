@@ -1,0 +1,8 @@
+# Bing Traffic Map
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+  - slide_with_live_camera
+entity: camera.bing_maps_traffic
+name: Traffic Map

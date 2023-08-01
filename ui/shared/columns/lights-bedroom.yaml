@@ -1,0 +1,41 @@
+- view_layout:
+    grid-column: span 2
+  type: 'custom:button-card'
+  template:
+    - light_button_card_group
+  entity: group.bedroom_lights
+  name: All Bedroom Lights
+  icon: 'mdi:lightbulb-multiple'
+  variables:
+    aspect_ratio: 2/1
+
+- type: 'custom:button-card'
+  template:
+    - live_tile_with_graph
+    - live_tile_with_state_unit
+  entity: sensor.bedroom_hue_sensor_light_level
+  name: Light Level
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.bedroom_ceiling_lights
+    - name: Ceiling
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.bedroom_cloud_light
+    - name: Cloud Light
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.bedroom_hue_bowl
+    - name: Hue Bowl
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.bedroom_salt_lamp
+    - name: Salt Lamp

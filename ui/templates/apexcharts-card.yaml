@@ -128,6 +128,162 @@ environment_chart:
       .apexcharts-yaxis-label:nth-child(5n+1) { opacity: .5;}
       .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); }
       .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
-        font-size: var(--h6-font-size) !important; font-weight: 500 !important;}
+        font-size: var(--h6-font-size) !important; font-weight: 600 !important;}
       .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
         font-size: var(--h6-font-size) !important; font-weight: normal !important;}
+
+weather_chart:
+  header:
+    show: true
+    show_states: false
+  graph_span: 24h
+  span:
+    start: minute
+    offset: '-12h'
+  update_interval: 5min
+  all_series_config:
+    stroke_width: 2
+    curve: smooth
+    extend_to: now
+    unit: ''
+  now:
+    show: true
+  apex_config:
+    chart:
+      height: 160px
+    legend:
+      show: false
+    dataLabels:
+      textAnchor: middle
+      offsetX: 0
+      offsetY: -6
+      background:
+        opacity: 0
+      formatter: |
+        EVAL:function(value, { seriesIndex, dataPointIndex, w }) {
+          if (dataPointIndex % 2 == 0) {
+            return Math.round( value )
+          } else { return '' }
+        }
+      style:
+        fontSize: var(--h6-font-size)
+        fontFamily: var(--font-stack)
+        fontWeight: 500
+    xaxis:
+      axisBorder:
+        show: false
+      axisTicks:
+        show: true
+        color: rgba(var(--rgb-primary-text-color),.075)
+        height: 40
+      labels:
+        show: true
+        style:
+          fontSize: var(--h6-font-size)
+          fontFamily: var(--font-stack)
+      tooltip:
+        enabled: false
+        offsetY: -100
+        style:
+          fontSize: var(--body-font-size)
+          fontFamily: var(--font-stack)
+    yaxis:
+      labels:
+        minWidth: 160
+        offsetX: 50
+        style:
+          fontSize: var(--h6-font-size)
+          fontFamily: var(--font-stack)
+      tooltip:
+        enabled: true
+        offsetX: 40
+    grid:
+      strokeDashArray: 1,2
+      borderColor: rgba(var(--rgb-primary-text-color),.25)
+      xaxis:
+        lines:
+          show: true
+      yaxis:
+        lines:
+          show: true
+      padding:
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+    tooltip:
+      style:
+        fontSize: var(--body-font-size)
+        fontFamily: var(--font-stack)
+    forecastDataPoints:
+      strokeWidth: 1
+      dashArray: 2,2
+  card_mod:
+    style: >
+      #graph {margin-left: -36px; margin-top: -16px;}
+      .apexcharts-yaxis-label { font-family: var(--font-stack) !important; 
+        font-size: var(--h6-font-size) !important;
+        opacity: 0.15;}
+      .apexcharts-yaxis-label:nth-child(5n+1) { opacity: .5;}
+      .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); }
+      .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
+        font-size: var(--h6-font-size) !important; font-weight: 600 !important;}
+      .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
+        font-size: var(--h6-font-size) !important; font-weight: normal !important;}
+
+
+weather_daily_chart:
+  graph_span: 126h
+  span:
+    start: day
+    offset: '-15h'
+  yaxis:
+    - show: false
+  now:
+    show: false
+  apex_config:
+    chart:
+      height: 160px
+    dataLabels:
+      textAnchor: middle
+      offsetX: 0
+      offsetY: -6
+      background:
+        opacity: 0
+      formatter: |
+        EVAL:function(value, { seriesIndex, dataPointIndex, w }) {
+          return Math.round( value )
+        }
+      style:
+        fontSize: var(--body-font-size)
+        fontFamily: var(--font-stack)
+        fontWeight: var(--body-font-weight)
+    grid:
+      strokeDashArray: 0
+      borderColor: none
+      xaxis:
+        lines:
+          show: false
+      yaxis:
+        lines:
+          show: false
+      padding:
+        top: 0
+        right: 0
+        bottom: 0
+        left: 0
+    xaxis:
+      axisTicks:
+        show: false
+  card_mod:
+    style: >
+      #graph {margin-left: 0px; margin-top: -8px;}
+      .apexcharts-yaxis-label { font-family: var(--font-stack) !important; 
+        font-size: var(--h6-font-size) !important;
+        opacity: 0.15;}
+      .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); text-transform: uppercase; }
+      .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
+        font-size: var(--h6-font-size) !important; font-weight: 600 !important;}
+      .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
+        font-size: var(--h6-font-size) !important; font-weight: normal !important;}
+

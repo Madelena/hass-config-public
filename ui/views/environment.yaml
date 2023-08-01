@@ -6,7 +6,7 @@ title: Environment
 path: climate
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
@@ -27,7 +27,7 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title.yaml
+        layout: !include ../shared/snippets/layout-page-title.yaml
         view_layout:
           grid-column: 1/-1
         cards:
@@ -65,7 +65,7 @@ cards:
               ha-markdown$: |
                 h1 {
                   font-size: var(--title-font-size);
-                  font-weight: 500;
+                  font-weight: 600;
                   line-height: 1.1;
                   margin-left: -2px;
                   margin-block-end: -8px;
@@ -76,37 +76,26 @@ cards:
             layout:
               margin: 0
             view_layout:
-              place-self: center start
+              place-self: center auto
             cards:
 
               - type: 'custom:swipe-card'
-                parameters:
-                  enabled: true
-                  slidesPerView: 1.66
-                  width: 480
-                  breakpoints:
-                    '800':
-                      enabled: false
-                      slidesPerView: 3
-                      width: 360
-                    '1024':
-                      enabled: false
-                      slidesPerView: 3
-                      width: 600
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
                 cards:
 
                   - type: custom:state-switch
                     entity: mediaquery
                     states:
                       "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
-                        type: 'custom:mushroom-entity-card'
-                        entity: device_tracker.netatmo_personal_weather_station
-                        name: Netatmo ↗
+                        type: 'custom:mushroom-fan-card'
+                        entity: fan.living_room_air_purifier_ikea_fan
+                        icon_animation: true
+                        name: Living Room Air Purifier
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
-                        tap_action:
-                          action: url
-                          url_path: 'https://my.netatmo.com/app/station'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        hold_action:
+                          action: more-info
                       "(min-width: 800px) and (max-width: 1023.99px)":
                         <<: *title-badge-1
                         layout: vertical
@@ -120,11 +109,27 @@ cards:
                         icon_animation: true
                         name: Bedroom Dyson
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         hold_action:
                           action: more-info
                       "(min-width: 800px) and (max-width: 1023.99px)":
                         <<: *title-badge-2
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-4
+                        type: 'custom:mushroom-fan-card'
+                        entity: fan.workspace_air_purifier
+                        icon_animation: true
+                        name: Workspace Air Purifier
+                        icon_color: pink
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        hold_action:
+                          action: more-info
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-4
                         layout: vertical
 
                   - type: custom:state-switch
@@ -136,7 +141,7 @@ cards:
                         icon_animation: true
                         name: Bedroom Humidifier
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         hold_action:
                           action: more-info
                       "(min-width: 800px) and (max-width: 1023.99px)":
@@ -473,6 +478,17 @@ cards:
                     show:
                       datalabels: true
 
+                  - entity: sensor.storage_environment_sensor_temperature
+                    name: Storage
+                    stroke_width: 1
+                    color: brown
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
                   - entity: sensor.bathroom_env_sensor_temperature
                     name: Bathroom
                     stroke_width: 1
@@ -495,8 +511,8 @@ cards:
                       func: first
                       duration: 30min
 
-                  - entity: sensor.kitchen_counter_motion_sensor_temperature
-                    name: Kitchen Hue
+                  - entity: sensor.kitchen_counter_air_quality_sensor_temperature
+                    name: Kitchen
                     stroke_width: 1
                     color: purple
                     yaxis_id: main
@@ -505,6 +521,17 @@ cards:
                     group_by:
                       func: first
                       duration: 30min
+
+                  # - entity: sensor.kitchen_counter_motion_sensor_temperature
+                  #   name: Kitchen Hue
+                  #   stroke_width: 1
+                  #   color: purple
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
 
                   - entity: sensor.workspace_env_sensor_temperature
                     name: Workspace
@@ -671,7 +698,7 @@ cards:
                   .apexcharts-yaxis-label:nth-child(5n+1) { opacity: .5;}
                   .apexcharts-xaxis-label { opacity: .5; transform: translate(0, -12px); }
                   .apexcharts-xaxis-annotation-label { font-family: var(--font-stack) !important; 
-                    font-size: var(--h6-font-size) !important; font-weight: 500 !important;}                          
+                    font-size: var(--h6-font-size) !important; font-weight: 600 !important;}                          
                   .apexcharts-point-annotation-label { font-family: var(--font-stack) !important; 
                     font-size: var(--h6-font-size) !important; font-weight: normal !important;}
 
@@ -687,15 +714,16 @@ cards:
                 name: Bedroom C
             hours_to_show: 36
             title: Windows
+            show_names: false
             card_mod: &history-graph-card-mod
               style: >
-                ha-card {overflow: hidden;}
+                ha-card {}
 
                 .content {
                   padding: 0 0 16px 0 !important;
-                  margin: 0 0 0 -88px;
-                  width: calc(75% + 88px);
-                  border-right: 1px dashed red;
+                  margin: 0 0 0 -20px;
+                  width: calc(75% + 20px);
+                  border-right: 1px dashed var(--primary-color);
                 }
 
                 .card-header {
@@ -709,44 +737,44 @@ cards:
                 state-history-charts {margin-left: 20px;}
 
 
-          - type: vertical-stack
-            in_card: true
-            cards:
+          # - type: vertical-stack
+          #   in_card: true
+          #   cards:
 
-              - type: sensor
-                entity: sensor.valhalla_cloud_cover
-                name: Cloud Cover
+          #     - type: sensor
+          #       entity: sensor.valhalla_cloud_cover
+          #       name: Cloud Cover
 
-              - type: custom:apexcharts-card
-                config_templates: environment_chart
-                series:
+          #     - type: custom:apexcharts-card
+          #       config_templates: environment_chart
+          #       series:
 
-                  - entity: sensor.valhalla_cloud_cover
-                    name: Brooklyn
-                    yaxis_id: main
-                    color: 'var(--primary-color)'
-                    show:
-                      datalabels: true
+          #         - entity: sensor.valhalla_cloud_cover
+          #           name: Brooklyn
+          #           yaxis_id: main
+          #           color: 'var(--primary-color)'
+          #           show:
+          #             datalabels: true
 
-                  - entity: sensor.accuweather_cloud_cover_hourly
-                    name: Accuweather Forecast
-                    yaxis_id: main
-                    color: var(--primary-color)
-                    data_generator: |
-                      const now = new Date();
-                      const data = [[now.getTime(), entity.state]];
-                      for(let i = 0; i <= 12; i++) {
-                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
-                      }
-                      return data.reverse();
+          #         - entity: sensor.accuweather_cloud_cover_hourly
+          #           name: Accuweather Forecast
+          #           yaxis_id: main
+          #           color: var(--primary-color)
+          #           data_generator: |
+          #             const now = new Date();
+          #             const data = [[now.getTime(), entity.state]];
+          #             for(let i = 0; i <= 12; i++) {
+          #               data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+          #             }
+          #             return data.reverse();
 
-                yaxis:
-                  - id: main
-                    min: 0
-                    max: 100
-                apex_config:
-                  chart:
-                    height: 160px
+          #       yaxis:
+          #         - id: main
+          #           min: 0
+          #           max: 100
+          #       apex_config:
+          #         chart:
+          #           height: 160px
 
         layout:
           margin: 0
@@ -853,6 +881,17 @@ cards:
                     show:
                       datalabels: true
 
+                  - entity: sensor.storage_environment_sensor_humidity
+                    name: Storage
+                    stroke_width: 1
+                    color: brown
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
                   - entity: sensor.bathroom_env_sensor_humidity
                     name: Bathroom
                     stroke_width: 1
@@ -864,8 +903,8 @@ cards:
                       func: first
                       duration: 30min
 
-                  - entity: sensor.kitchen_stove_monitor_humidity
-                    name: Kitchen Stove
+                  - entity: sensor.kitchen_counter_air_quality_sensor_humidity
+                    name: Kitchen
                     stroke_width: 1
                     color: purple
                     yaxis_id: main
@@ -875,16 +914,27 @@ cards:
                       func: first
                       duration: 30min
 
-                  - entity: sensor.living_room_air_purifier_humidity
-                    name: Living Room Awair
-                    stroke_width: 1
-                    color: green
-                    yaxis_id: main
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: first
-                      duration: 30min
+                  # - entity: sensor.kitchen_stove_monitor_humidity
+                  #   name: Kitchen Stove
+                  #   stroke_width: 1
+                  #   color: purple
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
+
+                  # - entity: sensor.living_room_air_purifier_humidity
+                  #   name: Living Room Awair
+                  #   stroke_width: 1
+                  #   color: green
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
 
                   - entity: sensor.living_room_env_sensor_humidity
                     name: Living Room
@@ -989,6 +1039,7 @@ cards:
               - entity: sensor.bedroom_humidifier_power
             hours_to_show: 36
             title: Bedroom Humidifier
+            show_names: false
             card_mod: *history-graph-card-mod
 
 
@@ -1008,58 +1059,144 @@ cards:
               grid-column-end: -1
 
           - type: vertical-stack
+            xtitle: Particulate Matter (PM25)
             in_card: true
             cards:
+
               - type: horizontal-stack
                 cards:
-                  - type: entity
-                    entity: sensor.waqi_newyork_air_quality_index
-                    icon: none
-                    name: WAQI New York
-                  - type: entity
-                    entity: sensor.waqi_maspeth_air_quality_index
-                    name: WAQI Maspeth
+                  # - type: sensor
+                  #   entity: sensor.netatmo_strawberry_land_indoor_co2
+                  #   name: Bedroom CO₂
+                  - type: sensor
+                    entity: sensor.waqi_newyork_particulate_matter_pm25
+                    name: Outside
+                  - type: sensor
+                    entity: sensor.living_room_air_purifier_particulate_matter
+                    name: Living Room
+                  - type: sensor
+                    entity: sensor.workspace_air_purifier_particulate_matter
+                    name: Workspace
+                  # - type: sensor
+                  #   entity: sensor.pure_hot_cool_link_volatile_organic_compounds
+                  #   name: Bedroom
+                  # - type: sensor
+                  #   entity: sensor.kitchen_stove_monitor_voc_level
+                  #   name: Kitchen
 
               - type: custom:apexcharts-card
                 config_templates: environment_chart
                 series:
-                  - entity: sensor.waqi_newyork_air_quality_index
-                    name: WAQI
-                    yaxis_id: second
-                    show:
-                      datalabels: true
-
-                  - entity: sensor.waqi_newyork_carbon_monoxide_co
-                    name: Carbon Monoxide (CO)
-                    yaxis_id: main
-                    show:
-                      datalabels: true
-
-                  - entity: sensor.waqi_newyork_ozone_o3
-                    name: Ozone (O₃)
-                    yaxis_id: main
-                    show:
-                      datalabels: true
-
-                  - entity: sensor.waqi_newyork_nitrogen_dioxide_no2
-                    name: Nitrogen Dioxide (NO₂)
-                    yaxis_id: main
-                    show:
-                      datalabels: true
 
                   - entity: sensor.waqi_newyork_particulate_matter_pm25
-                    name: Particulate Matter (PM25)
+                    name: Outside
                     yaxis_id: main
+                    color: gray
                     show:
                       datalabels: true
+
+                  - entity: sensor.pure_hot_cool_link_particulates
+                    name: Bedroom
+                    yaxis_id: main
+                    color: hotpink
+                    stroke_width: 1
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.workspace_air_purifier_particulate_matter
+                    name: Workspace Purifier
+                    yaxis_id: main
+                    color: orange
+                    stroke_width: 1
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.living_room_air_purifier_particulate_matter
+                    name: Living Room
+                    yaxis_id: main
+                    color: green
+                    stroke_width: 1
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.workspace_air_quality_sensor_particulate_matter
+                    name: Workspace
+                    yaxis_id: main
+                    color: orange
+                    stroke_width: 1
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.kitchen_counter_air_quality_sensor_particulate_matter
+                    name: Kitchen
+                    yaxis_id: main
+                    color: purple
+                    stroke_width: 1
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  # - entity: sensor.pure_hot_cool_link_volatile_organic_compounds
+                  #   name: Bedroom VOC
+                  #   yaxis_id: second
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
+
+                  # - entity: sensor.kitchen_stove_monitor_voc_level
+                  #   name: Kitchen VOC
+                  #   color: purple
+                  #   yaxis_id: second
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
+
+                  # - entity: sensor.netatmo_strawberry_land_indoor_co2
+                  #   name: Bedroom CO₂
+                  #   yaxis_id: main
+                  #   show:
+                  #     datalabels: true
+                  #   group_by:
+                  #     func: first
+                  #     duration: 30min
 
                 yaxis:
                   - id: main
-                  - id: second
+                    min: 0
+                    max: ~5
+                    opposite: true
+                    show: false
                 apex_config:
                   chart:
-                    height: 240px
+                    xheight: 240px
 
+          - type: history-graph
+            entities:
+              - entity: fan.pure_hot_cool_link
+              - entity: fan.workspace_air_purifier
+              - entity: fan.living_room_air_purifier_ikea_fan
+            hours_to_show: 36
+            show_names: false
+            title: Air Purifiers
+            card_mod: *history-graph-card-mod
 
           - type: vertical-stack
             in_card: true
@@ -1170,78 +1307,125 @@ cards:
           - type: vertical-stack
             in_card: true
             cards:
-
               - type: horizontal-stack
                 cards:
-                  - type: sensor
-                    entity: sensor.netatmo_strawberry_land_indoor_co2
-                    name: Bedroom CO₂
-                  - type: sensor
-                    entity: sensor.pure_hot_cool_link_particulates
-                    name: Particulates
-                  - type: sensor
-                    entity: sensor.pure_hot_cool_link_volatile_organic_compounds
-                    name: VOCs
+                  - type: entity
+                    entity: sensor.waqi_newyork_air_quality_index
+                    icon: none
+                    name: WAQI New York
+                  - type: entity
+                    entity: sensor.waqi_maspeth_air_quality_index
+                    name: WAQI Maspeth
 
               - type: custom:apexcharts-card
                 config_templates: environment_chart
                 series:
-                  - entity: sensor.pure_hot_cool_link_particulates
-                    name: Bedroom Particulates
+                  - entity: sensor.waqi_newyork_air_quality_index
+                    name: WAQI
                     yaxis_id: second
                     show:
                       datalabels: true
-                    group_by:
-                      func: first
-                      duration: 30min
 
-                  - entity: sensor.pure_hot_cool_link_volatile_organic_compounds
-                    name: Bedroom VOC
-                    yaxis_id: second
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: first
-                      duration: 30min
-
-                  - entity: sensor.kitchen_stove_monitor_voc_level
-                    name: Kitchen VOC
-                    color: purple
-                    yaxis_id: second
-                    show:
-                      datalabels: true
-                    group_by:
-                      func: first
-                      duration: 30min
-
-                  - entity: sensor.netatmo_strawberry_land_indoor_co2
-                    name: Bedroom CO₂
+                  - entity: sensor.waqi_newyork_carbon_monoxide_co
+                    name: Carbon Monoxide (CO)
                     yaxis_id: main
                     show:
                       datalabels: true
-                    group_by:
-                      func: first
-                      duration: 30min
+
+                  - entity: sensor.waqi_newyork_ozone_o3
+                    name: Ozone (O₃)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+
+                  - entity: sensor.waqi_newyork_nitrogen_dioxide_no2
+                    name: Nitrogen Dioxide (NO₂)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
+
+                  - entity: sensor.waqi_newyork_particulate_matter_pm25
+                    name: Particulate Matter (PM25)
+                    yaxis_id: main
+                    show:
+                      datalabels: true
 
                 yaxis:
                   - id: main
                   - id: second
-                    min: 0
-                    max: ~5
-                    opposite: true
-                    show: false
                 apex_config:
                   chart:
                     height: 240px
 
 
-          - type: history-graph
-            entities:
-              - entity: fan.pure_hot_cool_link
-            hours_to_show: 36
-            title: Bedroom Dyson Pure
-            card_mod: *history-graph-card-mod
 
+      # [Column] Irradiance
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: IRRADIANCE
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+
+              - type: sensor
+                entity: sensor.accuweather_solar_irradiance_hourly
+                name: Solar Irradiance
+
+              - type: custom:apexcharts-card
+                config_templates: environment_chart
+                series:
+
+                  - entity: sensor.accuweather_solar_irradiance_hourly
+                    yaxis_id: main
+                    color: gray
+                    name: Accuweather
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.south_facade_hue_sensor_light_level
+                    yaxis_id: second
+                    color: 'var(--primary-color)'
+                    name: South Facade
+                    show:
+                      datalabels: true
+                    group_by:
+                      func: first
+                      duration: 30min
+
+                  - entity: sensor.accuweather_solar_irradiance_hourly
+                    name: Accuweather Forecast
+                    yaxis_id: main
+                    color: var(--primary-text-color)
+                    opacity: .5
+                    data_generator: |
+                      const now = new Date();
+                      const data = [[now.getTime(), entity.state]];
+                      for(let i = 0; i <= 12; i++) {
+                        data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                      }
+                      return data.reverse();
+
+                yaxis:
+                  - id: main
+                    align_to: 100
+                  - id: second
+                    min: 0
+                    max: ~10000
+                    align_to: 1000
+                    show: false
+                apex_config:
+                  chart:
+                    height: 160px
 
       # [Column] Noise
       - type: vertical-stack

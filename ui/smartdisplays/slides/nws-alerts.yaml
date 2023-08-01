@@ -1,0 +1,14 @@
+# NWS Alerts slide
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+  - slide_with_colored_conditional
+variables:
+  condition: '[[[ return states["sensor.nws_alerts"].state > 1 ]]]'
+entity: sensor.nws_alert_rss_feed
+show_state: true
+show_label: true
+name: NWS ALERTS
+state_display: '[[[ return states["sensor.nws_alerts"].state + " Alert" + (states["sensor.nws_alerts"].state != 1 ? "s" : "") ]]]'
+label: '[[[ return entity.attributes.entries[0].title ]]]'

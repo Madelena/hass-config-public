@@ -1,0 +1,170 @@
+
+title: Astralplane
+path: astralplane
+
+type: 'custom:grid-layout'
+layout:
+  grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+  grid-column-gap: 32px
+  margin: 0 16px 32px
+
+cards:
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto max-content
+      grid-template-rows: auto
+      mediaquery:
+        '(max-width: 799.99px)':
+          grid-template-columns: 1fr
+      margin: 0
+      card_margin: 0
+    view_layout:
+      grid-column: 1/-1
+    cards:
+    
+      - type: 'custom:button-card'
+        template: title_card_with_icon
+        name: Astralplane
+        icon: mdi:shimmer
+        entity: binary_sensor.rpi_power_status
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+        view_layout:
+          place-self: center start
+        cards:
+
+          - type: 'custom:swipe-card'
+            parameters:
+              enabled: true
+              slidesPerView: 1.66
+              width: 480
+              breakpoints:
+                '800':
+                  enabled: false
+                  slidesPerView: 3
+                  width: 360
+                '1024':
+                  enabled: false
+                  slidesPerView: 3
+                  width: 600
+            cards:
+
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                    type: 'custom:mushroom-entity-card'
+                    entity: sensor.astralplane_ups_status
+                    name: UPS
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-1
+                    layout: vertical
+
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                    type: 'custom:mushroom-entity-card'
+                    entity: sensor.etherealm_sessionstate
+                    name: Etherealm
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-2
+                    layout: vertical
+
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                    type: 'custom:mushroom-entity-card'
+                    entity: sensor.hacs
+                    name: Elysian Fields
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-3
+                    layout: vertical
+
+
+  - type: entities
+    entities:
+      - entity: sensor.astralplane_ups_battery_charge
+      - entity: sensor.astralplane_ups_input_voltage
+      - entity: sensor.astralplane_ups_load
+      - entity: sensor.astralplane_ups_output_voltage
+      - entity: sensor.astralplane_ups_status
+      - entity: sensor.astralplane_ups_status_data
+      - entity: sensor.astralplane_ups_battery_runtime
+      - entity: sensor.astralplane_ups_battery_voltage
+      - entity: sensor.astralplane_ups_self_test_result
+    title: UPS
+
+  - type: entities
+    entities:
+      - entity: sensor.etherealm_cpuload
+      - entity: sensor.etherealm_memoryusage
+      - entity: sensor.etherealm_lastboot
+      - entity: sensor.etherealm_lastactive
+      - entity: sensor.etherealm_sessionstate
+      - entity: binary_sensor.etherealm_microphoneactive
+      - entity: sensor.etherealm_audio_audio_sessions
+      - entity: sensor.etherealm_audio_default_device
+      - entity: sensor.etherealm_currentvolume
+      - entity: sensor.etherealm_battery_charge_remaining_percentage
+      - entity: sensor.etherealm_battery_charge_status
+    title: Etherealm
+
+  - type: entities
+    entities:
+      - entity: button.etherealm_lock
+      - entity: button.etherealm_mediamute
+      - entity: button.etherealm_medianext
+      - entity: button.etherealm_mediaplaypause
+      - entity: button.etherealm_mediaprevious
+      - entity: button.etherealm_mediavolumedown
+      - entity: button.etherealm_mediavolumeup
+    title: Etherealm Remote
+
+  - type: entities
+    title: Elysian Fields
+    entities:
+      - entity: binary_sensor.elysian_fields_active
+      - entity: binary_sensor.elysian_fields_audio_input_in_use
+      - entity: binary_sensor.elysian_fields_audio_output_in_use
+      - entity: binary_sensor.elysian_fields_camera_in_use
+      - entity: binary_sensor.elysian_fields_focus
+      - entity: sensor.elysian_fields_active_audio_input
+      - entity: sensor.elysian_fields_active_audio_output
+      - entity: sensor.elysian_fields_active_camera
+      - entity: sensor.elysian_fields_bssid
+      - entity: sensor.elysian_fields_connection_type
+      - entity: sensor.elysian_fields_displays
+      - entity: sensor.elysian_fields_frontmost_app
+      - entity: sensor.elysian_fields_geocoded_location
+      - entity: sensor.elysian_fields_last_update_trigger
+      - entity: sensor.elysian_fields_primary_display_id
+      - entity: sensor.elysian_fields_primary_display_name
+      - entity: sensor.elysian_fields_ssid
+      - entity: sensor.elysian_fields_storage
+
+  - type: vertical-stack
+    view_layout:
+      grid-column: 1/-1
+    cards:
+
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: GLANCES
+
+      - type: iframe
+        url: !secret etherealm_glances_url
+        aspect_ratio: 75%

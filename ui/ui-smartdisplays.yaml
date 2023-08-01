@@ -1,0 +1,95 @@
+# The Ambient Smart Displays Dashboard
+# For use on tablets, Echo Show, and Google Home displays
+# Made by Madelena Mak 2022
+# https://mmak.es
+
+
+title: Smart Display
+
+animated_background:
+  default_url: 'https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4'
+  entity: sun.sun
+  state_url:
+    above_horizon:
+      - 'https://cdn.flixel.com/flixel/lcgczt9lyh7qr0p7wnyj.hd.mp4'
+      - 'https://cdn.flixel.com/flixel/knkmvjypn212ywzh4s7q.hd.mp4'
+      - 'https://cdn.flixel.com/flixel/nl2m3img5siuxsp2cz7e.hd.mp4'
+      - 'https://cdn.flixel.com/flixel/vn1d788icpyow95oxphk.hd.mp4'
+    below_horizon:
+      - 'https://cdn.flixel.com/flixel/qebkh12wmojz8d35mdw5.hd.mp4'
+      - 'https://cdn.flixel.com/flixel/edszxo70ja5nlgziwswc.hd.mp4'
+      - 'https://cdn.flixel.com/flixel/l9ntkcybth4ihlggs98f.hd.mp4'
+      - 'https://cdn.flixel.com/flixel/3lnfjmvxhcv2mrxh8f0v.hd.mp4'
+  views:
+    - path: lights
+      config:
+        enabled: false
+    - path: chores
+      config:
+        enabled: false
+    - path: vacuum
+      config:
+        enabled: false
+    - path: music
+      config:
+        enabled: false
+    - path: tv
+      config:
+        enabled: false
+    - path: energy
+      config:
+        enabled: false
+    - path: weather
+      config:
+        background: linear-gradient(to right, rgba(0,0,0,.33), rgba(0,0,0,1))
+        default_url: "https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4"
+        entity: weather.valhalla_2
+        state_url:
+          'sunny':
+            - "https://cdn.flixel.com/flixel/hlhff0h8md4ev0kju5be.hd.mp4"
+          'partlycloudy':
+            - "https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4"
+            - "https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4"
+            - "https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4"
+            - "https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4"
+            - "https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4"
+            - "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
+
+          'cloudy':
+            - "https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4"
+            - "https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4"
+            - "https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4"
+            - "https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4"
+            - "https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4"
+            - "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
+
+          'mostlycloudy':
+            - "https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4"
+            - "https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4"
+            - "https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4"
+
+          'clear-night':
+            - "https://cdn.flixel.com/flixel/x9dr8caygivq5secll7i.hd.mp4"
+          'fog':
+            - "https://cdn.flixel.com/flixel/vwqzlk4turo2449be9uf.hd.mp4"
+          'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
+    - path: climate
+      config:
+        enabled: false
+
+decluttering_templates: !include templates/decluttering-card.yaml
+button_card_templates: !include_dir_merge_named templates/button-card/
+
+views:
+  - !include smartdisplays/views/home.yaml
+  - !include smartdisplays/views/start.yaml
+  - !include smartdisplays/views/chores.yaml
+  - !include smartdisplays/views/lights.yaml
+  - !include smartdisplays/views/climate.yaml
+  - !include smartdisplays/views/vacuum.yaml
+  - !include smartdisplays/views/music.yaml
+  - !include smartdisplays/views/tv.yaml
+  - !include smartdisplays/views/energy.yaml
+  - !include smartdisplays/views/weather.yaml
+
+

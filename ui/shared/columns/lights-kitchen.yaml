@@ -1,0 +1,53 @@
+- view_layout:
+    grid-column: span 2
+  type: 'custom:button-card'
+  template:
+    - light_button_card_group
+  entity: group.kitchen_lights
+  name: All Kitchen Lights
+  icon: 'mdi:lightbulb-multiple'
+  variables:
+    aspect_ratio: 2/1
+
+- type: 'custom:button-card'
+  template:
+    - live_tile_with_graph
+    - live_tile_with_state_unit
+  entity: sensor.kitchen_counter_motion_sensor_light_level
+  name: Light Level
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.kitchen_counter_lights
+    - name: Counter
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.kitchen_spot_lights
+    - name: Spot Lights
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.kitchen_sink_lights
+    - name: Kitchen Sink
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.kitchen_counter_accent_lights
+    - name: Counter Accent
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: switch.kitchen_uv_light
+    - name: UV Light
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: switch.kitchen_aerogardens_plug_on_off
+    - name: Aerogardens

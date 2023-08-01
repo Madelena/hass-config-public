@@ -1,0 +1,19 @@
+
+waqi_scale:
+  variables:
+    level: |
+      [[[
+        if (entity.state > 300) {
+          return "Hazardous"
+        } else if (entity.state > 200) {
+          return "Very Unhealthy"
+        } else if (entity.state > 150) {
+          return "Unhealthy"
+        } else if (entity.state > 100) {
+          return "Unhealthy for Sensitive Groups"
+        } else if (entity.state > 50) {
+          return "Moderate"
+        } else {
+          return "Good"
+        }
+      ]]]

@@ -1,0 +1,7 @@
+grid-template-columns: 1fr
+grid-template-rows: auto
+grid-column-gap: 32px
+margin: -1px
+mediaquery:
+  '(max-width: 799.99px)':
+    margin: -1

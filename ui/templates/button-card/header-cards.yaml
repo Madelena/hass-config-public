@@ -16,8 +16,8 @@ title_card_with_icon:
       - grid-template-rows: auto
       - grid-template-columns: max-content auto
     name:
-      - font-size: 32pt
-      - font-weight: 500
+      - font-size: var(--title-font-size)
+      - font-weight: var(--title-font-weight)
       - place-self: center start
     card:
       - background: none
@@ -45,6 +45,9 @@ header_card:
     arrow: 'mdi:arrow-right'
     action: navigate
     link: ''
+    service: ''
+    service_data: ''
+    subheader: false
 
   show_name: false
   show_state: false
@@ -53,7 +56,7 @@ header_card:
   styles:
     grid:
       - grid-template-columns: auto min-content 16px
-      - grid-template-rows: 26px auto 8px
+      - grid-template-rows: '[[[ return variables.subheader ? "10px auto 8px" : "26px auto 8px" ]]]'
       - grid-template-areas: "'header .' 'header link' 'header .'"
     card:
       - background: none
@@ -66,6 +69,8 @@ header_card:
         template:
           - header_card_no_link
         name: '[[[ return variables.name ]]]'
+        variables:
+          subheader: '[[[ return variables.subheader ]]]'
 
     link:
       card:
@@ -79,6 +84,8 @@ header_card:
           navigation_path: '[[[ return variables.link ]]]'
           url_path: '[[[ return variables.link ]]]'
           entity: '[[[ return variables.link ]]]'
+          service: '[[[ return variables.service ]]]'
+          service_data: '[[[ return variables.service_data ]]]'
 
         styles:
           grid:
@@ -108,6 +115,7 @@ header_card:
 header_card_no_link:
   variables:
     name: ''
+    subheader: false
 
   name: '[[[ return variables.name ]]]'
   show_state: false
@@ -121,14 +129,15 @@ header_card_no_link:
       - grid-template-columns: auto
       - grid-template-areas: '"n"'
     card:
-      - padding: 32px 16px 16px 16px
+      - padding: '[[[ return variables.subheader ? "16px 16px 16px 16px" : "32px 16px 16px 16px" ]]]'
       - background: none
       - cursor: default
     name:
       - text-align: left
       - align-self: center
       - justify-self: start
-      - font-size: var(--body-font-size)
-      - font-weight: 500
+      - font-size: '[[[ return variables.subheader ? "var(--h6-font-size)" : "var(--subtitle-font-size)" ]]]'
+      - font-weight: var(--subtitle-font-weight)
+      - line-height: var(--subtitle-line-height)
       - color: var(--secondary-text-color)
 

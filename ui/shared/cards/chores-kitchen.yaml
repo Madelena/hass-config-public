@@ -1,0 +1,11 @@
+type: 'custom:auto-entities'
+filter:
+  include:
+    - group: group.chore_kitchen
+      options:
+        type: 'custom:button-card'
+        template: chore_tile
+card:
+  type: 'custom:layout-card'
+  layout_type: 'custom:grid-layout'
+  layout_options: !include ../../shared/snippets/layout-live-tile.yaml

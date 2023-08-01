@@ -1,0 +1,100 @@
+type: entities
+title: Bridges + Tunnels
+entities:
+  - entity: sensor.mta_bt_alerts_queens_midtown_tunnel
+  - entity: sensor.mta_bt_alerts_triboro_bridge
+    name: Triboro Bridge
+  - entity: sensor.mta_bt_alerts_bronx_whitestone_bridge
+    name: Whitestone Bridge
+  - entity: sensor.mta_bt_alerts_battery_tunnel
+    name: Battery Tunnel
+  - entity: sensor.mta_bt_alerts_verrazzano_narrows_bridge
+    name: Verrazzano Bridge
+  - type: custom:fold-entity-row
+    head:
+      type: section
+      label: More Bridges + Tunnels
+    padding: 0
+    entities:
+      - type: custom:multiple-entity-row
+        entity: sensor.panynj_bt_crossing_holland_tunnel_eastbound
+        name: Holland Tunnel
+        show_state: false
+        entities:
+          - entity: sensor.panynj_bt_crossing_holland_tunnel_eastbound
+            name: To NY
+            styles:
+              text-align: left
+          - entity: sensor.panynj_bt_crossing_holland_tunnel_westbound
+            name: To NJ
+            styles:
+              text-align: left
+      - type: custom:multiple-entity-row
+        entity: sensor.panynj_bt_crossing_george_washington_bridge_lower_eastbound
+        name: George Washinton Bridge (Lower)
+        show_state: false
+        entities:
+          - entity: sensor.panynj_bt_crossing_george_washington_bridge_lower_eastbound
+            name: To NY
+            styles:
+              text-align: left
+          - entity: sensor.panynj_bt_crossing_george_washington_bridge_lower_westbound
+            name: To NJ
+            styles:
+              text-align: left
+      - type: custom:multiple-entity-row
+        entity: sensor.panynj_bt_crossing_george_washington_bridge_upper_eastbound
+        name: George Washinton Bridge (Upper)
+        show_state: false
+        entities:
+          - entity: sensor.panynj_bt_crossing_george_washington_bridge_upper_eastbound
+            name: To NY
+            styles:
+              text-align: left
+          - entity: sensor.panynj_bt_crossing_george_washington_bridge_upper_westbound
+            name: To NJ
+            styles:
+              text-align: left
+      - entity: sensor.mta_bt_alerts_throgs_neck_bridge
+      - entity: sensor.mta_bt_alerts_henry_hudson_bridge
+      - entity: sensor.mta_bt_alerts_marine_parkway_bridge
+      - entity: sensor.mta_bt_alerts_cross_bay_bridge
+      - type: custom:multiple-entity-row
+        entity: sensor.panynj_bt_crossing_lincoln_tunnel_eastbound
+        name: Lincoln Tunnel
+        show_state: false
+        entities:
+          - entity: sensor.panynj_bt_crossing_lincoln_tunnel_eastbound
+            name: To NY
+            styles:
+              text-align: left
+          - entity: sensor.panynj_bt_crossing_lincoln_tunnel_westbound
+            name: To NJ
+            styles:
+              text-align: left
+      - type: custom:multiple-entity-row
+        entity: sensor.panynj_bt_crossing_goethals_bridge_eastbound
+        name: Goethals Bridge
+        show_state: false
+        entities:
+          - entity: sensor.panynj_bt_crossing_goethals_bridge_eastbound
+            name: To NY
+            styles:
+              text-align: left
+          - entity: sensor.panynj_bt_crossing_goethals_bridge_westbound
+            name: To NJ
+            styles:
+              text-align: left
+      - type: custom:multiple-entity-row
+        entity: sensor.panynj_bt_crossing_outerbridge_crossing_eastbound
+        name: Outerbridge Crossing
+        show_state: false
+        entities:
+          - entity: sensor.panynj_bt_crossing_outerbridge_crossing_eastbound
+            name: To NY
+            styles:
+              text-align: left
+          - entity: sensor.panynj_bt_crossing_outerbridge_crossing_westbound
+            name: To NJ
+            styles:
+              text-align: left

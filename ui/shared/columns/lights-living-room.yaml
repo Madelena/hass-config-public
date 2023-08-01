@@ -1,0 +1,53 @@
+- view_layout:
+    grid-column: span 2
+  type: 'custom:button-card'
+  template:
+    - light_button_card_group
+  entity: group.living_room_lights
+  name: All Main Lights
+  icon: 'mdi:ceiling-light-multiple'
+  variables:
+    aspect_ratio: 2/1
+
+- type: 'custom:button-card'
+  template:
+    - live_tile_with_graph
+    - live_tile_with_state_unit
+  entity: sensor.living_room_hue_sensor_light_level
+  name: Light Level
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.living_room_chandelier_main
+    - name: Chandelier Main
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.living_room_random_light
+    - name: Random Light
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.living_room_ramsele_light
+    - name: Ramsele Light
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.living_room_strala_light
+    - name: Strala Light
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.hallway_light
+    - name: Hallway
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.bathroom_light
+    - name: Bathroom

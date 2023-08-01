@@ -1,0 +1,9 @@
+# Hourly Weather Forecast slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_weather_forecast
+entity: weather.valhalla_hourly
+name: Hourly Weather Forecast
+variables:
+  format: 'H:mm'

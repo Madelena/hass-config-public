@@ -1,0 +1,9 @@
+# Unison Subview
+# Made by Madelena Mak 2022
+
+path: unison
+subview: true
+
+type: panel
+cards:
+  - !include ../machines/unison-cards.yaml

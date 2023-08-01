@@ -1,0 +1,9 @@
+# Waze Driving Time slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_graph
+  - slide_with_state_unit
+entity: sensor.waze_travel_time
+name: Driving Time to Union Square

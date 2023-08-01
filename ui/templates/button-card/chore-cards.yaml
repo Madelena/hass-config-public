@@ -8,7 +8,7 @@
 
 # Chore Row
 
-chore_card:
+chore_row:
 
   # Set up variables for calculating chore due dates.
   variables:
@@ -23,8 +23,8 @@ chore_card:
 
   triggers_update: all
   show_label: true
-  layout: icon_name_state2nd
-  size: 24px
+  show_state: false
+  size: 20px
 
   # Show when a chore is due and when it was last done.
   label: |
@@ -44,35 +44,35 @@ chore_card:
 
   # Show the chore status as a badge.
   custom_fields:
+    bg: ''
     badge: &field-chore-badge |
       [[[
         if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'Done' }
         if (variables.due > 0) {
           if (variables.due < variables.diff) { return 'Overdue' }
-          if (variables.due < variables.diff + (variables.due / 4)) { return 'To do soon' }
+          if (variables.due < variables.diff + Math.min(7, (variables.due / 4))) { return 'To do soon' }
         }
       ]]]
 
   styles:
     card:
-      - margin: 4px 0
-      - padding: 4px 12px
-
-      # Show a subtle background color depending on the chore status.
-      - background-color: |
-          [[[
-            if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'rgba(var(--rgb-success-color), .33)' }
-            if ((variables.due > 0) && (variables.due < variables.diff)) { return 'rgba(var(--rgb-error-color), .33)' } else {return 'transparent'}
-          ]]]
+      - margin: 0 0
+      - padding: 4px 0
+      - overflow: visible
 
     grid:
       - grid-template-columns: min-content 1fr min-content
-      - grid-template-areas: '"i n badge" "i s badge" "i l badge"'
+      - grid-template-areas: '"bg bg bg" "i n badge" "i s badge" "i l badge"'
+      - grid-template-rows: 0 min-content 0 min-content
 
     img_cell:
       - align-self: middle
       - text-align: start
-      - padding: 8px 24px 8px 4px
+      # - padding: 8px 24px 8px 4px
+      - padding-right: 16px
+      - width: 40px
+      - height: 40px
+      - z-index: 2
 
     # Colorize the icon depending on the chore status.
     icon:
@@ -81,7 +81,7 @@ chore_card:
             if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--success-color)' }
             if (variables.due > 0) {
               if (variables.due < variables.diff) { return 'var(--error-color)' }
-              if (variables.due < variables.diff + (variables.due / 4)) { return 'var(--warning-color)' }
+              if (variables.due < variables.diff + Math.min(7, (variables.due / 4))) { return 'var(--warning-color)' }
             } else { return 'var(--primary-text-color)' }
           ]]]
 
@@ -89,12 +89,14 @@ chore_card:
       - align-self: middle
       - justify-self: start
       - font-size: var(--body-font-size)
+      - z-index: 2
 
     label:
-      - align-self: middle
+      - align-self: start
       - justify-self: start
       - font-size: var(--small-font-size)
       - opacity: 0.66
+      - z-index: 2
 
     # Colorize the badge depending on the chore status.  
     custom_fields:
@@ -109,8 +111,26 @@ chore_card:
         - font-size: var(--h6-font-size)
         - font-weight: 900
         - text-transform: uppercase
-        - border-radius: 2px
+        - border-radius: var(--ha-card-border-radius)
         - color: var(--accent-text-color)
+        - z-index: 2
+
+      bg:
+        - position: absolute
+        - top: 0
+        - left: -16px
+        - width: calc(100% + 32px)
+        - height: 100%
+
+        # Show a subtle background color depending on the chore status.
+        - background-color: |
+            [[[
+              if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'rgba(var(--rgb-success-color), .33)' }
+              if (variables.due > 0) {
+                if (variables.due < variables.diff) { return 'rgba(var(--rgb-error-color), .33)' }
+                if (variables.due < variables.diff + Math.min(7, (variables.due / 4))) { return 'rgba(var(--rgb-warning-color), .33)' }
+              } else {return 'transparent'}
+            ]]]
 
   # Short press a chore card to set it as Done.
   tap_action:
@@ -128,7 +148,7 @@ chore_card:
 
 chore_tile:
   template:
-    - chore_card
+    - chore_row
     - live_tile_card
     - live_tile_with_long_state
 
@@ -140,20 +160,20 @@ chore_tile:
             if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--success-color)' }
             if (variables.due > 0) {
               if (variables.due < variables.diff) { return 'var(--error-color)' }
-              if (variables.due < variables.diff + (variables.due / 4)) { return 'var(--primary-color)' }
+              if (variables.due < variables.diff + Math.min(7, (variables.due / 4))) { return 'var(--primary-color)' }
             } else { return 'var(--ha-card-background)'}
           ]]]
       - color: |
           [[[
             if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--accent-text-color)' }
-            if ((variables.due > 0) && (variables.due < variables.diff + (variables.due / 4))) { return 'var(--accent-text-color)' } else {return 'var(--disabled-text-color'}
+            if ((variables.due > 0) && (variables.due < variables.diff + Math.min(7, (variables.due / 4)))) { return 'var(--accent-text-color)' } else {return 'var(--disabled-text-color'}
           ]]]
 
     icon:
       - color: |
           [[[
             if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'var(--accent-text-color)' }
-            if ((variables.due > 0) && (variables.due < variables.diff + (variables.due / 4))) { return 'var(--accent-text-color)' } else {return 'var(--disabled-text-color'}
+            if ((variables.due > 0) && (variables.due < variables.diff + Math.min(7, (variables.due / 4)))) { return 'var(--accent-text-color)' } else {return 'var(--disabled-text-color'}
           ]]]
 
     state:
@@ -163,12 +183,19 @@ chore_tile:
       badge:
         - display: none
 
+      bg:
+        - position: absolute
+        - top: 0
+        - left: 0
+        - width: 100%
+        - height: 100%
+
   state_display: |
       [[[
         if ((variables.diff < 2) && (variables.last_done.getDay() == variables.now.getDay())) { return 'Done' }
         if (variables.due > 0) {
           if (variables.due < variables.diff) { return 'Overdue' }
-          if (variables.due < variables.diff + (variables.due / 4)) { return 'To do soon' }
+          if (variables.due < variables.diff + Math.min(7, (variables.due / 4))) { return 'To do soon' }
         }
         return ' '
       ]]]

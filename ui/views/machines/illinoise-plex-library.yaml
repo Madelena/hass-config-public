@@ -1,0 +1,120 @@
+
+type: 'custom:layout-card'
+layout_type: 'custom:grid-layout'
+layout:
+  grid-template-columns: 'repeat(auto-fit, [col-start] minmax(360px, 1fr) [col-end])'
+  grid-template-rows: auto
+  xgrid-column-gap: 16px
+  margin: -1px
+cards:
+
+  - type: vertical-stack
+    in_card: true
+    cards:
+      - type: entity
+        entity: sensor.dorothy_library_flacs
+        unit: Songs
+        name: FLAC Library
+      - type: entities
+        entities:
+          - entity: sensor.dorothy_library_flacs
+            type: custom:multiple-entity-row
+            name: Artists
+            icon: mdi:account-music
+            show_state: false
+            entities:
+              - attribute: artists
+          - entity: sensor.dorothy_library_flacs
+            type: custom:multiple-entity-row
+            name: Albums
+            icon: mdi:album
+            show_state: false
+            entities:
+              - attribute: albums
+          - entity: sensor.dorothy_library_movies
+            type: custom:template-entity-row
+            name: Last Added Item
+            secondary: >-
+              {{ state_attr('sensor.dorothy_library_flacs',
+              'last_added_timestamp') | relative_time }} ago
+            state: >-
+              {{ state_attr('sensor.dorothy_library_flacs',
+              'last_added_item') }}
+
+  - type: vertical-stack
+    in_card: true
+    cards:
+      - type: entity
+        entity: sensor.dorothy_library_movies
+        unit: Movies
+        name: Movie Library
+      - type: entities
+        entities:
+          - entity: sensor.dorothy_library_movies
+            type: custom:template-entity-row
+            name: Last Added Item
+            secondary: >-
+              {{ state_attr('sensor.dorothy_library_movies',
+              'last_added_timestamp') | relative_time }} ago
+            state: >-
+              {{ state_attr('sensor.dorothy_library_movies',
+              'last_added_item') }}
+
+  - type: vertical-stack
+    in_card: true
+    cards:
+      - type: entity
+        entity: sensor.dorothy_library_photos
+        unit: Photos
+        name: Photo Library
+      - type: entities
+        entities:
+          - entity: sensor.dorothy_library_photos
+            type: custom:multiple-entity-row
+            name: Photo Albums
+            icon: mdi:image-multiple-outline
+            show_state: false
+            entities:
+              - attribute: photoalbums
+          - entity: sensor.dorothy_library_photos
+            type: custom:template-entity-row
+            name: Last Added Item
+            secondary: >-
+              {{ state_attr('sensor.dorothy_library_photos',
+              'last_added_timestamp') | relative_time }} ago
+            state: >-
+              {{ state_attr('sensor.dorothy_library_photos',
+              'last_added_item') }}
+
+  - type: vertical-stack
+    in_card: true
+    cards:
+      - type: entity
+        entity: sensor.dorothy_library_tv_shows
+        unit: Episodes
+        name: TV Show Library
+      - type: entities
+        entities:
+          - entity: sensor.dorothy_library_tv_shows
+            type: custom:multiple-entity-row
+            name: Shows
+            icon: mdi:television-shimmer
+            show_state: false
+            entities:
+              - attribute: shows
+          - entity: sensor.dorothy_library_tv_shows
+            type: custom:multiple-entity-row
+            name: Seasons
+            icon: mdi:filmstrip-box-multiple
+            show_state: false
+            entities:
+              - attribute: seasons
+          - entity: sensor.dorothy_library_tv_shows
+            type: custom:template-entity-row
+            name: Last Added Item
+            secondary: >-
+              {{ state_attr('sensor.dorothy_library_tv_shows',
+              'last_added_timestamp') | relative_time }} ago
+            state: >-
+              {{ state_attr('sensor.dorothy_library_tv_shows',
+              'last_added_item') }}

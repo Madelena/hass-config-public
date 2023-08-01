@@ -305,3 +305,30 @@ rail_section_row:
         - width: 68px
         - height: 0
         - border-top: '[[[ return variables.line_style ]]]'
+
+
+# Rail Row with Media Player
+
+rail_row_with_media_player:
+  show_icon: false
+  show_name: false
+  show_state: false
+  show_label: false
+  custom_fields:
+    media_player:
+      card:
+        type: entities
+        entities:
+          - entity: '[[[ return entity.entity_id ]]]'
+        card_mod:
+          style: |
+            ha-card {background: none; position: absolute; top: 0; left: 64px; width: calc(100% - 64px);}
+        #     .entity__info__media {font-size: var(--small-font-size);}
+  styles:
+    grid:
+      - grid-template-columns: min-content min-content min-content min-content min-content min-content max-content
+      - grid-template-rows: 120px
+      - grid-template-areas: "rail0 rail1 rail2 rail3 rail4 station media_player"
+    custom_fields:
+      media_player:
+        - text-align: left

@@ -1,0 +1,37 @@
+
+plex_variables:
+  variables:
+    plex_last_added_item: >-
+      [[[
+        let movieUpdate = new Date(states["sensor.dorothy_library_movies"].attributes.last_added_timestamp)
+        let tvUpdate = new Date(states["sensor.dorothy_library_tv_shows"].attributes.last_added_timestamp)
+        let flacUpdate = new Date(states["sensor.dorothy_library_flacs"].attributes.last_added_timestamp)
+        var newest_library = ''
+        if (flacUpdate > movieUpdate) {
+          if (flacUpdate > tvUpdate) { newest_library = "flacs" } else { newest_library = "tv_shows" }
+        } else {
+          if (movieUpdate > tvUpdate) { newest_library = "movies" } else {newest_library = "tv_shows" }
+        }
+
+        return states["sensor.dorothy_library_" + newest_library].attributes.last_added_item
+      ]]]
+
+    plex_last_added_time: |-
+      [[[ 
+        let movieUpdate = new Date(states["sensor.dorothy_library_movies"].attributes.last_added_timestamp)
+        let tvUpdate = new Date(states["sensor.dorothy_library_tv_shows"].attributes.last_added_timestamp)
+        let flacUpdate = new Date(states["sensor.dorothy_library_flacs"].attributes.last_added_timestamp)
+        var newest_library = ''
+        if (flacUpdate > movieUpdate) {
+          if (flacUpdate > tvUpdate) { newest_library = "flacs" } else { newest_library = "tv_shows" }
+        } else {
+          if (movieUpdate > tvUpdate) { newest_library = "movies" } else {newest_library = "tv_shows" }
+        }
+
+        var diff = (-(new Date(states["sensor.dorothy_library_" +
+          newest_library].attributes.last_added_timestamp) - new Date()) /
+          1000 / 60 / 60 / 24)
+        if (diff > 1.5) {return Math.round(diff)  + " days ago" }
+        if (diff < .03) {return "Just now" }
+        if (diff <= 1.5) {return Math.round(diff * 24)  + " hours ago" }
+      ]]]

@@ -1,0 +1,19 @@
+- name: Integrations
+  sidebar_title: Integrations
+  sidebar_icon: mdi:devices
+  js_url: /api/hassio/app/entrypoint.js
+  url_path: config/integrations/dashboard
+  embed_iframe: true
+  require_admin: true
+  config:
+    ingress: core_configurator
+
+- name: Automations
+  sidebar_title: Automations
+  sidebar_icon: mdi:cog-transfer
+  js_url: /api/hassio/app/entrypoint.js
+  url_path: config/automation/dashboard
+  embed_iframe: true
+  require_admin: true
+  config:
+    ingress: core_configurator

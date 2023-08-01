@@ -1,0 +1,10 @@
+
+living_room_media_players:
+  name: Living Room Media Players
+  entities:
+    - media_player.terpsichora
+    - media_player.terpsichora_mini_alexa
+    - media_player.terpsichora_mini_dlna
+    - media_player.terpsichora_shield_androidtv
+    - media_player.terpsichora_shield_cast
+    - media_player.kitchen_echo_show

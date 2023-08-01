@@ -4,7 +4,7 @@
   type: js
 - url: /hacsfiles/lovelace-mushroom/mushroom.js?hacstag=44435037518022
   type: module
-- url: /local/style.css?version=20220406
+- url: /local/metro.css?version=20220902
   type: css
 - url: /hacsfiles/lovelace-card-tools/card-tools.js
   type: module
@@ -16,12 +16,12 @@
   type: module
 - url: /hacsfiles/uptime-card/uptime-card.js
   type: module
-- url: /hacsfiles/bar-card/bar-card.js
-  type: module
+# - url: /hacsfiles/bar-card/bar-card.js
+#   type: module
 - url: /hacsfiles/vacuum-card/vacuum-card.js?hacstag=261291295263
   type: module
-- url: /hacsfiles/lovelace-swipe-navigation/swipe-navigation.js
-  type: module
+# - url: /hacsfiles/lovelace-swipe-navigation/swipe-navigation.js
+#   type: module
 - url: /hacsfiles/decluttering-card/decluttering-card.js
   type: module
 - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
@@ -40,22 +40,20 @@
   type: module
 - url: /hacsfiles/apexcharts-card/apexcharts-card.js?hacstag=331701152201
   type: module
-- url: /hacsfiles/lovelace-more-info-card/more-info-card.js?hacstag=1805289500994
-  type: module
-- url: /hacsfiles/kiosk-mode/kiosk-mode.js?hacstag=303101606172
-  type: module
+# - url: /hacsfiles/lovelace-more-info-card/more-info-card.js?hacstag=1805289500994
+#   type: module
+# - url: /hacsfiles/kiosk-mode/kiosk-mode.js?hacstag=303101606172
+#   type: module
 - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js?hacstag=1485208381162
   type: module
 - url: /hacsfiles/lovelace-state-switch/state-switch.js?hacstag=158756598193
   type: module
 - url: /hacsfiles/lovelace-canary/canary.js?hacstag=245159052034
   type: module
-- url: /browser_mod.js
+- url: /local/swipe-card.js?version=202209042
   type: module
-- url: /hacsfiles/swipe-card/swipe-card.js?hacstag=192732887400
-  type: module
-- url: /hacsfiles/circle-sensor-card/circle-sensor-card.js?hacstag=141952963122
-  type: module
+# - url: /hacsfiles/circle-sensor-card/circle-sensor-card.js?hacstag=141952963122
+#   type: module
 - url: /hacsfiles/lovelace-template-entity-row/template-entity-row.js?hacstag=231674882130
   type: module
 - url: /hacsfiles/list-card/list-card.js?hacstag=145479324011
@@ -66,16 +64,14 @@
   type: module
 - url: /hacsfiles/weather-chart-card/weather-chart-card.js?hacstag=163941792120
   type: module
-- url: /hacsfiles/lovelace-media-art-background/media-art-background.js?hacstag=20287427051370
-  type: module
+# - url: /hacsfiles/lovelace-media-art-background/media-art-background.js?hacstag=20287427051370
+#   type: module
 - url: /hacsfiles/lovelace-animated-background/animated-background.js?hacstag=202743061063
   type: module
-- url: /local/aos.css
-  type: css
-- url: /local/aos.js
-  type: module
-- url: /hacsfiles/mini-climate-card/mini-climate-card-bundle.js?hacstag=268163975211
-  type: module
+# - url: /local/aos.css
+#   type: css
+# - url: /local/aos.js
+  # type: module
 - url: /hacsfiles/ha-sankey-chart/ha-sankey-chart.js?hacstag=455846088040
   type: module
 - url: /hacsfiles/lovelace-home-feed-card/lovelace-home-feed-card.js
@@ -84,5 +80,17 @@
   type: module
 - url: /hacsfiles/lovelace-card-templater/lovelace-card-templater.js
   type: module
-- url: /hacsfiles/history-explorer-card/history-explorer-card.js
+# - url: /hacsfiles/history-explorer-card/history-explorer-card.js
+#   type: module
+- url: /hacsfiles/hourly-weather/hourly-weather.js
+  type: module
+- url: /hacsfiles/PlexMeetsHomeAssistant/plex-meets-homeassistant.js
+  type: module
+- url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js
+  type: module
+- url: /hacsfiles/lovelace-windrose-card/windrose-card.js
+  type: module
+- url: /hacsfiles/lovelace-lightning-detector-card/lightning-detector-card.js
+  type: module
+- url: /hacsfiles/lovelace-thermostat-card/main.js
   type: module

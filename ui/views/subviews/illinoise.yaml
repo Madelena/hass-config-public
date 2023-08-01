@@ -1,0 +1,9 @@
+# Dorothy Illinoise Subview
+# Made by Madelena Mak 2022
+
+path: illinoise
+subview: true
+
+type: panel
+cards:
+  - !include ../machines/illinoise-cards.yaml

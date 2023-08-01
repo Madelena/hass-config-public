@@ -1,0 +1,81 @@
+
+- platform: xiaomi_cloud_map_extractor
+  host: !secret peanut_hamper_host
+  token: !secret peanut_hamper_token
+  username: !secret xiaomi_cloud_username
+  password: !secret xiaomi_cloud_password
+  name: Peanut Hamper S7
+  draw: ['all']
+  colors:
+    color_map_outside: [0,0,0,0]
+    color_map_wall_v2: [255,255,255]
+    color_path: [195,0,82,128]
+  room_colors:
+    1: [240, 178, 122]
+    2: [133, 193, 233]
+    3: [217, 136, 128]
+    4: [52, 152, 219]
+    5: [205, 97, 85]
+    6: [243, 156, 18]
+    7: [88, 214, 141]
+    8: [245, 176, 65]
+    9: [252, 212, 81]
+    10: [72, 201, 176]
+    11: [84, 153, 199]
+    12: [133, 193, 233]
+    13: [245, 176, 65]
+    14: [82, 190, 128]
+    15: [72, 201, 176]
+    16: [165, 105, 18]
+  texts:
+    - text: "Room 1"
+      x: 25
+      y: 25
+      color: [125, 20, 213]
+    - text: "Room 2"
+      x: 25
+      y: 75
+      color: [125, 20, 213, 127]
+      # font: "/local/segoeui.ttf"
+      font_size: 25
+  # map_transformation:
+    # scale: 2
+    # rotate: 180
+    # trim:
+    #   top: 10
+    #   bottom: 20
+    #   left: 30
+    #   right: 10
+  attributes:
+    - calibration_points
+    - charger
+    - cleaned_rooms
+    - country
+    - goto
+    - goto_path
+    - goto_predicted_path
+    - image
+    - is_empty
+    - map_name
+    - no_go_areas
+    - no_mopping_areas
+    - obstacles
+    - ignored_obstacles
+    - obstacles_with_photo
+    - ignored_obstacles_with_photo
+    - path
+    - room_numbers
+    - rooms
+    - vacuum_position
+    - vacuum_room
+    - vacuum_room_name
+    - walls
+    - zones
+
+# - platform: ffmpeg
+#   name: Earthcam - NYC Times Square
+#   input: http://video3.earthcam.com/fecnetwork/hdtimes10.flv/playlist.m3u8
+
+# - platform: ffmpeg
+#   name: Earthcam - NYC Midtown
+#   input: http://videos-3.earthcam.com/fecnetwork/13903.flv/playlist.m3u8

@@ -1,0 +1,13 @@
+# Last.fm Top Artist slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_colored_conditional
+  - slide_with_picture
+entity: sensor.last_fm_top_artists
+show_label: true
+name: Most Played Music Artist
+label: '[[[ return (entity.attributes.artist_1_playcount) + " plays" ]]]'
+variables:
+  picture: '[[[ return states["sensor.last_fm_top_artist_photo"].state ]]]'

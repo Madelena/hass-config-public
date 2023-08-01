@@ -6,7 +6,7 @@ title: Energy
 path: 'energy'
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
@@ -14,12 +14,12 @@ cards:
     view_layout:
       grid-area: cc
     layout:
-      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(356px, 1fr) [col-end])'
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
       mediaquery:
-        '(max-width: 800px)':
+        '(max-width: 799.99px)':
           grid-template-columns: 'repeat(auto-fill, [col-start] minmax(240px, 1fr) [col-end])'
 
     cards:
@@ -27,13 +27,13 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title.yaml
+        layout: !include ../shared/snippets/layout-page-title.yaml
         view_layout:
           grid-column: 1/-1
         cards:
 
           - type: markdown
-            style: !include snippets/style-markdown-page-title.yaml
+            style: !include ../shared/snippets/style-markdown-page-title.yaml
             content: >
               # Energy
 
@@ -49,24 +49,12 @@ cards:
             layout:
               margin: 0
             view_layout:
-              place-self: center start
+              place-self: center auto
             cards:
 
               - type: 'custom:swipe-card'
-                parameters:
-                  enabled: true
-                  slidesPerView: 1.66
-                  width: 480
-                  breakpoints:
-                    '800':
-                      enabled: false
-                      slidesPerView: 3
-                      width: 360
-                    '1024':
-                      enabled: false
-                      slidesPerView: 3
-                      width: 600
-
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
                 cards:
 
                   - type: custom:state-switch
@@ -77,9 +65,10 @@ cards:
                         entity: group.all_on_off
                         name: All Switches ↗
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
-                          action: more-info
+                          action: navigate
+                          navigation_path: group.all-on-off
                       "(min-width: 800px) and (max-width: 1023.99px)":
                         <<: *title-badge-1
                         layout: vertical
@@ -95,7 +84,7 @@ cards:
                           states('sensor.grid_fossil_fuel_percentage') + '%)' }}
                         icon: 'mdi:home-lightning-bolt'
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: 'https://app.electricitymap.org/zone/US-NY-NYIS'
@@ -111,7 +100,7 @@ cards:
                         primary: ConEdison ↗
                         icon: 'mdi:transmission-tower'
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: >-
@@ -156,6 +145,7 @@ cards:
                       - sensor.circuit_north_power
                       - sensor.circuit_center_power
                       - sensor.circuit_fridge_counter_power
+                      - sensor.circuit_north_ceiling_lights_power
                       - sensor.circuit_living_room_lights_power
                       - sensor.circuit_bedroom_a_c_power
                       - sensor.circuit_living_room_projector_power
@@ -175,6 +165,7 @@ cards:
                       - sensor.kitchen_counter_accent_lights_power
                       - sensor.living_room_hue_bowl_power
                       - sensor.living_room_table_lights_power
+                      - sensor.bedroom_cloud_light_power
                   - entity_id: sensor.circuit_north_power
                     name: North Circuit
                     children:
@@ -191,13 +182,15 @@ cards:
                       - sensor.kitchen_fridge_plug_smartenergy_metering
                       - sensor.kitchen_microwave_plug_smartenergy_metering
                       - sensor.kitchen_counter_echo_plug_current_consumption
-                      - >-
-                        sensor.kitchen_counter_hand_blender_current_consumption
+                      - sensor.kitchen_counter_hand_blender_current_consumption
                       - sensor.kitchen_counter_kettle_current_consumption
                       - sensor.kitchen_counter_plug_3_current_consumption
-                      - >-
-                        sensor.kitchen_counter_rice_cooker_current_consumption
+                      - sensor.kitchen_counter_rice_cooker_current_consumption
                       - sensor.kitchen_counter_toaster_current_consumption
+                  - entity_id: sensor.circuit_north_ceiling_lights_power
+                    name: North Ceiling Lights
+                    children:
+                      - sensor.hallway_light_power
                   - entity_id: sensor.circuit_living_room_lights_power
                     name: Living Room Lights
                     children:
@@ -207,8 +200,7 @@ cards:
                   - entity_id: sensor.circuit_bedroom_a_c_power
                     name: Bedroom A/C Circuit
                     children:
-                      - >-
-                        sensor.bedroom_air_conditioner_plug_smartenergy_metering
+                      - sensor.bedroom_air_conditioner_plug_smartenergy_metering
                   - entity_id: sensor.circuit_living_room_projector_power
                     name: Living Room Ceiling Circuit
                     children:
@@ -342,8 +334,16 @@ cards:
                     name: Living Room Decor Lights
                     children:
                       - sensor.all_lights_energy_use
+                  - entity_id: sensor.hallway_light_power
+                    name: Hallway Light
+                    children:
+                      - sensor.all_lights_energy_use
                   - entity_id: sensor.bedroom_ceiling_lights_power
                     name: Bedroom Ceiling Lights
+                    children:
+                      - sensor.all_lights_energy_use
+                  - entity_id: sensor.bedroom_cloud_light_power
+                    name: Bedroom Cloud Light
                     children:
                       - sensor.all_lights_energy_use
                   - entity_id: sensor.bedroom_devices_plug_smartenergy_metering
@@ -379,7 +379,7 @@ cards:
 
                 .box .label span { font-weight: normal; font-style: normal
                 !important; }
-                .box .label span.state { font-weight: 500; }
+                .box .label span.state { font-weight: 600; }
                 .box .label span.name { font-size: inherit; }
                 .section:last-child { flex-grow: .667 !important; flex-shrink: 2 !important; }
 
@@ -390,98 +390,9 @@ cards:
             view_layout:
               grid-column: 1/-1
 
-          - type: vertical-stack
-            in_card: true
-            cards:
-              - type: entity
-                entity: sensor.total_energy_use
-                name: Current Total
-                icon: 'mdi:lightning-bolt'
-              - type: history-graph
-                hours_to_show: 48
-                entities:
-                  - entity: sensor.total_energy_use
-                card_mod:
-                  style:
-                    .: |
-                      ha-card { overflow: hidden; }
-                      .content {
-                        margin: 4px -13px -8px -66px !important;
-                        padding: 0 0 12px 0 !important;
-                        overflow: hidden;
-                        filter: hue-rotate( calc( var(--hue-primary-color) - 215deg) ) saturate(2) opacity(.66)
-                      }
-                    state-history-charts$state-history-chart-line$ha-chart-base$: |
-                      .chartLegend { display: none;}
+          - !include ../shared/cards/energy-current-total.yaml
 
-          - type: vertical-stack
-            cards:
-              - type: horizontal-stack
-                cards:
-                  - type: entity
-                    entity: sensor.total_energy_use_daily_max
-                    name: Yesterday
-                    icon: none
-                  - type: entity
-                    entity: sensor.total_energy_use_hourly_max
-                    name: Last Hour
-                    icon: 'mdi:home-lightning-bolt'
-              - type: 'custom:mini-graph-card'
-                name: Daily Total
-                show:
-                  graph: bar
-                  icon: false
-                height: 150
-                hours_to_show: 168
-                aggregate_func: max
-                group_by: date
-                bar_spacing: 48
-                unit: Wh
-                update_interval: 30000
-                line_color: 'rgba(var(--rgb-primary-color), .5)'
-                lower_bound: 0
-                upper_bound: ~0
-                entities:
-                  - entity: sensor.total_energy_use_daily
-                    name: Total Energy Consumption
-                card_mod:
-                  style: >
-                    ha-card {border-bottom: 1px solid
-                    rgba(var(--rgb-primary-text-color),.1);} .header {
-                      padding-bottom: 0;
-                      margin-top: -8px;
-                    } .name > span {
-                      font-size: var(--body-font-size) !important;
-                      font-weight: normal !important;
-                      max-height: none !important;
-                      opacity: 1 !important;
-                    } .states {
-                      margin-top: -8px;
-                    } .state__value {
-                      font-size: var(--h1-font-size) !important;
-                      font-weight: 100 !important;
-                      padding: 8px 0;
-                    } .state__uom {
-                      font-size: var(--h6-font-size) !important;
-                      text-transform: uppercase;
-                      margin-bottom: 2px !important;
-                      padding: 8px 0;
-                    } .state__time {
-                      font-size: var(--h6-font-size) !important;
-                      font-weight: normal !important;
-                      letter-spacing: normal !important;
-                    } .graph__legend {
-                      font-size: var(--h6-font-size) !important;
-                      font-weight: normal !important;
-                      justify-content: flex-start !important;
-                      padding-left: 8px !important;
-                      letter-spacing: normal !important;
-                    } .graph__legend__item {
-                      margin: 0 8px !important;
-                    } .icon {
-                      margin-top: 12px;
-                    }
-            in_card: true
+          - !include ../shared/cards/energy-daily-total.yaml
               
           - type: vertical-stack
             in_card: true
@@ -611,7 +522,8 @@ cards:
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
                         {'height': 128},
-                        {'show_extrema': true}
+                        {'show_extrema': true},
+                        {'animate': false}
                       ],
                     }
                   }},
@@ -657,7 +569,8 @@ cards:
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
                         {'height': 128},
-                        {'show_extrema': true}
+                        {'show_extrema': true},
+                        {'animate': false}
                       ],
                     }
                   }},
@@ -703,7 +616,8 @@ cards:
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
                         {'height': 128},
-                        {'show_extrema': true}
+                        {'show_extrema': true},
+                        {'animate': false}
                       ],
                     }
                   }},
@@ -749,7 +663,8 @@ cards:
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
                         {'height': 128},
-                        {'show_extrema': true}
+                        {'show_extrema': true},
+                        {'animate': false}
                       ],
                     }
                   }},
@@ -778,18 +693,31 @@ cards:
             variables:
               name: MISC
 
-          - type: sensor
-            graph: line
-            entity: sensor.valhalla_plug_smartenergy_metering
-            hours_to_show: 48
-            detail: 2
-            name: Valhalla
+          - type: custom:decluttering-card
+            template: multi_graph_card
+            variables:
+              - hours_to_show: 48
+              - entities:
+                - sensor.valhalla_plug_smartenergy_metering
+              - title: Valhalla
+              - lower_bound: 0
+              - upper_bound: ~200
+              - height: 128
+              - show_extrema: true
+              - animate: false
 
-          - graph: line
-            type: sensor
-            entity: sensor.all_lights_energy_use
-            hours_to_show: 48
-            detail: 2
+          - type: custom:decluttering-card
+            template: multi_graph_card
+            variables:
+              - hours_to_show: 48
+              - entities:
+                - sensor.all_lights_energy_use
+              - title: All Lights
+              - lower_bound: 0
+              - upper_bound: ~200
+              - height: 128
+              - show_extrema: true
+              - animate: false
             icon: 'mdi:lightbulb-group'
 
 
@@ -825,7 +753,8 @@ cards:
                         {'lower_bound': 0},
                         {'upper_bound': '~200'},
                         {'height': 128},
-                        {'show_extrema': true}
+                        {'show_extrema': true},
+                        {'animate': false}
                       ],
                     }
                   }},

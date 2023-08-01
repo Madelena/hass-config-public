@@ -1,0 +1,11 @@
+# WAQI slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_graph
+  - waqi_scale
+entity: sensor.waqi_newyork_air_quality_index
+show_label: true
+name: Air Quality
+label: '[[[ return variables.level ]]]'

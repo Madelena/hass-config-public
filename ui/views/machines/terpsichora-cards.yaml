@@ -12,7 +12,7 @@ cards:
       grid-template-columns: auto min-content
       grid-template-rows: auto
       mediaquery:
-        '(max-width: 800px)':
+        '(max-width: 799.99px)':
           grid-template-columns: 1fr
       margin: -1px
     cards:
@@ -80,7 +80,7 @@ cards:
           ha-card .activities mwc-button {
             --mdc-button-outline-color: var(--primary-color);
             --mdc-theme-primary: white;
-            --mdc-typography-button-font-weight: 500;
+            --mdc-typography-button-font-weight: 600;
             --mdc-typography-button-font-size: 14px;
             --mdc-button-outline-width: 0 0 2px 0;
             --mdc-shape-small: 0;
@@ -233,7 +233,7 @@ cards:
               #       media_title:
               #         - text-align: left
               #         - font-size: 32pt
-              #         - font-weight: 500
+              #         - font-weight: 600
               #         - padding-left: 16px
               #       app_name:
               #         - text-align: left
@@ -271,7 +271,7 @@ cards:
                 artwork: full-cover
                 card_mod:
                   style: |
-                    .attr__media_title, .attr__app_name {font-size: var(--h1-font-size); font-weight: 500; line-height: 1.25;}
+                    .attr__media_title, .attr__app_name {font-size: var(--h1-font-size); font-weight: 600; line-height: 1.25;}
                     .attr__media_artist {font-size: var(--h1-font-size); font-weight: var(--h1-font-weight); line-height: 1.25;}
               - type: conditional
                 conditions:

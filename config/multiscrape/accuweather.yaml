@@ -2,14 +2,13 @@
 # Get the details from Accuweather that I want that isn't in the official integration.
 
 - name: Accuweather - Detailed Hourly Forecast
-  resource: !secret accuweather_api_url
+  resource: !secret accuweather_api
   scan_interval: 3600
   sensor:
 
     - unique_id: accuweather_condition_hourly
       name: Accuweather - Condition - Detailed Hourly Forecast
       value_template: '{{ value_json[0].IconPhrase }}'
-      unit_of_measurement: '°C'
       icon: mdi:weather-windy
       attributes:
         - name: 0h
@@ -67,6 +66,37 @@
           value_template: '{{ value_json[10].Temperature.Value }}'
         - name: 11h
           value_template: '{{ value_json[11].Temperature.Value }}'
+
+    - unique_id: accuweather_temperature_hourly
+      name: Accuweather - Real Feel Temperature - Detailed Hourly Forecast
+      value_template: '{{ value_json[0].RealFeelTemperature.Value }}'
+      unit_of_measurement: '°C'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 0h
+          value_template: '{{ value_json[0].RealFeelTemperature.Value }}'
+        - name: 1h
+          value_template: '{{ value_json[1].RealFeelTemperature.Value }}'
+        - name: 2h
+          value_template: '{{ value_json[2].RealFeelTemperature.Value }}'
+        - name: 3h
+          value_template: '{{ value_json[3].RealFeelTemperature.Value }}'
+        - name: 4h
+          value_template: '{{ value_json[4].RealFeelTemperature.Value }}'
+        - name: 5h
+          value_template: '{{ value_json[5].RealFeelTemperature.Value }}'
+        - name: 6h
+          value_template: '{{ value_json[6].RealFeelTemperature.Value }}'
+        - name: 7h
+          value_template: '{{ value_json[7].RealFeelTemperature.Value }}'
+        - name: 8h
+          value_template: '{{ value_json[8].RealFeelTemperature.Value }}'
+        - name: 9h
+          value_template: '{{ value_json[9].RealFeelTemperature.Value }}'
+        - name: 10h
+          value_template: '{{ value_json[10].RealFeelTemperature.Value }}'
+        - name: 11h
+          value_template: '{{ value_json[11].RealFeelTemperature.Value }}'
 
     - unique_id: accuweather_wind_speed_hourly
       name: Accuweather - Wind - Detailed Hourly Forecast

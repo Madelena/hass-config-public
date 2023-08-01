@@ -1,0 +1,84 @@
+- type: 'custom:auto-entities'
+  filter:
+    include:
+      - group: group.chore_plants
+        options:
+          type: 'custom:button-card'
+          template: chore_row
+  card:
+    type: entities
+    title: Plants
+    card_mod:
+      style: |
+        #states > div > * {overflow: visible !important;}
+
+- type: 'custom:auto-entities'
+  filter:
+    include:
+      - group: group.chore_car
+        options:
+          type: 'custom:button-card'
+          template: chore_row
+      - entity_id: binary_sensor.car_wash
+  card:
+    type: entities
+    title: Car
+    card_mod:
+      style: |
+        #states > div > * {overflow: visible !important;}
+
+- type: 'custom:auto-entities'
+  filter:
+    include:
+      - group: group.chore_kitchen
+        options:
+          type: 'custom:button-card'
+          template: chore_row
+  card:
+    type: entities
+    title: Kitchen
+    card_mod:
+      style: |
+        #states > div > * {overflow: visible !important;}
+
+- type: 'custom:auto-entities'
+  filter:
+    include:
+      - group: group.chore_bathroom
+        options:
+          type: 'custom:button-card'
+          template: chore_row
+  card:
+    type: entities
+    title: Bathroom
+    card_mod:
+      style: |
+        #states > div > * {overflow: visible !important;}
+
+- type: 'custom:auto-entities'
+  filter:
+    include:
+      - group: group.chore_living_room
+        options:
+          type: 'custom:button-card'
+          template: chore_row
+  card:
+    type: entities
+    title: Living Room
+    card_mod:
+      style: |
+        #states > div > * {overflow: visible !important;}
+
+- type: 'custom:auto-entities'
+  filter:
+    include:
+      - group: group.chore_personal
+        options:
+          type: 'custom:button-card'
+          template: chore_row
+  card:
+    type: entities
+    title: Personal
+    card_mod:
+      style: |
+        #states > div > * {overflow: visible !important;}

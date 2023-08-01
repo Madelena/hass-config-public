@@ -1,0 +1,656 @@
+# AMBIENT DASHBOARD
+# TV App
+# Made by Madelena Mak 2022
+
+title: TV
+path: tv
+type: 'custom:grid-layout'
+layout:
+  grid-template-columns: 94vw
+  grid-template-rows: auto
+  grid-template-areas: '"." "info"'
+  grid-column-gap: 0
+  margin: 0
+cards:
+
+
+  - type: 'custom:mod-card'
+    card_mod:
+      style: |
+        ha-card {
+          background:
+            linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(var(--rgb-primary-color),0.5) 100%),
+            url({%- if (state_attr('media_player.plex_terpsichora_shield', 'entity_picture') != None) -%}
+              {{ state_attr('media_player.plex_terpsichora_shield', 'entity_picture') }}
+              {%- elif (state_attr('media_player.terpsichora_shield_cast', 'entity_picture') != None) -%}
+              {{ state_attr('media_player.terpsichora_shield_cast', 'entity_picture') }}
+              {%- else -%}
+                none
+              {%- endif -%});
+          background-repeat: no-repeat, no-repeat;
+          background-size: cover, 125%;
+          background-position-y: center, center;
+          animation-name: background, fade-in;
+          animation-duration: 120s, 5s;
+          animation-direction: alternate, normal;
+          animation-iteration-count: infinite, 1;
+          animation-fill-mode: both, forwards;
+          position: relative;
+          height: 100vh; width: 100vw; margin: -1px; overflow: hidden;
+          opacity: 0;
+        }
+        layout-card { background: none; position: relative; opacity: 0; left: 100%;
+          animation-name: fade-in2;
+          animation-fill-mode: forwards;
+          animation-duration: 2s; }
+        @keyframes fade-in {
+          0%   {opacity: 0;}
+          100% {opacity: 1;}
+        }
+        @keyframes fade-in2 {
+          0%   {opacity: 0; left: 100%;}
+          100% {opacity: 1; left: 0;}
+        }
+        @keyframes background {
+          0% {background-position-x: center, left; background-size: cover, 200%;}
+          50% {background-position-x: center, center; background-size: cover, 125%;}
+          100% {background-position-x: center, right; background-size: cover, 200%;}
+        }
+
+    card:
+
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: '-1px'
+        grid-template-areas: '"topbar" "tiles"'
+        grid-template-rows: 100% 0
+        grid-template-columns: 100%
+      cards:
+
+
+        # Title Bar
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          view_layout:
+            grid-area: topbar
+          layout:
+            grid-template-rows: auto
+            grid-template-columns: '12.5vw auto 25vw'
+            margin: 0
+            padding: 0
+          cards:
+
+            - !include ../snippets/topbar-back-button.yaml
+
+            - type: 'custom:button-card'
+              template: slide_page_title
+              name: TV
+
+
+        # Tiles
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          layout:
+            grid-template-columns: 100vw
+            margin: -5.33vh 0 0 0
+          view_layout:
+            grid-area: tiles
+          cards:
+
+          - type: 'custom:swipe-card'
+            card_mod:
+              style: |
+                .swiper-slide { width: fit-content !important; }
+                .swiper-wrapper { padding-left: 7.5vw !important; }
+
+            parameters:
+              slidesPerView: auto
+              observer: true
+              keyboard:
+                enabled: true
+            cards:
+
+            # - type: 'custom:auto-entities'
+            #   filter:
+            #     include:
+            #       - domain: media_player
+            #         state: playing
+            #         options: &metro-media-player
+
+              - type: conditional
+                conditions:
+                  - entity: media_player.terpsichora_shield_androidtv
+                    state_not: "off"
+                card:
+
+              # - type: custom:state-switch
+              #   entity: media_player.terpsichora_mini
+              #   default: playing
+              #   states:
+              #     playing:
+                  type: 'custom:layout-card'
+                  layout_type: 'custom:grid-layout'
+                  layout:
+                    margin: 0
+                    padding: 0 0 0 5vw
+                  cards:
+
+                    - type: 'custom:button-card'
+                      template: slide_header_card_no_link
+                      variables:
+                        name: '[[[ return (states["media_player.terpsichora_shield_androidtv"].state !== "playing") ? "RESUME PLAYING" : "NOW PLAYING" ]]]'
+                      
+                    - type: 'custom:layout-card'
+                      layout_type: 'custom:grid-layout'
+                      layout:
+                        grid-template-rows: 66.66vh
+                        grid-template-columns: 50vw
+                        margin: 0
+                      cards: 
+
+                        - type: conditional
+                          conditions:
+                            - entity: media_player.plex_terpsichora_shield
+                              state: "paused"
+                          card: &tv-card-now-playing
+                            type: custom:button-card
+                            entity: media_player.plex_terpsichora_shield
+                            name: Plex
+                            show_state: true
+                            show_label: true
+                            show_icon: false
+                            state_display: '[[[ return entity.attributes.media_title ]]]'
+                            label: |
+                              [[[ if (entity.attributes.media_content_type == "music") {
+                                  return ((typeof entity.attributes.media_album_name !== "undefined") ? entity.attributes.media_album_name : "") + ((typeof entity.attributes.media_artist !== "undefined") ? "<br><span style='font-weight: 600;'>" + entity.attributes.media_artist + "</span>" : "")
+                                } else if (entity.attributes.media_content_type == "tvshow") {
+                                  return entity.attributes.media_series_title
+                                }
+                              ]]]
+                            custom_fields:
+                              picture: ' '
+                              media_control:
+                                card:
+                                  type: media-control
+                                  entity: '[[[ return entity.entity_id ]]]'
+                                  card_mod:
+                                    style: >
+                                      ha-card { background: none; }
+                                      .media-info, .top-info, .background { display: none
+                                      !important; }
+                                      .title-controls { padding: 0 !important; }
+                                      .player { padding: 0 !important; color: rgb(255,255,255)
+                                      !important;}
+                                      mwc-linear-progress { --mdc-theme-primary:
+                                      inherit !important;}
+                                      mwc-linear-progress_inner { width: 5vw !important; }
+                                      
+                            styles:
+                              card:
+                                - aspect-ratio: 5/2
+                                - margin: 0
+                                - padding: 0
+                                - background: none
+                                - height: 66.66vh
+                                - overflow: visible
+                              grid:
+                                - grid-template-areas: |
+                                    "."
+                                    "n"
+                                    "s"
+                                    "l"
+                                    "."
+                                    "media_control"
+                                - grid-template-columns: 1fr
+                                - grid-template-rows: 1fr min-content min-content min-content 1fr min-content
+                              name:
+                                - font-size: 2.5vh
+                                - font-weight: 600
+                                - letter-spacing: .05em
+                                - padding: 2vh 0 1vh 0
+                                - white-space: normal
+                                - text-align: left
+                                - justify-self: start
+                                - align-self: end
+                                - text-transform: uppercase
+                                - opacity: 0.67
+                              state:
+                                - font-size: |
+                                    [[[ return (typeof entity.attributes.media_title !== "undefined") ? ((entity.attributes.media_title.length >= 20)? ((entity.attributes.media_title.length >= 40)? "6vh" : "8vh") : "10vh") : "10vh"
+                                    ]]]
+                                - justify-self: start
+                                - padding: 0 0 2vh 0
+                                - margin-left: -4px
+                                - font-weight: 600
+                                - align-self: start
+                                - text-overflow: clip
+                                - white-space: normal
+                                - line-height: 1.1
+                                - text-align: left
+                              label:
+                                - font-size: |
+                                    [[[ if (entity.attributes.media_content_type == "music") {
+                                        return ((typeof entity.attributes.media_album_name !== "undefined") ? (entity.attributes.media_album_name.length >= 20) : false) || ((typeof entity.attributes.media_artist !== "undefined") ? (entity.attributes.media_artist.length >= 40) : false)? "4vh" : "5vh"
+                                      } else {
+                                        return "5vh"
+                                      }
+                                    ]]]
+                                - line-height: 1.25
+                                - justify-self: start
+                                - padding: 0 0 4vh 0
+                                - align-self: start
+                                - white-space: normal
+                                - text-align: left
+                                - height: 100%
+
+                        - type: conditional
+                          conditions:
+                            - entity: media_player.plex_terpsichora_shield
+                              state: "playing"
+                          card: 
+                            <<: *tv-card-now-playing
+                            entity: media_player.plex_terpsichora_shield
+
+                        - type: conditional
+                          conditions:
+                            - entity: media_player.plex_terpsichora_shield
+                              state_not: "playing"
+                            - entity: media_player.plex_terpsichora_shield
+                              state_not: "paused"
+                            - entity: media_player.terpsichora_shield_cast
+                              state: "playing"
+                          card: 
+                            <<: *tv-card-now-playing
+                            entity: media_player.terpsichora_shield_cast
+                            name: '[[[ return entity.attributes.app_name ]]]'
+
+                        - type: conditional
+                          conditions:
+                            - entity: media_player.plex_terpsichora_shield
+                              state_not: "playing"
+                            - entity: media_player.plex_terpsichora_shield
+                              state_not: "paused"
+                            - entity: media_player.terpsichora_shield_cast
+                              state: "paused"
+                          card: 
+                            <<: *tv-card-now-playing
+                            entity: media_player.terpsichora_shield_cast
+                            name: '[[[ return entity.attributes.app_name ]]]'
+
+                        - type: conditional
+                          conditions:
+                            - entity: media_player.plex_terpsichora_shield
+                              state_not: "playing"
+                            - entity: media_player.plex_terpsichora_shield
+                              state_not: "paused"
+                            - entity: media_player.terpsichora_shield_cast
+                              state_not: "playing"
+                            - entity: media_player.terpsichora_shield_cast
+                              state_not: "paused"
+                          card: 
+                            <<: *tv-card-now-playing
+                            entity: media_player.terpsichora_shield_androidtv
+                            name: '[[[ return entity.attributes.app_name ]]]'
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 2.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: REMOTE
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      grid-template-columns: 12vh 12vh 12vh
+                      grid-template-rows: 15.33vh 12vh 12vh 12vh 3.33vh 12vh
+                      margin: 0
+                    cards: 
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        view_layout:
+                          grid-area: 2 / 1 / 5 / 4
+                        styles:
+                          card:
+                            - border-radius: 17vh
+                            - width: 34vh
+                            - height: 34vh
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:backburger
+                        view_layout:
+                          grid-area: 1 / 1 / 2 / 2
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - Back
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:home
+                        view_layout:
+                          grid-area: 1 / 2 / 2 / 3
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - Home
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:television-off
+                        view_layout:
+                          grid-area: 1 / 3 / 2 / 4
+                        tap_action:
+                          action: remote.turn_off
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:arrow-left
+                        view_layout:
+                          grid-area: 3 / 1 / 4 / 2
+                        styles:
+                          card:
+                            - background-color: rgba(0,0,0,0)
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - DirectionLeft
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:arrow-up
+                        view_layout:
+                          grid-area: 2 / 2 / 3 / 3
+                        styles:
+                          card:
+                            - background-color: rgba(0,0,0,0)
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - DirectionUp
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:arrow-right
+                        view_layout:
+                          grid-area: 3 / 3 / 4 / 4
+                        styles:
+                          card:
+                            - background-color: rgba(0,0,0,0)
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - DirectionRight
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:arrow-down
+                        view_layout:
+                          grid-area: 4 / 2 / 5 / 3
+                        styles:
+                          card:
+                            - background-color: rgba(0,0,0,0)
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - DirectionDown
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_text_only
+                        state_display: OK
+                        view_layout:
+                          grid-area: 3 / 2 / 4 / 3
+                        tap_action:
+                          action: remote.send_command
+                          service_data:
+                            entity_id: remote.living_room_harmony_hub
+                            command:
+                              - Select
+                            device: "NVIDIA Game Console"
+
+                      - type: 'custom:button-card'
+                        template: slide_button_text_only
+                        state_display: TV
+                        view_layout:
+                          grid-area: 6 / 1 / 7 / 4
+                        styles:
+                          card:
+                            - width: 34vh
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:volume-minus
+                        view_layout:
+                          grid-area: 6 / 1 / 7 / 2
+                        styles:
+                          card:
+                            - background-color: rgba(0,0,0,0)
+
+                      - type: 'custom:button-card'
+                        template: slide_button_icon_only
+                        icon: mdi:volume-plus
+                        view_layout:
+                          grid-area: 6 / 3 / 7 / 4
+                        styles:
+                          card:
+                            - background-color: rgba(0,0,0,0)
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: ON DECK
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      margin: 0
+                    cards:
+                      - &tv-card-plex
+                        type: custom:plex-meets-homeassistant
+                        protocol: http
+                        sort: ''
+                        playTrailer: false
+                        showExtras: false
+                        showSearch: false
+                        ip: 192.168.50.142
+                        token: 33U_Kx6sAVsQtzf1tcCc
+                        port: '32400'
+                        entity:
+                          plexPlayer:
+                            - identifier: Terpsichora Shield
+                        libraryName: Watch Next
+                        maxCount: 4
+                        maxRows: '1'
+                        useHorizontalScroll: 'Yes'
+                        useShuffle: 'No'
+                        displayTitleMain: 'Yes'
+                        displaySubtitleMain: 'Yes'
+                        card_mod:
+                          style: |
+                            ha-card { background: none !important; padding: 0 !important; margin: 0 !important; }
+                            .contentContainer { width: max-content !important; height: 66.66vh !important; }
+                            .plexMeetsContainer { width: 33.33vh !important; height: 66.66vh !important; margin-right: 2vw !important;}
+                            .plexMeetsContainer:last-child { margin-right: 0 !important;}
+                            .movieElem { width: 33.33vh !important; height: 50vh !important; border-radius: 0 !important; margin-bottom: 1vh !important; }
+                            .movieElem[data-clicked="true"] { width: 44.44vh !important; height: 66.66vh !important; top: 0 !important; left: 0 !important; }
+                            .viewProgress, .toViewEpisode, .toViewSeason, .detailPlayAction { background: var(--primary-color) !important; }
+                            .toViewSeason, .detailPlayAction { color: var(--primary-text-color) !important; border-radius: 0 !important; }
+                            .detailPlayTrailerAction { display: none !important; }
+                            .interactiveArea button[name='playButton']:hover {
+                              background: var(--primary-color) !important;
+                              border: 2px solid var(--primary-color) !important;
+                            }
+                            .interactiveArea button[name='playButton']:hover:after { border-color: transparent transparent transparent var(--primary-text-color) !important; }
+                            .titleElem { width: 33.33vh !important; height: 7vh !important; overflow: hidden; white-space: normal !important;  font-size: 3vh !important; line-height: 1.2 !important; margin: 1vh 0 !important; }
+                            .yearElem, .additionalElem { font-size: 2vh !important; line-height: 1.2 !important; margin: 1vh 0 !important; }
+                            .contentArt { opacity: .5; filter: grayscale(1); width: 100% !important; height: 66.66vh !important; }
+                            .detail { left: calc(44.44vh + 2.5vw) !important; width: calc(100% - 44.44vh - 5vw) !important; max-width: calc(85vw - 44.44vh) !important; height: 66.66vh !important; }
+                            .detail h1 { font-size: 8vh !important; line-height: 1.15 !important; font-weight: 600 !important; margin: 1.5vh 1vh !important; white-space: normal !important; max-height: 27vh! important; overflow-y: hidden !important; }
+                            .seasons { display: none !important; }
+                            .minutesDetail, .ratingDetail, .contentRatingDetail, .detailPlayAction { font-family: var(--font-stack) !important; font-size: 2.5vh !important; line-height: 1.2 !important; margin: 1vh !important; border-radius: 5vh !important; }
+                            .detailsYear, .detailDesc, .metaInfoDetails, .metaInfoDetailsData { font-size: 2.5vh !important; line-height: 1.5 !important; margin: 0 !important; padding: 1vh !important; white-space: normal !important; }
+                            .detailDesc { margin-top: 1vh !important; }
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: APPS
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards: 
+
+                      - &tv-tile-apps
+                        type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_camera
+                        variables:
+                          camera: /local/logos/paramountplus.png
+                          app_id: "com.cbs.ott"
+                        show_name: true
+                        show_state: false
+                        show_label: false
+                        color: black
+                        icon: none
+                        name: Anson Mount+
+                        tap_action:
+                          action: call-service
+                          service: media_player.select_source
+                          service_data:
+                            source: '[[[ return variables.app_id ]]]'
+                            entity_id: media_player.terpsichora_shield_androidtv
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/primevideo.png
+                          app_id: com.amazon.amazonvideo.livingroom
+                        name: Prime Video
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/plex.png
+                          app_id: com.plexapp.android
+                        name: Plex
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/youtube.jpg
+                          app_id: com.teamsmart.videomanager.tv
+                        name: Youtube
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/hulu.png
+                          app_id: com.hulu.livingroomplus
+                        name: Hulu
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/hbomax.png
+                          app_id: com.hbo.hbonow
+                        name: HBO Max
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/disneyplus.png
+                          app_id: com.disney.disneyplus
+                        name: Disney+
+
+                      - <<: *tv-tile-apps
+                        variables:
+                          camera: /local/logos/peacock.png
+                          app_id: com.peacocktv.peacockandroid
+                        name: Peacock
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: RECENTLY ADDED MOVIES
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      margin: 0
+                    cards:
+                      - <<: *tv-card-plex
+                        libraryName: Movies
+                        sort: addedAt:desc
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 12.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: RECENTLY ADDED TV SHOWS
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      margin: 0
+                    cards:
+                      - <<: *tv-card-plex
+                        libraryName: TV Shows
+                        sort: addedAt:desc

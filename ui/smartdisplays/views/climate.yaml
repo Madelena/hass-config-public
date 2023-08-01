@@ -1,0 +1,155 @@
+# AMBIENT DASHBOARD
+# Vacuum App
+# Made by Madelena Mak 2022
+
+title: Climate
+path: climate
+type: panel
+cards:
+
+  - type: 'custom:mod-card'
+    card_mod: !include ../snippets/slideshow-mod-card-bg.yaml
+    card:
+
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: '-1px'
+        grid-template-areas: '"topbar" "tiles"'
+        grid-template-rows: min-content auto
+        grid-template-columns: 100%
+      cards:
+
+
+        # Title Bar
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          view_layout:
+            grid-area: topbar
+            card_margin: 0
+          layout:
+            grid-template-rows: auto
+            grid-template-columns: '12.5vw auto 25vw'
+            margin: 0
+            padding: 0
+          cards:
+
+            - !include ../snippets/topbar-back-button.yaml
+
+            - type: 'custom:button-card'
+              template: slide_page_title
+              name: CLIMATE
+
+
+        # Tiles
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          layout:
+            grid-template-columns: 100vw
+            margin: -5.33vh 0 0 0
+          view_layout:
+            grid-area: tiles
+          cards:
+
+          - type: 'custom:swipe-card'
+            card_mod:
+              style: |
+                .swiper-slide { width: fit-content !important; }
+                .swiper-wrapper { padding-left: 7.5vw !important; }
+
+            parameters:
+              autoHeight: true
+              slidesPerView: auto
+              keyboard:
+                enabled: true
+            cards:
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: AIR CONDITIONER
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards:
+                    
+                      - type: 'custom:thermostat-card'
+                        entity: climate.living_room_air_conditioner_window_ac
+                        title: ' '
+                        highlight_tap: true
+                        # ambient_temperature:
+                        view_layout:
+                          grid-row: span 2
+                          grid-column: span 2
+                        card_mod:
+                          style: >
+                            .dial text, .dial text tspan { font-family: var(--font-stack); }
+                            .dial__lbl--low, .dial__lbl--high, .dial__lbl--target, .dial__lbl--ambient { font-weight: var(--h1-font-weight); }
+                            .dial__lbl--ring { font-weight: var(--h4-font-weight); }
+                            .dial__lbl--super--ambient, .dial__lbl--super--target { text-anchor: end; font-weight: var(--body-font-weight); }
+                            .dial {
+                              --thermostat-off-fill: var(--card-background-color);
+                              --thermostat-path-color: rgba(var(--rgb-primary-text-color),.2);
+                              --thermostat-path-active-color: var(--accent-color);
+                              --thermostat-path-active-color-large: var(--accent-color);
+                              --thermostat-text-color: var(--primary-text-color);
+                            }
+                            ha-card {
+                              --cool_color: var(--primary-color);
+                            }
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_with_graph
+                          - live_tile_with_state_unit
+                        entity: sensor.living_room_env_sensor_temperature
+                        name: Temperature
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_with_graph
+                          - live_tile_with_state_unit
+                        entity: sensor.living_room_env_sensor_humidity
+                        name: Humidity
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 12.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: AIR PURIFIER
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards:
+
+                      - type: 'custom:decluttering-card'
+                        template: light_card
+                        variables:
+                          - entity: fan.living_room_air_purifier_ikea_fan
+                          - name: Status
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_with_graph
+                          - live_tile_with_state_unit
+                        entity: sensor.living_room_air_purifier_particulate_matter
+                        name: PM25
+

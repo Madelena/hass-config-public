@@ -1,0 +1,10 @@
+# MADELENA + THE MACHINES
+# Dorothy View
+# Made by Madelena Mak 2022
+
+title: Dorothy
+path: dorothy
+
+type: panel
+cards:  
+  - !include dorothy-cards.yaml

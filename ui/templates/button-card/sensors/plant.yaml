@@ -1,0 +1,74 @@
+plant_status:
+  state_display: |
+    [[[
+      if (entity.state == "ok") { return "Good" }
+      return entity.state
+    ]]]
+  state:
+    - value: ok
+      styles:
+        card:
+          - background-color: var(--ha-card-background)
+        state:
+          - color: var(--primary-text-color)
+        name:
+          - color: var(--primary-text-color)
+        label:
+          - color: var(--primary-text-color)
+          - opacity: 0.67
+    - value: problem
+      styles:
+        card:
+          - background-color: var(--primary-color)
+        state:
+          - color: var(--accent-text-color)
+        name:
+          - color: var(--accent-text-color)
+        label:
+          - color: var(--accent-text-color)
+          - opacity: 0.67
+  label: |
+    [[[
+      var problems = { low: [], high: [], unknown: [] }
+      var problemString = { low: "", high: "", unknown: "" }
+      for (const [key, value] of Object.entries(entity.attributes)) {
+        if (key == "dli_status") { var problem = "light" } else { var problem = key.replace(/_status/, "") }
+        if (value == "Low") { problems.low.push(problem) }
+        if (value == "High") { problems.high.push(problem) }
+      }
+      for (const [key, value] of Object.entries(problems)) {
+        if (problems[key].length > 1) {
+          problems[key][problems[key].length-1] = "and " + problems[key][problems[key].length-1]
+          if (problems[key].length > 2) {
+            problemString[key] = key[0].toUpperCase() + key.slice(1) + " " + problems[key].join(", ")
+          } else {
+            problemString[key] = key[0].toUpperCase() + key.slice(1) + " " + problems[key].join(" ")
+          }
+        } else {
+          if (problems[key].length == 1) {
+            problemString[key] = key[0].toUpperCase() + key.slice(1) + " " + problems[key].join("")
+          }
+        }
+      }
+      return Object.values(problemString).filter(string => string != "").join("<br>")
+    ]]]
+  show_icon: false
+  custom_fields:
+    plant: ''
+  styles:
+    grid:
+      - grid-template-areas: '"s s" "l l" "n i" "plant plant"'
+      - grid-template-rows: min-content auto min-content 0
+    custom_fields:
+      plant:
+        - background-image: |
+            [[[ return "url('/local/plants/plant-" + variables.plant + ".png')" ]]]
+        - background-size: cover
+        - background-repeat: no-repeat
+        - opacity: '[[[ return (entity.state == "problem") ? .67 : .5 ]]]'
+        - position: absolute
+        - top: 0
+        - left: 33%
+        - width: 100%
+        - height: 100%
+        - filter: ' [[[ return (entity.state == "problem") ? "invert(1)" : "var(--dark-mode-filter)" ]]]'

@@ -1,0 +1,10 @@
+# Astronomy Calendar slide
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+entity: sensor.ics_1
+state_display: '[[[ return entity.attributes.description ]]]'
+show_label: true
+label: '[[[ return moment(entity.attributes.start).fromNow() ]]]'
+icon: mdi:weather-night

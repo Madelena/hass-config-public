@@ -1,0 +1,78 @@
+
+# ENVIRONMENTAL SENSORS
+
+indoor_temperature_sensors:
+  name: Indoor Temperature Sensors
+  entities:
+    - sensor.netatmo_strawberry_land_indoor_temperature
+    - sensor.bedroom_hue_sensor_temperature
+    - sensor.workspace_room_hue_sensor_temperature
+    - sensor.workspace_env_sensor_temperature
+    - sensor.bathroom_env_sensor_temperature
+    - sensor.living_room_air_purifier_temperature
+    - sensor.living_room_env_sensor_temperature
+    - sensor.living_room_hue_sensor_temperature
+    - sensor.kitchen_counter_motion_sensor_temperature
+
+indoor_humidity_sensors:
+  name: Indoor Humidity Sensors
+  entities:
+    - sensor.pure_hot_cool_link_humidity
+    - sensor.bathroom_env_sensor_humidity
+    - sensor.workspace_env_sensor_humidity
+    - sensor.living_room_air_purifier_humidity
+    - sensor.living_room_env_sensor_humidity
+    - sensor.netatmo_strawberry_land_indoor_humidity
+
+env_sensors_bedroom:
+  name: Bedroom Environmental Sensors
+  entities:
+    - sensor.bedroom_hue_sensor_temperature
+    - sensor.netatmo_strawberry_land_indoor_temperature
+    - sensor.netatmo_strawberry_land_indoor_humidity
+    - sensor.netatmo_strawberry_land_indoor_co2
+    - sensor.netatmo_strawberry_land_indoor_noise
+    - sensor.thermal_comfort_netatmo_bedroom_absolutehumidity
+    - sensor.thermal_comfort_netatmo_bedroom_heatindex
+    - sensor.thermal_comfort_netatmo_bedroom_perception
+    - sensor.thermal_comfort_netatmo_bedroom_simmerindex
+    - sensor.thermal_comfort_netatmo_bedroom_simmerzone
+
+env_sensors_workspace:
+  name: Workspace Environmental Sensors
+  entities:
+    - sensor.workspace_room_hue_sensor_temperature
+    - sensor.astralplane_hue_sensor_temperature
+    - sensor.workspace_env_sensor_temperature
+    - sensor.workspace_env_sensor_humidity
+    - sensor.workspace_env_sensor_pressure
+    - sensor.thermal_comfort_workspace_absolutehumidity
+    - sensor.thermal_comfort_workspace_perception
+    - sensor.thermal_comfort_workspace_simmerindex
+    - sensor.thermal_comfort_workspace_simmerzone
+
+env_sensors_living_room:
+  name: Living Room Environmental Sensors
+  entities:
+    - sensor.living_room_hue_sensor_temperature
+    - sensor.living_room_air_purifier_temperature
+    - sensor.living_room_air_purifier_humidity
+    - sensor.living_room_env_sensor_temperature
+    - sensor.living_room_env_sensor_humidity
+    - sensor.living_room_env_sensor_pressure
+    - sensor.thermal_comfort_living_room_absolutehumidity
+    - sensor.thermal_comfort_living_room_heatindex
+    - sensor.thermal_comfort_living_room_perception
+    - sensor.thermal_comfort_living_room_simmerindex
+    - sensor.thermal_comfort_living_room_simmerzone
+
+env_sensors_kitchen:
+  name: Kitchen Environmental Sensors
+  entities:
+    - sensor.kitchen_counter_motion_sensor_temperature
+
+env_sensors_bathroom:
+  name: Bathroom Environmental Sensors
+  entities:
+    - sensor.bathroom_env_sensor_temperature
+    - sensor.bathroom_env_sensor_humidity

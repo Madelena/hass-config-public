@@ -1,0 +1,146 @@
+# METROLOGY FOR HOME ASSISTANT
+# Button Card Templates
+# Made by Madelena Mak 2022
+
+
+# ROWS
+
+# Bar Row
+
+bar_row:
+  variables:
+    min: 0
+    max: 100
+    bar_warning_percent: 30
+    bar_error_percent: 10
+    bar_color: var(--rgb-accent-color)
+    bar_warning_color: var(--rgb-warning-color)
+    bar_error_color: var(--rgb-error-color)
+    bar_warning_text: Replace Soon
+    bar_error_text: Replace Now
+    bar_reverse: false
+    state: '[[[ return entity.state ]]]'
+  show_icon: false
+  show_name: true
+  show_state: true
+  show_label: false
+  size: 20px
+  custom_fields:
+    bg: ''
+    bar: ''
+    badge: &field-chore-badge |
+      [[[
+        if (variables.bar_reverse) {
+          if (variables.state >= variables.max * variables.bar_error_percent / 100) { return variables.bar_error_text }
+          if (variables.state >= variables.max * variables.bar_warning_percent / 100) { return variables.bar_warning_text }        
+        } else {
+          if (variables.state <= variables.max * variables.bar_error_percent / 100) { return variables.bar_error_text }
+          if (variables.state <= variables.max * variables.bar_warning_percent / 100) { return variables.bar_warning_text }        
+        }
+      ]]]
+  styles:
+    grid:
+      - grid-template-areas: '"bg bg bg bg" "i n s badge" "i l s badge" "i bar bar bar"'
+      - grid-template-columns: min-content auto min-content min-content
+      - grid-template-rows: 0 min-content min-content 4px
+    card:
+      - position: relative
+      # - left: -16px
+      # - width: calc(100% + 32px)
+      - padding: 4px 0
+      - font-size: var(--body-font-size)
+      - font-weight: var(--body-font-weight)
+      - line-height: var(--body-line-height)
+      - min-height: 48px
+      - overflow: visible
+    img_cell:
+      - width: 40px
+      - height: 40px
+      - margin-right: 16px
+    name:
+      - color: var(--primary-text-color)
+      - justify-self: start
+      - align-self: end
+      - margin-right: 8px
+      - margin-bottom: 4px
+      - white-space: inherit
+      - text-align: left
+      - z-index: 2
+    label:
+      - font-size: var(--small-font-size)
+      - color: var(--secondary-text-color)
+      - justify-self: start
+      - margin-right: 8px
+      - margin-top: -2px
+      - margin-bottom: 4px
+      - white-space: inherit
+      - text-align: left
+      - z-index: 2
+    state:
+      - font-size: var(--h5-font-size)
+      - font-weight: 400
+      - justify-self: end
+      - align-self: end
+      - margin-bottom: 4px
+      - text-align: right
+      - z-index: 2
+    custom_fields:
+      bg:
+        - position: absolute
+        - top: 0
+        - left: -16px
+        - width: calc(100% + 32px)
+        - height: 100%
+        - background-color: |
+            [[[
+              if (variables.bar_reverse) {
+                if (variables.state >= variables.max * variables.bar_error_percent / 100) { return `rgba(${variables.bar_error_color}, .33)` }
+                if (variables.state >= variables.max * variables.bar_warning_percent / 100) { return `rgba(${variables.bar_warning_color}, .33)` } else {return 'transparent'}
+              } else {
+                if (variables.state <= variables.max * variables.bar_error_percent / 100) { return `rgba(${variables.bar_error_color}, .33)` }
+                if (variables.state <= variables.max * variables.bar_warning_percent / 100) { return `rgba(${variables.bar_warning_color}, .33)` } else {return 'transparent'}
+              }
+            ]]]
+      bar:
+        - background: |
+            [[[
+              var barColor = variables.bar_color
+              if (variables.bar_reverse) {
+                if (variables.state >= variables.max * variables.bar_error_percent / 100) { barColor = variables.bar_error_color }
+                if (variables.state >= variables.max * variables.bar_warning_percent / 100) { barColor = variables.bar_warning_color }
+              } else {
+                if (variables.state <= variables.max * variables.bar_error_percent / 100) { barColor = variables.bar_error_color }
+                if (variables.state <= variables.max * variables.bar_warning_percent / 100) { barColor = variables.bar_warning_color }
+              }
+              var percent = Math.min((variables.state - variables.min) / (variables.max - variables.min) * 100, 100)
+              return `linear-gradient(to right, rgba(${barColor}) 0%, rgba(${barColor}) ${percent}%, var(--primary-background-color) ${percent}%, var(--primary-background-color) 100%)`
+            ]]]
+        - height: 4px
+        - margin-bottom: 4px
+        - z-index: 2
+      badge:
+        - background: |
+            [[[
+              if (variables.bar_reverse) {
+                if (variables.state >= variables.max * variables.bar_error_percent / 100) { return `rgba(${variables.bar_error_color}` }
+                if (variables.state >= variables.max * variables.bar_warning_percent / 100) { return `rgba(${variables.bar_warning_color}` }
+              } else {
+                if (variables.state <= variables.max * variables.bar_error_percent / 100) { return `rgba(${variables.bar_error_color}` }
+                if (variables.state <= variables.max * variables.bar_warning_percent / 100) { return `rgba(${variables.bar_warning_color}` }
+              }
+            ]]]
+        - align-self: end
+        - padding: 2px
+        - margin-left: '[[[ if (entity.state <= variables.max * variables.bar_warning_percent / 100) { return "8px" } ]]]'
+        - margin-bottom: 6px
+        - line-height: 1
+        - font-size: var(--h6-font-size)
+        - font-weight: 900
+        - text-transform: uppercase
+        - border-radius: var(--ha-card-border-radius)
+        - color: var(--accent-text-color)
+        - z-index: 2
+
+
+# Sparkline Row
+

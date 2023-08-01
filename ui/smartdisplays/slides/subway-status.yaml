@@ -1,0 +1,13 @@
+# Subway Status slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - subway_service_status
+  - slide_with_colored_conditional
+variables:
+  condition: '[[[ return ( entity.attributes.direction_statuses.north != "Good Service") ]]]'
+show_label: true
+name: L Train - Manhattan Bound
+icon: 'mdi:train'
+entity: sensor.mta_subway_l_service_status

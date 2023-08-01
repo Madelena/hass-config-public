@@ -6,13 +6,13 @@ title: Media
 path: media
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
     layout_type: 'custom:grid-layout'
     layout:
-      grid-template-columns: auto
+      grid-template-columns: 1fr 1fr
       grid-template-rows: auto
       grid-column-gap: 32px
       margin: -1px
@@ -23,13 +23,13 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title-with-2-badges.yaml
+        layout: !include ../shared/snippets/layout-page-title-with-2-badges.yaml
         view_layout:
           grid-column: 1/-1
         cards:
 
           - type: markdown
-            style: !include snippets/style-markdown-page-title.yaml
+            style: !include ../shared/snippets/style-markdown-page-title.yaml
             content: >
               # Media
 
@@ -43,23 +43,12 @@ cards:
             layout:
               margin: 0
             view_layout:
-              place-self: center start
+              place-self: center auto
             cards:
 
               - type: 'custom:swipe-card'
-                parameters:
-                  enabled: true
-                  slidesPerView: 1.66
-                  width: 480
-                  breakpoints:
-                    '800':
-                      enabled: false
-                      slidesPerView: 2
-                      width: 240
-                    '1024':
-                      enabled: false
-                      slidesPerView: 2
-                      width: 400
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
                 cards:
 
                   - type: custom:state-switch
@@ -70,7 +59,7 @@ cards:
                         entity: binary_sensor.ping_my_website
                         name: My Website ↗
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: 'https://MadelenaMak.com'
@@ -87,7 +76,7 @@ cards:
                         name: Last.fm ↗
                         icon: 'mdi:music'
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: 'https://last.fm/user/pakkei'
@@ -113,7 +102,7 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-page-columns.yaml
+            layout: !include ../shared/snippets/layout-page-columns.yaml
             cards:
 
               - type: entities
@@ -168,7 +157,7 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-page-columns.yaml
+            layout: !include ../shared/snippets/layout-page-columns.yaml
             cards:
 
               - type: entities
@@ -188,6 +177,7 @@ cards:
                 entities:
                   # To Echo Link via Coaxial
                   - media_player.etherealm
+                  - media_player.etherealm_2
 
                   # To Echo Link via Alexa
                   - media_player.astralplane_echo_dot
@@ -218,7 +208,7 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-page-columns.yaml
+            layout: !include ../shared/snippets/layout-page-columns.yaml
             cards:
 
               - type: entities
@@ -259,7 +249,7 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-page-columns.yaml
+            layout: !include ../shared/snippets/layout-page-columns.yaml
             cards:
 
               - type: entities

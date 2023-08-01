@@ -1,0 +1,7 @@
+# Spacer
+
+type: 'custom:button-card'
+template: slide_basic
+styles:
+  card:
+    - background: none

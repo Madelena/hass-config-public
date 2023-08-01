@@ -1,0 +1,88 @@
+
+# LIGHTS
+
+living_room_lights:
+  name: Living Room Lights
+  entities:
+    - light.living_room_chandelier_main
+    - light.living_room_ramsele_light
+    - light.living_room_random_light
+    - light.hallway_light
+    - light.living_room_strala_light
+
+living_room_accents:
+  name: Living Room Accents
+  entities:
+    - light.living_room_ball_light
+    - light.living_room_table_lights
+    - light.living_room_hue_bowl
+    - light.living_room_decor_lights
+
+kitchen_lights:
+  name: Kitchen Lights
+  entities:
+    - light.kitchen_counter_lights
+    - light.kitchen_spot_lights
+    - light.kitchen_sink_lights
+    - light.kitchen_counter_accent_lights
+
+bedroom_lights:
+  name: Bedroom Lights
+  entities:
+    - light.bedroom_ceiling_lights
+    - light.bedroom_cloud_light
+    - light.bedroom_hue_bowl
+
+workspace_lights:
+  name: Workspace Lights
+  entities:
+    - group.workspace_desk_lights
+    - group.workspace_accents_lights
+    - group.workspace_studio_lights
+
+workspace_desk_lights:
+  name: Workspace Desk Lights
+  entities:
+    - light.workspace_desk_spot_light_left
+    - light.workspace_desk_spot_light_right
+
+workspace_accents_lights:
+  name: Workspace Accents Lights
+  entities:
+    - light.workspace_back_ledge_lights
+    - light.workspace_back_shelf_lights
+    - light.workspace_desk_bottom_lights
+    - light.workspace_bench_bottom_lights
+    - light.workspace_bloom_left
+    - light.workspace_bloom_right
+
+workspace_studio_lights:
+  name: Workspace Studio Lights
+  entities:
+    - light.workspace_studio_light_left
+    - light.workspace_studio_light_center
+    - light.workspace_studio_light_right
+    - light.workspace_makery_lights
+
+
+insteon_lights:
+  name: Insteon Lights
+  entities:
+    - light.living_room_chandelier_main
+    - light.living_room_decor_lights
+    - light.kitchen_counter_lights
+    - light.kitchen_spot_lights
+    - light.kitchen_sink_lights
+    - light.bedroom_ceiling_lights
+
+unaccounted_lights:
+  name: Unaccounted Lights
+  entities:
+    - group.insteon_lights
+    - light.living_room_table_lights
+    - light.living_room_hue_bowl
+    - light.living_room_ramsele_light
+    - light.living_room_random_light
+    - light.hallway_light
+    - light.living_room_strala_light
+    - light.bedroom_hue_bowl

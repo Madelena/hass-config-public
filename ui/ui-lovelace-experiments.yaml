@@ -1,0 +1,275 @@
+views:
+  - theme: Backend-selected
+    title: Home
+    type: panel
+    badges: []
+    cards:
+      - type: 'custom:floorplan-card'
+        title: Floorplanner Home
+        config:
+          image:
+            location: /local/uss-strawberry-fields.svg
+            cache: false
+          stylesheet: /local/ha-floorplan.css
+          defaults:
+            hover_action: hover-info
+            tap_action: more-info
+          log_level: info
+          rules:
+            - entity: group.bedroom_lights
+              element: group.bedroom_lights.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: group.kitchen_lights
+              element: group.kitchen_lights.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: group.workspace_lights
+              element: group.workspace_lights.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: group.living_room_lights
+              element: group.living_room_lights.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: sensor.workspace_room_hue_sensor_temperature
+              tap_action: more-info
+              state_action:
+                action: call-service
+                service: floorplan.text_set
+                service_data: '${entity.state}'
+            - entities:
+                - binary_sensor.bedroom_hue_sensor_motion
+                - binary_sensor.kitchen_counter_motion_sensor_motion
+                - binary_sensor.workspace_room_hue_sensor_motion
+                - binary_sensor.living_room_hue_sensor_motion
+              state_action:
+                action: call-service
+                service: floorplan.text_set
+                service_data: '${(entity.state === "on") ? "Detected" : "Clear"}'
+            - entity: binary_sensor.bedroom_hue_sensor_motion
+              element: binary_sensor.bedroom_hue_sensor_motion.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: binary_sensor.kitchen_counter_motion_sensor_motion
+              element: binary_sensor.kitchen_counter_motion_sensor_motion.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: binary_sensor.workspace_room_hue_sensor_motion
+              element: binary_sensor.workspace_room_hue_sensor_motion.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: binary_sensor.living_room_hue_sensor_motion
+              element: binary_sensor.living_room_hue_sensor_motion.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entities:
+                - binary_sensor.bathroom_leak_sensor_wet
+                - binary_sensor.kitchen_leak_sensor_ias_zone
+              state_action:
+                action: call-service
+                service: floorplan.text_set
+                service_data: '${(entity.state === "on") ? "Wet" : "Dry"}'
+            - entity: binary_sensor.bathroom_leak_sensor_wet
+              element: binary_sensor.bathroom_leak_sensor_wet.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-urgent" : "bg-off"}'
+            - entity: binary_sensor.kitchen_leak_sensor_ias_zone
+              element: binary_sensor.kitchen_leak_sensor_ias_zone.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-urgent" : "bg-off"}'
+            - entities:
+                - group.bedroom_lights
+                - group.workspace_lights
+                - group.living_room_lights
+                - group.kitchen_lights
+              state_action:
+                action: call-service
+                service: floorplan.text_set
+                service_data: '${entity.state}'
+            - entities:
+                - binary_sensor.bedroom_window_sensor_center_ias_zone
+                - binary_sensor.living_room_window_sensor_center_ias_zone
+              state_action:
+                action: call-service
+                service: floorplan.text_set
+                service_data: '${(entity.state === "on") ? "Open" : "Closed"}'
+            - entity: binary_sensor.bedroom_window_sensor_center_ias_zone
+              element: binary_sensor.bedroom_window_sensor_center_ias_zone.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entity: binary_sensor.living_room_window_sensor_center_ias_zone
+              element: binary_sensor.living_room_window_sensor_center_ias_zone.bg
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: '${(entity.state === "on") ? "bg-on" : "bg-off"}'
+            - entities:
+                - sensor.bathroom_env_sensor_temperature
+                - sensor.workspace_room_hue_sensor_temperature
+                - sensor.bedroom_hue_sensor_temperature
+                - sensor.living_room_hue_sensor_temperature
+              state_action:
+                action: call-service
+                service: floorplan.text_set
+                service_data: '${entity.state + " °C"}'
+            - element: workspace.pointer
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: >-
+                    ${((states["group.workspace_lights"].state === "on") |
+                    (states["binary_sensor.workspace_room_hue_sensor_motion"].state
+                    === "on")) ? "bg-on" : "bg-off"}
+            - element: bedroom.pointer
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: >-
+                    ${((states["group.bedroom_lights"].state === "on") |
+                    (states["binary_sensor.bedroom_hue_sensor_motion"].state
+                    === "on") |
+                    (states["binary_sensor.bedroom_window_sensor_center_ias_zone"].state
+                    === "on")) ? "bg-on" : "bg-off"}
+            - element: livingroom.pointer
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: >-
+                    ${((states["group.living_room_lights"].state === "on") |
+                    (states["binary_sensor.living_room_hue_sensor_motion"].state
+                    === "on") |
+                    (states["binary_sensor.living_room_window_sensor_center_ias_zone"].state
+                    === "on")) ? "bg-on" : "bg-off"}
+            - element: kitchen.pointer
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: >-
+                    ${((states["group.kitchen_lights"].state === "on") |
+                    (states["binary_sensor.kitchen_counter_motion_sensor_motion"].state
+                    === "on")) ? "bg-on" : "bg-off"}
+            - element: bathroom.pointer
+              state_action:
+                action: call-service
+                service: floorplan.class_set
+                service_data:
+                  class: >-
+                    ${((states["binary_sensor.bathroom_leak_sensor_wet"].state
+                    === "on")) ? "bg-urgent" : "bg-off"}
+
+
+  - theme: Backend-selected
+    title: Bird Watch
+    path: birdwatch
+    type: panel
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: entities
+            entities:
+              - entity: sensor.opensky_flight_in_vicinity
+                type: 'custom:multiple-entity-row'
+                secondary_info:
+                  attribute: movement
+                  hide_unavailable: true
+          - type: conditional
+            conditions:
+              - entity: sensor.opensky_flight_in_vicinity
+                state_not: 'off'
+            card:
+              type: vertical-stack
+              cards:
+                - type: entities
+                  entities:
+                    - entity: sensor.opensky_flight_friendly_name
+                      type: 'custom:multiple-entity-row'
+                      name: ' '
+                      show_state: false
+                      secondary_info:
+                        entity: sensor.opensky_flight_friendly_name
+                - type: horizontal-stack
+                  cards:
+                    - type: vertical-stack
+                      cards:
+                        - type: entity
+                          entity: sensor.opensky_origin_airport_code
+                          name: Origin
+                        - show_name: false
+                          show_icon: false
+                          show_state: true
+                          type: glance
+                          entities:
+                            - entity: sensor.opensky_origin_city
+                              card_mod:
+                                style: |
+                                  div {text-align: left;}
+                          style: |
+                            .entity {padding: 0 !important; margin: -16px 0}
+                    - type: vertical-stack
+                      cards:
+                        - type: entity
+                          entity: sensor.opensky_destination_airport_code
+                          name: Destination
+                        - show_name: false
+                          show_icon: false
+                          show_state: true
+                          type: glance
+                          entities:
+                            - entity: sensor.opensky_destination_city
+                              card_mod:
+                                style: |
+                                  div {text-align: left;}
+                          style: |
+                            .entity {padding: 0 !important; margin: -16px 0}
+                - type: entities
+                  entities:
+                    - entity: sensor.opensky_flight_in_vicinity
+                      type: 'custom:multiple-entity-row'
+                      name: ' '
+                      secondary_info:
+                        attribute: altitude
+              in_card: true
+
+          - type: iframe
+            url: 'https://www.flightradar24.com/40.71,-73.92/12'
+            aspect_ratio: 50%

@@ -1,0 +1,18 @@
+
+host: localhost
+port: 8086
+database: unison
+username: !secret influxdb_user
+password: !secret influxdb_pw
+max_retries: 3
+default_measurement: state
+measurement_attr: entity_id
+include:
+  domains:
+    - sensor
+    - binary_sensor
+    - light
+exclude:
+  entity_globs:
+    - sensor.valhalla_*
+    - sensor.netatmo_brooklyn_*

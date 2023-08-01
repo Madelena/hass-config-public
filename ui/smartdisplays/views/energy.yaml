@@ -1,0 +1,178 @@
+# AMBIENT DASHBOARD
+# Power Usage App
+# Made by Madelena Mak 2022
+
+title: Power Usage
+path: energy
+type: panel
+cards:
+
+  - type: 'custom:mod-card'
+    card_mod: !include ../snippets/slideshow-mod-card-bg.yaml
+
+    card:
+
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: '-1px'
+        grid-template-areas: '"topbar" "tiles"'
+        grid-template-rows: 100% 0
+        grid-template-columns: 100%
+      cards:
+
+
+        # Title Bar
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          view_layout:
+            grid-area: topbar
+            card_margin: 0
+          layout:
+            grid-template-rows: auto
+            grid-template-columns: '12.5vw auto 25vw'
+            margin: 0
+            padding: 0
+          cards:
+
+            - !include ../snippets/topbar-back-button.yaml
+
+            - type: 'custom:button-card'
+              template: slide_page_title
+              name: POWER USAGE
+
+
+        # Tiles
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          layout:
+            grid-template-columns: 100vw
+            margin: -5.33vh 0 0 0
+          view_layout:
+            grid-area: tiles
+          cards:
+
+          - type: 'custom:swipe-card'
+            card_mod:
+              style: |
+                .swiper-slide { width: fit-content !important; }
+                .swiper-wrapper { padding-left: 7.5vw !important; }
+
+            parameters:
+              slidesPerView: auto
+              keyboard:
+                enabled: true
+            cards:
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: SUMMARY
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      grid-template-columns: 50vw
+                      grid-template-rows: 66.66vh
+                      margin: 0
+                    cards:
+                      - !include ../../shared/cards/energy-current-total.yaml
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: ' '
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout:
+                      grid-template-columns: 60vw
+                      grid-template-rows: 66.66vh
+                      margin: 0
+                    cards:
+                      - !include ../../shared/cards/energy-daily-total.yaml
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: KITCHEN
+
+                  - type: 'custom:auto-entities'
+                    filter:
+                      template: |
+                        {% for sensor in expand('group.energy_kitchen', 'group.energy_kitchen_power_strip') -%}
+                          {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='Kitchen ', replace='') | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Counter ', replace='') | regex_replace(find=' Current Consumption', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                          {{
+                            { 'entity': sensor.entity_id,
+                              'type': 'custom:button-card',
+                              'template': ['live_tile_with_graph', 'live_tile_with_state_unit'],
+                              'name': name,
+                              'variables': {
+                                'lower_bound': 0,
+                                'upper_bound': '~200'
+                              }
+                            }
+                          }},
+                        {%- endfor %}
+                    card:
+                      type: 'custom:layout-card'
+                      layout_type: 'custom:grid-layout'
+                      layout_options: !include ../snippets/slideshow-tiles-layout-options.yaml
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 12.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: LIVING ROOM
+
+                  - type: 'custom:auto-entities'
+                    filter:
+                      template: |
+                        {% for sensor in expand('group.energy_living_room') -%}
+                          {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='Living Room ', replace='') | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
+                          {{
+                            { 'entity': sensor.entity_id,
+                              'type': 'custom:button-card',
+                              'template': ['live_tile_with_graph', 'live_tile_with_state_unit'],
+                              'name': name,
+                              'variables': {
+                                'lower_bound': 0,
+                                'upper_bound': '~200'
+                              }
+                            }
+                          }},
+                        {%- endfor %}
+                    card:
+                      type: 'custom:layout-card'
+                      layout_type: 'custom:grid-layout'
+                      layout_options: !include ../snippets/slideshow-tiles-layout-options.yaml
+

@@ -27,41 +27,22 @@ cards:
         entities:
           - entity: sensor.brother_mfc_l2700dw_series
           - entity: sensor.mfc_l2700dw_status
-      - type: 'custom:decluttering-card'
-        template: metro_bar_card_no_icon
-        variables:
-          - entities:
-              - entity: sensor.mfc_l2700dw_black_toner_remaining
-                name: Black
-                color: gray
-          - title: Toner
-      - type: 'custom:decluttering-card'
-        template: metro_bar_card_no_icon
-        variables:
-          - entities:
-              - entity: sensor.mfc_l2700dw_drum_remaining_life
-                name: Drum
-          - title: Remaining Life
-        positions:
-          icon: 'off'
-          name: inside
-          value: inside
-          indicator: 'off'
-        height: 4
-        style: |-
-          bar-card-row {
-            height: 8px;
-            padding-top: 32px;
-          }
-          bar-card-background {
-            background: black;
-          }
-          bar-card-contentbar {
-            margin-top: -16px;
-          }
-          bar-card-name, bar-card-value {
-            margin: 0;
-          }
+
+      - type: entities
+        style: |
+          #states > div > * {overflow: visible !important;}
+        entities:
+          - entity: sensor.mfc_l2700dw_black_toner_remaining
+            type: custom:button-card
+            template: bar_row
+            name: Black Toner
+            variables:
+              bar_color: 128,128,128
+          - entity: sensor.mfc_l2700dw_drum_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Drum
+
       - type: entities
         entities:
           - entity: sensor.brother_mfc_l2700dw_series_uptime
@@ -77,66 +58,72 @@ cards:
         entities:
           - entity: sensor.brother_hl_l3230cdw_series
           - entity: sensor.hl_l3230cdw_status
-      - type: 'custom:decluttering-card'
-        template: metro_bar_card_no_icon
-        variables:
-          - entities:
-              - entity: sensor.brother_hl_l3230cdw_series_c
-                name: Cyan
-                color: cyan
-              - entity: sensor.brother_hl_l3230cdw_series_m
-                name: Magenta
-                color: magenta
-              - entity: sensor.brother_hl_l3230cdw_series_y
-                name: Yellow
-                color: yellow
-              - entity: sensor.brother_hl_l3230cdw_series_bk
-                name: Black
-                color: gray
-          - title: Toner
-      - type: 'custom:decluttering-card'
-        template: metro_bar_card_no_icon
-        variables:
-          - entities:
-              - entity: sensor.hl_l3230cdw_black_drum_remaining_life
-                name: Black Drum
-                color: gray
-              - entity: sensor.hl_l3230cdw_cyan_drum_remaining_life
-                name: Cyan Drum
-                color: cyan
-              - entity: sensor.hl_l3230cdw_magenta_drum_remaining_life
-                name: Magenta Drum
-                color: magenta
-              - entity: sensor.hl_l3230cdw_yellow_drum_remaining_life
-                name: Yellow Drum
-                color: yellow
-              - entity: sensor.hl_l3230cdw_fuser_remaining_life
-                name: Fuser
-              - entity: sensor.hl_l3230cdw_pf_kit_1_remaining_life
-                name: PF Kit 1
-              - entity: sensor.hl_l3230cdw_belt_unit_remaining_life
-                name: Belt Unit
-          - title: Remaining Life
-        positions:
-          icon: 'off'
-          name: inside
-          value: inside
-          indicator: 'off'
-        height: 4
-        style: |-
-          bar-card-row {
-            height: 8px;
-            padding-top: 32px;
-          }
-          bar-card-background {
-            background: black;
-          }
-          bar-card-contentbar {
-            margin-top: -16px;
-          }
-          bar-card-name, bar-card-value {
-            margin: 0;
-          }
+
+      - type: entities
+        style: |
+          #states > div > * {overflow: visible !important;}
+        entities:
+          - entity: sensor.brother_hl_l3230cdw_series_c
+            type: custom:button-card
+            template: bar_row
+            name: Cyan Toner
+            variables:
+              bar_color: 0,255,255
+          - entity: sensor.brother_hl_l3230cdw_series_m
+            type: custom:button-card
+            template: bar_row
+            name: Magenta Toner
+            variables:
+              bar_color: 255,0,255
+          - entity: sensor.brother_hl_l3230cdw_series_y
+            type: custom:button-card
+            template: bar_row
+            name: Yellow Toner
+            variables:
+              bar_color: 255,255,0
+          - entity: sensor.brother_hl_l3230cdw_series_bk
+            type: custom:button-card
+            template: bar_row
+            name: Black Toner
+            variables:
+              bar_color: 128,128,128
+          - entity: sensor.hl_l3230cdw_cyan_drum_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Cyan Drum
+            variables:
+              bar_color: 0,255,255
+          - entity: sensor.hl_l3230cdw_magenta_drum_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Magenta Drum
+            variables:
+              bar_color: 255,0,255
+          - entity: sensor.hl_l3230cdw_yellow_drum_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Yellow Drum
+            variables:
+              bar_color: 255,255,0
+          - entity: sensor.hl_l3230cdw_black_drum_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Black Drum
+            variables:
+              bar_color: 128,128,128
+          - entity: sensor.hl_l3230cdw_fuser_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Fuser
+          - entity: sensor.hl_l3230cdw_pf_kit_1_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: PF Kit 1
+          - entity: sensor.hl_l3230cdw_belt_unit_remaining_life
+            type: custom:button-card
+            template: bar_row
+            name: Belt Unit
+
       - type: entities
         entities:
           - entity: sensor.hl_l3230cdw_page_counter

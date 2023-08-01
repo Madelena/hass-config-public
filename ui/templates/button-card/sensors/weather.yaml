@@ -1,0 +1,197 @@
+
+weather_variables:
+  triggers_update:
+    - sensor.valhalla_hourly_forecast_temperature_rising
+
+  variables:
+    weather_icon: |
+      [[[
+        var weatherIconDict = {
+          'partlycloudy': 'partly-cloudy',
+          'clear-night': 'night'
+        }
+        var weatherIcon = weatherIconDict[entity.state]
+        if (weatherIcon == null) {weatherIcon = entity.state}
+        return "mdi:weather-" + weatherIcon
+      ]]]
+
+    weather_condition: |
+      [[[ 
+        var weatherNameDict = {
+          'partlycloudy': 'Partly Cloudy',
+          'clear-night': 'Clear Night',
+          'lightning-rainy': 'Lightning + Rainy'
+        }
+        var weatherName = weatherNameDict[entity.state]
+        if (weatherName == null) {weatherName = entity.state}
+        return weatherName
+      ]]]
+
+    weather_trend: |
+      [[[
+        var tempForecast = entity.attributes.forecast.map((item) => { return item.temperature }).slice(0, 4)
+        if (states['sensor.valhalla_hourly_forecast_temperature_rising'].state == 'Rising') {
+          return '↗ ' + Math.max(...tempForecast) + '°'                      
+        } else {
+          return '↘ ' + Math.min(...tempForecast) + '°'
+        }
+      ]]]
+
+weather_current_temperature:
+  icon: '[[[ return variables.weather_icon ]]]'
+  name: '[[[ return variables.weather_condition ]]]'
+  label: '[[[ return variables.weather_trend ]]]'
+  state_display: >-
+    [[[ return Math.round(entity.attributes.temperature) + "°"
+    ]]]
+  styles:
+    name:
+      - width: 50%
+    grid:
+      - background: var(--ha-card-background)
+    card:
+      - background: |
+          [[[
+            var temp = parseFloat(entity.attributes.temperature)
+            if (temp >= 25) {
+              return "rgba(var(--rgb-primary-color)," + ((temp - 25) / 7) + ")"
+            }
+            if (temp <= 20) {
+              return "rgba(var(--rgb-primary-color)," + ((20 - temp) / 14) + ")"
+            }
+            return "transparent"
+          ]]]
+
+weather_precipitation:
+  variables:
+    day: |
+      [[[
+        var hour = new Date
+        hour = parseInt( hour.getHours() )
+        if (hour < 4) { return 1 }
+        if (hour < 21) { return 0 } else { return 1 }
+      ]]]
+  name: Precipitation
+  state_display: '[[[ return entity.attributes.forecast[variables.day].precipitation_probability + "%" ]]]'
+  icon: '[[[ return (entity.attributes.forecast[variables.day].precipitation_probability >= 33) ? "mdi:water" : "mdi:water-outline" ]]]'
+  label: '[[[ return entity.attributes.forecast[variables.day].precipitation ]]]'
+  show_units: false
+  styles:
+    grid:
+      - background: '[[[ return "rgba(var(--rgb-primary-color)," + (parseInt(entity.attributes.forecast[variables.day].precipitation_probability)/100) + ")" ]]]'
+    card:
+      - background: var(--ha-card-background)
+
+weather_waqi:
+  state_display: |
+    [[[ return Math.round(entity.state) ]]]
+  name: AQI
+  icon: mdi:molecule
+  label: '[[[ return variables.level ]]]'
+  show_units: false
+  styles:
+    card:
+      - background: |
+          [[[
+            if (entity.state > 300) {
+              return "rgba(var(--rgb-accent-color),1)"
+            } else if (entity.state > 200) {
+              return "rgba(var(--rgb-accent-color),1)"
+            } else if (entity.state > 150) {
+              return "rgba(var(--rgb-primary-color),1)"
+            } else if (entity.state > 100) {
+              return "rgba(var(--rgb-primary-color),.66)"
+            } else if (entity.state > 50) {
+              return "rgba(var(--rgb-primary-color),.33)"
+            } else {
+              return "var(--ha-card-background)"
+            }
+          ]]]
+
+weather_pollen:
+  name: Pollen
+  label: |
+    [[[
+      if (entity.attributes.trend == 'Subsiding') {
+        return '↘ ' + entity.attributes.rating.split("/")[0]                    
+      } else {
+        return '↗ ' + entity.attributes.rating.split("/")[0]
+      }
+    ]]]
+  styles:
+    card:
+      - color: |
+          [[[
+            switch(entity.attributes.rating) {
+              case 'None': return 'var(--disabled-text-color)'
+              case 'Very Low': return 'var(--primary-text-color)'
+              case 'Low': return 'var(--primary-text-color)'
+              default: return 'var(--text-accent-color)'
+            }
+          ]]]
+      - background: |
+          [[[
+            switch(entity.attributes.rating) {
+              case 'Very High': return 'var(--accent-color)'
+              case 'High': return 'var(--primary-color)'
+              case 'Medium/High': return 'rgba(var(--rgb-primary-color), .75)'
+              case 'Medium': return 'rgba(var(--rgb-primary-color), .5)'
+              case 'Low/Medium': return 'rgba(var(--rgb-primary-color), .35)'
+              case 'Low': return 'rgba(var(--rgb-primary-color), .2)'
+              case 'Very Low': 'rgba(var(--rgb-primary-color), .1)'
+              default: return 'var(--ha-card-background)'
+            }
+          ]]]
+    label:
+      - text-transform: capitalize
+
+weather_uv:
+  name: UV
+  icon: mdi:sun-wireless-outline
+  label: '[[[ return entity.attributes.level ]]]'
+  state_display: '[[[ return entity.state.split(" ") ]]]'
+  styles:
+    card:
+      - color: |
+          [[[
+            if (entity.state == 0) { return 'var(--disabled-text-color)' }
+            switch(entity.attributes.level) {
+              case 'Low': return 'var(--primary-text-color)'
+              default: return 'var(--text-accent-color)'
+            }
+          ]]]
+      - background: |
+          [[[
+            if (entity.state == 0) { return 'var(--ha-card-background)' }
+            switch(entity.attributes.level) {
+              case 'Very High': return 'var(--accent-color)'
+              case 'High': return 'var(--primary-color)'
+              case 'Moderate': return 'rgba(var(--rgb-primary-color), .5)'
+              case 'Low': return 'rgba(var(--rgb-primary-color), .25)'
+              default: return 'var(--ha-card-background)'
+            }
+          ]]]
+
+weather_wind:
+  name: '[[[ return states["sensor.wind_strength"].state ]]]'
+  icon: 'mdi:navigation'
+  label: '[[[ return states["sensor.wind_direction"].state ]]]'
+  state_display: '[[[ return Math.round(parseFloat(states["sensor.valhalla_wind"].state) * 0.6213712 * 10) / 10 ]]]'
+  custom_fields:
+    unit: MPH
+  styles:
+    grid:
+      - background: var(--ha-card-background)
+    card:
+      - background: |
+          [[[
+            var wind_speed_mph = parseFloat(states["sensor.valhalla_wind"].state) * 0.6213712
+            if (wind_speed_mph <= 30) { return "transparent" }
+            if (wind_speed_mph <= 54) {
+              return "rgba(var(--rgb-primary-color)," + (wind_speed_mph / 54) + ")"
+            } else {
+              return "var(--accent-color)"
+            }
+          ]]]
+    icon:
+      - transform: '[[[ return "rotate(" + (180 + parseFloat(states["weather.valhalla_hourly"].attributes.wind_bearing)) + "deg)" ]]]'

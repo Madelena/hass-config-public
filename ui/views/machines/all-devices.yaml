@@ -1,0 +1,329 @@
+# MADELENA + THE MACHINES
+# All Devices View
+# Made by Madelena Mak 2023
+
+title: My Machines
+path: devices
+
+type: 'custom:grid-layout'
+layout: !include ../../shared/snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout:
+      grid-template-columns: 'repeat(auto-fill, [col-start] minmax(320px, 1fr) [col-end])'
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        '(max-width: 799.99px)':
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])'
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include ../../shared/snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: markdown
+            content: >
+              # My Machines
+
+              The Internet is {{ states('binary_sensor.ping_cloudflare') }}
+              and {{ states('sensor.asuswrt_devices_connected') }} devices
+              are connected.{%- if states('sensor.speedtest_download') !=
+              'unavailable' -%}{{ ' ' }}The speed is {{ iif(
+              states('sensor.speedtest_download')|int >= 100, 'normal',
+              'slower than usual') }}.{%- endif -%}
+            style:
+              .: |
+                ha-card {
+                  background: none;
+                }
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 600;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
+            view_layout:
+              place-self: center auto
+            cards:
+
+              # - type: 'custom:swipe-card'
+              #   parameters: !include ../../shared/snippets/parameters-page-title-swipe-card.yaml
+              #   style: !include ../../shared/snippets/style-page-title-swipe-card.yaml
+              #   cards:
+
+              #     - type: custom:state-switch
+              #       entity: mediaquery
+              #       states:
+              #         "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+              #           type: 'custom:mushroom-entity-card'
+              #           entity: button.octoprint_pause_job
+              #           name: Pause
+              #           icon: 'mdi:pause'
+              #           icon_color: pink
+              #           secondary_info: none
+              #           style: 'ha-card {background: none;}'
+              #         "(min-width: 800px) and (max-width: 1023.99px)":
+              #           <<: *title-badge-1
+              #           layout: vertical
+
+              #     - type: custom:state-switch
+              #       entity: mediaquery
+              #       states:
+              #         "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+              #           type: 'custom:mushroom-entity-card'
+              #           entity: button.octoprint_resume_job
+              #           name: Resume
+              #           icon: 'mdi:play'
+              #           icon_color: pink
+              #           secondary_info: none
+              #           style: 'ha-card {background: none;}'
+              #         "(min-width: 800px) and (max-width: 1023.99px)":
+              #           <<: *title-badge-2
+              #           layout: vertical
+
+              #     - type: custom:state-switch
+              #       entity: mediaquery
+              #       states:
+              #         "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+              #           type: 'custom:mushroom-entity-card'
+              #           entity: button.octoprint_stop_job
+              #           name: Stop
+              #           icon: 'mdi:stop'
+              #           icon_color: pink
+              #           secondary_info: none
+              #           style: 'ha-card {background: none;}'
+              #         "(min-width: 800px) and (max-width: 1023.99px)":
+              #           <<: *title-badge-3
+              #           layout: vertical
+
+
+      # [Column] Key Devices
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(224px, 1fr) [col-end])'
+          grid-template-rows: auto
+          margin: -1
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: DEVICES
+              label: All Devices
+              link: /ui-machines
+            view_layout:
+              grid-column: 1/-1
+
+          - type: 'custom:state-switch'
+            entity: binary_sensor.octoprint_printing
+            default: "off"
+            states:
+              "on":
+                type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_accent_percent_bar
+                entity: sensor.octoprint_job_percentage
+                name: Genesis
+                state_display: |
+                  [[[
+                    return Math.round(states['sensor.octoprint_job_percentage'].state * 10)/10 + '<span style="font-size: var(--h6-font-size); font-weight: 600; opacity: .66;"> %</span>'
+                  ]]]
+                label: |
+                  [[[
+                    return 'Finishing ' + moment(states['sensor.octoprint_estimated_finish_time'].state).fromNow()
+                  ]]]
+                tap_action:
+                  action: navigate
+                  navigation_path: genesis
+              "off":
+                type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - live_tile_with_last_changed_label
+                entity: sensor.octoprint_current_state
+                name: Genesis
+                state:
+                  - value: Operational
+                    color: 'rgba(var(--rgb-primary-color),.33)'
+                tap_action:
+                  action: navigate
+                  navigation_path: genesis
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_card
+              - live_tile_with_long_state
+              - live_tile_with_last_changed_label
+              - live_tile_with_percent_bar
+            variables:
+              percent: '[[[ return entity.attributes.battery_level ]]]'
+            entity: vacuum.peanut_hamper_s7
+            name: Peanut Hamper
+            state:
+              - value: docked
+                color: 'off'
+              - value: cleaning
+                color: 'rgb(var(--rgb-primary-color),.33)'
+              - value: error
+                color: 'rgba(var(--rgb-primary-color))'
+              - value: idle
+                color: 'rgba(var(--rgb-primary-color))'
+              - value: returning
+                color: 'rgb(var(--rgb-primary-color),.33)'
+              - operator: default
+                color: 'var(--primary-color)'
+            state_display: >-
+              [[[ 
+                if (entity.state == "error") { return entity.attributes.error }
+                if (states['binary_sensor.roborock_vacuum_a15_water_shortage'].state == "on") { return 'Water shortage' }
+                if (states['binary_sensor.roborock_vacuum_a15_water_box_attached'].state == "off") { return 'Bin not present' }
+              ]]]
+            styles:
+              state:
+                - text-transform: capitalize
+              grid:
+                - background: |
+                    [[[
+                      if ((entity.state == "error") || (states['binary_sensor.roborock_vacuum_a15_water_shortage'].state == "on") || (states['binary_sensor.roborock_vacuum_a15_water_box_attached'].state == "off")) {
+                        return 'var(--accent-color)'
+                      } else {
+                        return `linear-gradient(to bottom, var(--accent-color), var(--accent-color)) bottom left / ${variables.percent}% 4px no-repeat,
+                          linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background)) top left / ${variables.percent}% 100% no-repeat, 
+                          linear-gradient(to bottom, var(--ha-card-background), var(--ha-card-background))`
+                      }
+                    ]]]
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+              - live_tile_with_graph_threshold
+            entity: sensor.dorothy_intel_core_i5_750_load_cpu_total
+            name: Dorothy
+            icon: 'mdi:cpu-64-bit'
+            variables:
+              lower_bound: 0
+              upper_bound: 100
+              line_color_lower_bound: 0
+              line_color_upper_bound: 50
+              hours_to_show: 1
+              points_per_hour: 60
+              aggregate_func: max
+            tap_action:
+              action: navigate
+              navigation_path: illinoise
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+              - live_tile_with_graph_threshold
+            entity: sensor.unison_processor_use
+            name: Unison
+            variables:
+              lower_bound: 0
+              upper_bound: 100
+              line_color_lower_bound: 0
+              line_color_upper_bound: 50
+              hours_to_show: 1
+              points_per_hour: 60
+            tap_action:
+              action: navigate
+              navigation_path: unison
+
+
+
+
+      # [Column] Devices
+      - type: vertical-stack
+        view_layout:
+          grid-column: 1/-1
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: CONNECTED DEVICES
+              label: All Devices
+              action: more-info
+              link: all_network_devices
+
+          - type: custom:auto-entities
+            filter:
+              include:
+                - domain: device_tracker
+                  integration: asusrouter
+                  state: home
+                  options:
+                    type: custom:multiple-entity-row
+                    show_state: false
+                    secondary_info:
+                      attribute: connection_time
+                      format: relative
+                    entities:
+                      - attribute: mac
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 300
+                      - attribute: source_type
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 400
+                      - attribute: connection_type
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 400
+                      - attribute: connection_time
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 400
+                      - attribute: rssi
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 400
+                      - attribute: guest
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 300
+                      - attribute: ip
+                        styles:
+                          font-size: var(--body-font-size)
+                          font-weight: 400
+                    card_mod:
+                      style:
+                        hui-generic-entity-row$: |
+                          :host {--mdc-icon-size: 24px;}
+                          .secondary {font-size: var(--h6-font-size); font-weight:
+                          var(--h6-font-weight); text-transform: uppercase;}
+                        .: |
+                          .entities-row {display: grid !important; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr; width: 65%;}
+                          .state, .entity div {font-size: var(--body-font-size) !important;}
+                          
+              exclude: []
+            card:
+              type: entities
+              state_color: true
+            sort:
+              method: friendly_name

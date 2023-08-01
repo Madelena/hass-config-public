@@ -1,0 +1,28 @@
+# Current Weather slide
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+  - slide_with_big_state
+  - slide_with_colored_conditional
+  - weather_variables
+variables:
+  condition: '[[[ return (entity.attributes.forecast.some(e => e.condition.includes("rain"))) ]]]'
+entity: weather.valhalla_2
+show_state: true
+show_label: true
+name: Current Weather
+icon: '[[[ return variables.weather_icon ]]]'
+state_display: '[[[ return variables.weather_condition ]]]'
+label: |
+  [[[ 
+    var precip = states['weather.valhalla_2'].attributes.forecast[0].precipitation_probability
+    if (variables.condition) {
+      return "You " + ((precip > 75) ? "" : "might ") + "need an umbrella. There is a " + precip + "% chance of rain."
+    } else {
+      return ""
+    }
+  ]]]
+styles:
+  state:
+    - text-transform: capitalize

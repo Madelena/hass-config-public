@@ -1,0 +1,46 @@
+living_room_garden_jade_plant:
+  sensors:
+    moisture: sensor.living_room_garden_jade_plant_moisture
+    battery: sensor.living_room_garden_jade_plant_battery
+    temperature: sensor.living_room_garden_jade_plant_temperature
+    conductivity: sensor.living_room_garden_jade_plant_conductivity
+    brightness: sensor.living_room_garden_jade_plant_illuminance
+  min_conductivity: 0
+
+living_room_garden_lavender_tree:
+  sensors:
+    moisture: sensor.living_room_garden_lavender_tree_moisture
+    battery: sensor.living_room_garden_lavender_tree_battery
+    temperature: sensor.living_room_garden_lavender_tree_temperature
+    conductivity: sensor.living_room_garden_lavender_tree_conductivity
+    brightness: sensor.living_room_garden_lavender_tree_illuminance
+  min_moisture: 15
+  min_conductivity: 0
+
+kitchen_garden_cilantro:
+  sensors:
+    moisture: sensor.kitchen_garden_cilantro_moisture
+    battery: sensor.kitchen_garden_cilantro_battery
+    temperature: sensor.kitchen_garden_cilantro_temperature
+    conductivity: sensor.kitchen_garden_cilantro_conductivity
+    brightness: sensor.kitchen_garden_cilantro_illuminance
+  min_conductivity: 0
+
+kitchen_garden_basil:
+  sensors:
+    moisture: sensor.kitchen_garden_basil_moisture
+    battery: sensor.kitchen_garden_basil_battery
+    temperature: sensor.kitchen_garden_basil_temperature
+    conductivity: sensor.kitchen_garden_basil_conductivity
+    brightness: sensor.kitchen_garden_basil_illuminance
+  min_conductivity: 0
+
+bathroom_garden_zamia:
+  sensors:
+    moisture: sensor.bathroom_garden_zamia_moisture
+    battery: sensor.bathroom_garden_zamia_battery
+    temperature: sensor.bathroom_garden_zamia_temperature
+    conductivity: sensor.bathroom_garden_zamia_conductivity
+    brightness: sensor.bathroom_garden_zamia_illuminance
+  min_moisture: 10
+  min_conductivity: 0

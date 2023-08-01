@@ -1,0 +1,9 @@
+# AMBIENT DASHBOARD
+# Clock Page
+# Made by Madelena Mak 2022
+
+title: Clock
+path: clock
+type: panel
+cards:
+  - !include ../slides/big-clock-space-theme.yaml

@@ -1,0 +1,260 @@
+# International Space Station Subview
+# Made by Madelena Mak 2022
+
+title: International Space Station (ISS)
+path: 'binary_sensor.iss'
+subview: true
+
+type: 'custom:grid-layout'
+layout: !include ../../shared/snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: 1fr 1fr
+      grid-template-rows: auto
+      grid-column-gap: 32px
+      margin: -1px
+      mediaquery:
+        '(max-width: 799.99px)':
+          margin: -1
+    view_layout:
+      grid-area: cc
+
+    cards:
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LIVE FEED
+
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: 'Nadir'
+                style: |
+                  ha-card {background: none;}
+                  ha-markdown {
+                    position: absolute;
+                    z-index: 10;
+                    background: var(--ha-card-background);
+                  }
+                  ha-markdown.no-header { padding: 16px !important; }
+
+              - type: iframe
+                url: https://www.youtube.com/embed/itdpuGHAcpg?autoplay=1&mute=1
+                aspect_ratio: 56.25%
+                view_layout:
+                  grid-column: span 2
+
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: 'Forward'
+                style: |
+                  ha-card {background: none;}
+                  ha-markdown {
+                    position: absolute;
+                    z-index: 10;
+                    background: var(--ha-card-background);
+                  }
+                  ha-markdown.no-header { padding: 16px !important; }
+
+              - type: iframe
+                url: https://www.youtube.com/embed/xAieE-QtOeM?autoplay=1&mute=1
+                aspect_ratio: 56.25%
+                view_layout:
+                  grid-column: span 2
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: POSITION + TRAJECTORY
+
+          - type: custom:button-card
+            show_name: false
+            show_icon: false
+            show_state: false
+            custom_fields:
+              iframe:
+                card:
+                  type: iframe
+                  url: https://isstracker.spaceflight.esa.int/
+                  aspect_ratio: 50%
+                  view_layout:
+                    grid-column: span 2
+                  card_mod:
+                    style: |
+                      [[[
+                        const scale = this.offsetWidth / 625
+                        return "iframe {transform: scale(" + scale + "); transform-origin: top;}"
+                      ]]]
+            styles:
+              card:
+                - padding: 0
+              grid:
+                - grid-template-areas: "iframe"
+                - grid-template-rows: |
+                    [[[
+                      console.log(this.offsetWidth)
+                      return this.offsetWidth / 625 * 310 + "px"
+                    ]]]
+                - grid-template-columns: 
+              custom_fields:
+                iframe:
+                  - position: absolute
+                  - inset: 0 0 0 0
+
+
+          - type: horizontal-stack
+            cards:
+
+              - type: vertical-stack
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: large_tile_card
+                    entity: sensor.iss_nearby_place
+                    variables:
+                      aspect_ratio: none
+                    name: Currently Above
+                    state_display: '[[[ if (entity.state == "unknown" || entity.state == "") { return states["sensor.iss_nearby_ocean"].state } ]]]'
+                    
+                  - type: custom:button-card
+                    template:
+                      - live_tile_card
+                      - live_tile_with_picture
+                    name: ''
+                    color_type: icon
+                    custom_fields:
+                      picture:
+                        card:
+                          type: iframe
+                          url: http://www.satflare.com/w3d/?q=25544
+                          aspect_ratio: 100%
+                          card_mod:
+                            style: >
+                              :host {margin-bottom: 16px !important;}
+                              ha-card {border-radius: 50%;  border: 2px solid
+                              rgba(255,255,255,.1);}
+                    variables:
+                      picture: none
+                    tap_action:
+                      action: none
+
+              - type: vertical-stack
+                cards:
+
+                  - type: horizontal-stack
+                    cards:
+
+                      - type: 'custom:card-templater'
+                        card:
+                          type: entity
+                          entity: sensor.iss
+                          name: Latitude
+                          icon: mdi:web
+                        entities:
+                          - entity: sensor.iss
+                            state_template: >
+                              {{ state_attr('sensor.iss', 'latitude') | round(2) }}
+
+                      - type: 'custom:card-templater'
+                        card:
+                          type: entity
+                          entity: sensor.iss
+                          name: Longitude
+                          icon: mdi:web
+                        entities:
+                          - entity: sensor.iss
+                            state_template: >
+                              {{ state_attr('sensor.iss', 'longitude') | round(2) }}
+
+                  - type: 'custom:decluttering-card'
+                    template: multi_graph_card
+                    variables:
+                      - entities:
+                          - entity: sensor.iss_velocity
+                      - title: Velocity
+                      - height: 120
+                      - icon: mdi:speedometer
+                      - hours_to_show: 8
+                      - points_per_hour: 12
+                      - lower_bound: ~50000
+
+                  - type: 'custom:decluttering-card'
+                    template: multi_graph_card
+                    variables:
+                      - entities:
+                          - entity: sensor.iss_altitude
+                      - title: Altitude
+                      - height: 120
+                      - icon: mdi:image-filter-hdr
+                      - hours_to_show: 8
+                      - points_per_hour: 12
+
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: CREW
+                  
+          - type: custom:list-card
+            entity: sensor.nasa_iss_station_report
+            title: Captain's Log
+            feed_attribute: entries
+            row_limit: 5
+            columns:
+              - field: published
+                style:
+                  - display: inline-block
+                  - font-size: var(--small-font-size)
+                  - padding: 0 0 2px
+              - field: author
+                prefix: '&nbsp;&bull; '
+                style:
+                  - display: inline-block
+                  - font-size: var(--small-font-size)
+                  - padding: 0 0 2px
+              - field: title
+                add_link: link
+                style:
+                  - display: block
+                  - font-weight: bold
+                  - font-size: var(--h5-font-size)
+                  - line-height: 1.5
+                  - padding: 0 0 4px 0
+              - field: summary
+                style:
+                  - display: block
+                  - padding: 0
+                  - padding: 0 0 16px
+            style: >
+              table tbody:first-child { display: none; }
+              tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+              background: none; }
+              td.title a {font-weight: 600;}
+            view_layout:
+              grid-column: span 2
+
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include ../../shared/snippets/layout-live-tile.yaml
+            cards:
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile
+                entity: sensor.iss_2
+                name: Crew

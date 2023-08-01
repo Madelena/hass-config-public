@@ -1,0 +1,20 @@
+type: 'custom:button-card'
+template: slide_basic
+entity: sensor.notify_nyc
+variables:
+  slide: 0
+show_state: true
+show_label: true
+name: |
+  [[[
+    return "Notify NYC - " + moment(entity.attributes.entries[variables.slide].published, "DD/MMM/YYYY HH:mm:ss").fromNow()
+  ]]]
+state_display: >-
+  [[[ return
+  entity.attributes.entries[variables.slide].title.replaceAll("Notify NYC
+  - ", "") ]]]
+label: >-
+  [[[ return
+  entity.attributes.entries[variables.slide].summary.replaceAll(/Notification
+  issued .*/g, "").replaceAll(/For more information, .*/g,
+  "").replaceAll(/To view this message in.*/g, "") ]]]

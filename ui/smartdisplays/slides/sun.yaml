@@ -1,0 +1,11 @@
+# Sunrise / Sunset Times slide
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+  - sun_variables
+state_display: '[[[ return variables.next_state + " in " + variables.time_to_next_sun + (variables.time_to_next_sun_unit == "hr" ? " hours" : " minutes") ]]]'
+show_name: false
+show_label: true
+label: '[[[ return "at " + variables.next_sun_time ]]]'
+icon: '[[[ return variables.next_state_icon ]]]'

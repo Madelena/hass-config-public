@@ -1,0 +1,12 @@
+# GasBuddy Average Gas Price card
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_graph
+  - slide_with_state_unit
+entity: sensor.gasbuddy_average_gas_price
+name: Gas Price Average
+variables:
+  hours_to_show: 120
+  points_per_hour: .125

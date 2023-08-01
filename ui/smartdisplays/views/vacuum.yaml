@@ -1,0 +1,197 @@
+# AMBIENT DASHBOARD
+# Vacuum App
+# Made by Madelena Mak 2022
+
+title: Vacuum
+path: vacuum
+type: panel
+cards:
+
+  - type: 'custom:mod-card'
+    card_mod: !include ../snippets/slideshow-mod-card-bg.yaml
+    card:
+
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: '-1px'
+        grid-template-areas: '"topbar" "tiles"'
+        grid-template-rows: min-content auto
+        grid-template-columns: 100%
+      cards:
+
+
+        # Title Bar
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          view_layout:
+            grid-area: topbar
+            card_margin: 0
+          layout:
+            grid-template-rows: auto
+            grid-template-columns: '12.5vw auto 25vw'
+            margin: 0
+            padding: 0
+          cards:
+
+            - !include ../snippets/topbar-back-button.yaml
+
+            - type: 'custom:button-card'
+              template: slide_page_title
+              name: PEANUT HAMPER
+
+
+        # Tiles
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          layout:
+            grid-template-columns: 100vw
+            margin: -5.33vh 0 0 0
+          view_layout:
+            grid-area: tiles
+          cards:
+
+          - type: 'custom:swipe-card'
+            card_mod:
+              style: |
+                .swiper-slide { width: fit-content !important; }
+                .swiper-wrapper { padding-left: 7.5vw !important; }
+
+            parameters:
+              autoHeight: true
+              slidesPerView: auto
+              keyboard:
+                enabled: true
+            cards:
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: STATUS
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards:
+                    
+                      - type: 'custom:vacuum-card'
+                        entity: vacuum.peanut_hamper_s7
+                        view_layout:
+                          grid-row: span 2
+                          grid-column: span 2
+                        image: default
+                        show_toolbar: false
+                        show_status: true
+                        compact_view: false
+                        card_mod:
+                          style: >
+                            .preview {font-size: var(--body-font-size); font-weight:
+                            normal;} .metadata {position: absolute; top: 0;
+                            text-align: left; padding: 0 16px;} .vacuum-name
+                            {font-size: var(--card-title-font-size) !important;
+                            font-weight: 600 !important;} .status {justify-content:
+                            flex-start !important;} .status-text {margin-left: 0
+                            !important;} ha-card .header {padding-top: 0 !important;
+                            height: auto !important;} .battery {padding: 12px 16px
+                            !important;} .stats-block {text-align: left !important;
+                            padding: 8px 16px;} .vacuum {filter: invert(1);} ha-card
+                            {--vc-background: none; --vc-spacing: 16px;} .tips
+                            {flex-direction: row-reverse;} .toolbar {background:
+                            none !important;}
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_state_countdown
+                        entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                        name: Clean Entire Apartment
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_state_countdown
+                        entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                        name: Clean Kitchen
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: VACUUM MAP
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout_options:
+                      grid-template-columns: 66.66vh
+                      grid-template-rows: 66.66vh
+                      margin: 0
+                    cards:
+                      - type: picture-entity
+                        entity: camera.peanut_hamper_s7
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 12.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: MAINTENANCE
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards:
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_state_countdown
+                        entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                        name: Clean Entire Apartment
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_state_countdown
+                        entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                        name: Clean Entire Apartment
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_state_countdown
+                        entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                        name: Clean Entire Apartment
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_state_countdown
+                        entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                        name: Clean Entire Apartment
+

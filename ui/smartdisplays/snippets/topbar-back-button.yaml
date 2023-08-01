@@ -1,0 +1,21 @@
+# Back Button
+
+type: 'custom:button-card'
+icon: mdi:arrow-left-circle
+aspect_ratio: 1/1
+styles:
+  card:
+    - background: none
+    - width: 15vw
+    - height: 15vw
+    - z-index: 100
+    - padding: 0
+  icon:
+    - height: 9vw
+    - color: var(--primary-text-color)
+tap_action:
+  action: navigate
+  navigation_path: slides
+hold_action:
+  action: navigate
+  navigation_path: '[[[ window.history.back() ]]]'

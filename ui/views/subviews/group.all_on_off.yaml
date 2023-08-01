@@ -1,0 +1,31 @@
+# All On Off Switches Subview
+# Made by Madelena Mak 2022
+
+title: All On Off Switches
+path: 'group.all-on-off'
+type: panel
+subview: true
+cards: 
+
+  - type: 'custom:auto-entities'
+    filter:
+      include:
+        - group: group.all_on_off
+          options:
+            type: 'custom:button-card'
+            template:
+              - live_tile_card
+              - require_confirmation
+            entity: this.entity_id
+        - type: 'custom:button-card'
+          template: live_tile_card
+          entity: switch.kitchen_uv_light
+      exclude: []
+    sort:
+      method: friendly_name
+    card:
+      type: 'custom:layout-card'
+      layout_type: horizontal
+      layout_options:
+        width: 100
+        max_cols: 6

@@ -44,7 +44,11 @@
               {%- if due > 0 -%}
                 {%- if (due < diff) -%}
                 {%- else -%}
-                  {%- if (due < diff + (due / 4)) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}
+                  {%- if ((due / 4) > 7) -%}
+                    {%- if (due < diff + 7) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}  
+                  {%- else -%}
+                    {%- if (due < diff + (due / 4)) -%}{%- set chore_todo.entities = chore_todo.entities + [chore.entity_id] -%}{%- endif -%}
+                  {%- endif -%}
                 {%- endif -%}
               {%- endif -%}
             {%- endif %}

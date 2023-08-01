@@ -1,4 +1,85 @@
 
+
+- name: International Space Station
+  resource: https://api.wheretheiss.at/v1/satellites/25544
+  scan_interval: 30
+  sensor:
+
+    - unique_id: iss
+      name: International Space Station
+      value_template: 'OK'
+      attributes:
+        - name: latitude
+          value_template: '{{ value_json.latitude }}'
+        - name: longitude
+          value_template: '{{ value_json.longitude }}'
+        - name: altitude
+          value_template: '{{ value_json.altitude }}'
+        - name: velocity
+          value_template: '{{ value_json.velocity }}'
+        - name: visibility
+          value_template: '{{ value_json.visibility }}'
+
+    - unique_id: iss_velocity
+      name: International Space Station - Velocity
+      value_template: '{{ value_json.velocity }}'
+      unit_of_measurement: "km/h"
+
+    - unique_id: iss_altitude
+      name: International Space Station - Altitude
+      value_template: '{{ value_json.altitude }}'
+      unit_of_measurement: "km"
+
+
+- name: NOAA Space Weather - Noon 10.7cm Radio Flux
+  resource: https://services.swpc.noaa.gov/products/summary/10cm-flux.json
+  scan_interval: 3600
+  sensor:
+    - unique_id: noaa_space_weather_noon_10_7cm_radio_flux
+      name: NOAA Space Weather - Noon 10.7cm Radio Flux
+      value_template: "{{ value_json.Flux | int }}"
+      unit_of_measurement: "sfu"
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json.TimeStamp }}'
+
+- name: NOAA Space Weather - Solar Wind Magnetic Fields - Bt
+  resource: https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json
+  scan_interval: 3600
+  sensor:
+    - unique_id: noaa_space_weather_solar_wind_magnetic_fields_bt
+      name: NOAA Space Weather - Solar Wind Magnetic Fields - Bt
+      value_template: "{{ value_json.Bt | int }}"
+      unit_of_measurement: "nT"
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json.TimeStamp }}'
+
+- name: NOAA Space Weather - Solar Wind Magnetic Fields - Bz
+  resource: https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json
+  scan_interval: 3600
+  sensor:
+    - unique_id: noaa_space_weather_solar_wind_magnetic_fields_bz
+      name: NOAA Space Weather - Solar Wind Magnetic Fields - Bz
+      value_template: "{{ value_json.Bz | int }}"
+      unit_of_measurement: "nT"
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json.TimeStamp }}'
+
+- name: NOAA Space Weather - Solar Wind Speed
+  resource: https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json
+  scan_interval: 3600
+  sensor:
+    - unique_id: noaa_space_weather_solar_wind_speed
+      name: NOAA Space Weather - Solar Wind Speed
+      value_template: "{{ value_json.WindSpeed | int }}"
+      unit_of_measurement: "km/sec"
+      attributes:
+        - name: Timestamp
+          value_template: '{{ value_json.TimeStamp }}'
+
+
 # Split NOAA space weather condition scales (R/S/G) JSON into sensors.
 
 - name: NOAA Space Weather - Conditions

@@ -1,0 +1,24 @@
+type: 'custom:list-card'
+entity: sensor.nws_alert_rss_feed
+feed_attribute: entries
+columns:
+  - title: ''
+    field: title
+    style:
+      - display: block
+      - font-weight: 600
+      - font-size: var(--h5-font-size)
+      - line-height: 1.5
+      - padding: 16px 0 4px
+  - title: ''
+    field: summary
+    style:
+      - display: block
+      - padding: 0
+style: >
+  xha-card { background: none; }
+
+  table tbody:first-child { display: none; }
+
+  tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+  background: none; }

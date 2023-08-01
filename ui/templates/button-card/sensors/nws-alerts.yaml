@@ -15,17 +15,19 @@ nws_alerts:
       return " "
     ]]]'
   label: '[[[
-      if (entity.state == 0) { return "No Active Alerts" }
+      if (entity.state == 0) { return " " }
       if ( entity.state > (variables.slide) ) { return entity.attributes.entries[variables.slide].summary }
       return " "
     ]]]'
-  state:
-    - value: 1
-      operator: '>='
-      color: var(--primary-color)
-    - value: 0
-      operator: ==
-      color: var(--ha-card-background)
-      styles:
-        card:
-          - color: var(--disabled-text-color)
+  styles:
+    card:
+      - color: |
+          [[[
+            if (entity.attributes.entries[0].title.includes('no active')) { return "var(--disabled-text-color)" }
+            if (entity.state >= 1) { return "var(--primary-text-color)" } else { return "var(--disabled-text-color)" }
+          ]]]
+      - background: |
+          [[[
+            if (entity.attributes.entries[0].title.includes('no active')) { return "var(--ha-card-background)" }
+            if (entity.state >= 1) { return "var(--primary-color)" } else { return "var(--ha-card-background)" }
+          ]]]

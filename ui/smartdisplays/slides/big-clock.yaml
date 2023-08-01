@@ -1,0 +1,30 @@
+# Big Ass Clock
+
+type: 'custom:button-card'
+template: slide_basic
+show_state: true
+show_label: true
+triggers_update: all
+name: " "
+state_display: >-
+  [[[ return moment().format("H:mm") ]]]
+label: >-
+  [[[ return moment().format("dddd, MMMM D") ]]]
+styles:
+  grid:
+    - grid-template-areas: '""n" "s" "l"'
+    - grid-template-columns: auto
+    - grid-template-rows: auto 60vh auto
+  card:
+    - background: var(--accent-color)
+  state:
+    - font-size: 60vh
+    - justify-content: center
+    - place-self: center
+    - padding: 0
+  label:
+    - font-size: 10vh
+    - font-weight: 700
+    - text-transform: uppercase
+    - place-self: start center
+    - padding: 2vh 0 0

@@ -1,0 +1,70 @@
+
+db_url: !secret mariadb_url
+purge_keep_days: 30
+commit_interval: 30
+exclude:
+  domains:
+    - automation
+    - updater
+    - button
+    - camera
+    - device_tracker
+    - input_text
+    - number
+    - scene
+    - weather
+  entities:
+    - sun.sun
+    - binary_sensor.backups_stale
+    - sensor.noaa_tides
+    - sensor.moon
+    - sensor.load_15m
+    - sensor.load_5m
+    - sensor.zero
+    - sensor.asuswrt_load_avg_5m
+    - sensor.asuswrt_load_avg_10m
+    - sensor.notify_nyc
+  entity_globs:
+    - binary_sensor.nyc311_*
+    - binary_sensor.octoprint_*
+    - media_player.plex_*
+    - sensor.citi_bike_nyc_*
+    - sensor.*_battery
+    - sensor.*_today_s_consumption
+    - sensor.*_total_consumption
+    - sensor.*_smartenergy_metering_summation_delivered
+    - sensor.load_*
+    - sensor.mta_subway_*
+    - sensor.nws_*
+    - sensor.nzbget_*
+    - sensor.sonarr_*
+    - sensor.waqi_*_humidity
+    - sensor.waqi_*_temperature
+    - sensor.waqi_*_wind_speed
+    - sensor.zuneth_*
+    - sensor.nullaby_*
+    - switch.adguard_*
+    - switch.*_do_not_disturb_switch
+    - switch.*_repeat_switch
+    - switch.*_shuffle_switch
+    - sensor.lga_*
+    - sensor.jfk_*
+    - sensor.gasbuddy_station_*
+    - sensor.tgtg_*
+    - sensor.goodserviceio_*
+    - sensor.last_fm_*
+    - sensor.anniversary_*
+    - sensor.*_glances_*
+    - sensor.etherealm_*
+include:
+  entities:
+    - weather.valhalla_2
+    - sensor.valhalla_apparent_temperature
+    - sensor.valhalla_cloud_cover
+    - sensor.valhalla_ups_battery_runtime
+    - sensor.valhalla_ups_load
+    - sensor.valhalla_wind
+    - sensor.valhalla_plug_smartenergy_metering
+    - sensor.unison_glances_ram_used_percent
+    - sensor.etherealm_sessionstate
+    - sensor.nzbget_speed

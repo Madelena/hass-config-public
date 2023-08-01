@@ -1,0 +1,114 @@
+
+# Open UV Forecast
+# It looks like the number of results will change according to the number of hours with daylight, so this is going to be tricky to extract.
+
+- name: OpenUV Forecast
+  resource: !secret openuv_url
+  scan_interval: 14400
+  headers:
+    x-access-token: !secret openuv_key
+    Content-Type: application/json
+  sensor:
+
+    - unique_id: openuv_forecast
+      name: OpenUV - Hourly Forecast
+      value_template: OK
+      icon: mdi:weather-sunny-alert
+      attributes:
+        - name: result
+          value_template: '{{ value_json.result }}'
+
+
+# OpenMeteo Air Quality Hourly Forecast
+# Another bizarre API that returns a giant array for each weather variable.
+
+- name: OpenMeteo Forecast
+  resource: !secret openmeteo_api
+  scan_interval: 14400
+  sensor:
+
+    - unique_id: openmeteo_aq_forecast
+      name: OpenMeteo - Hourly Forecast
+      value_template: OK
+      icon: mdi:weather-windy
+      attributes:
+        - name: time
+          value_template: '{{ value_json.hourly.time }}'
+        - name: us_aqi_pm2_5
+          value_template: '{{ value_json.hourly.us_aqi_pm2_5 }}'
+        - name: us_aqi_pm10
+          value_template: '{{ value_json.hourly.us_aqi_pm10 }}'
+        - name: us_aqi_o3
+          value_template: '{{ value_json.hourly.us_aqi_o3 }}'
+
+
+- name: WAQI Forecast
+  resource: !secret waqi_api
+  scan_interval: 14400
+  sensor:
+
+    - unique_id: waqi_forecast_ozone
+      name: WAQI - Daily Forecast - Ozone
+      value_template: '{{ value_json.data.iaqi.o3.v }}'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 2d_ago
+          value_template: '{{ value_json.data.forecast.daily.o3[0].avg }}'
+        - name: 1d_ago
+          value_template: '{{ value_json.data.forecast.daily.o3[1].avg }}'
+        - name: 0d
+          value_template: '{{ value_json.data.forecast.daily.o3[2].avg }}'
+        - name: 1d
+          value_template: '{{ value_json.data.forecast.daily.o3[3].avg }}'
+        - name: 2d
+          value_template: '{{ value_json.data.forecast.daily.o3[4].avg }}'
+        - name: 3d
+          value_template: '{{ value_json.data.forecast.daily.o3[5].avg }}'
+        - name: 4d
+          value_template: '{{ value_json.data.forecast.daily.o3[6].avg }}'
+        - name: 5d
+          value_template: '{{ value_json.data.forecast.daily.o3[7].avg }}'
+
+    - unique_id: waqi_forecast_pm10
+      name: WAQI - Daily Forecast - PM10
+      value_template: '{{ value_json.data.iaqi.pm10.v }}'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 2d_ago
+          value_template: '{{ value_json.data.forecast.daily.pm10[0].avg }}'
+        - name: 1d_ago
+          value_template: '{{ value_json.data.forecast.daily.pm10[1].avg }}'
+        - name: 0d
+          value_template: '{{ value_json.data.forecast.daily.pm10[2].avg }}'
+        - name: 1d
+          value_template: '{{ value_json.data.forecast.daily.pm10[3].avg }}'
+        - name: 2d
+          value_template: '{{ value_json.data.forecast.daily.pm10[4].avg }}'
+        - name: 3d
+          value_template: '{{ value_json.data.forecast.daily.pm10[5].avg }}'
+        - name: 4d
+          value_template: '{{ value_json.data.forecast.daily.pm10[6].avg }}'
+        - name: 5d
+          value_template: '{{ value_json.data.forecast.daily.pm10[7].avg }}'
+
+    - unique_id: waqi_forecast_pm25
+      name: WAQI - Daily Forecast - PM2.5
+      value_template: '{{ value_json.data.iaqi.pm25.v }}'
+      icon: mdi:weather-windy
+      attributes:
+        - name: 2d_ago
+          value_template: '{{ value_json.data.forecast.daily.pm25[0].avg }}'
+        - name: 1d_ago
+          value_template: '{{ value_json.data.forecast.daily.pm25[1].avg }}'
+        - name: 0d
+          value_template: '{{ value_json.data.forecast.daily.pm25[2].avg }}'
+        - name: 1d
+          value_template: '{{ value_json.data.forecast.daily.pm25[3].avg }}'
+        - name: 2d
+          value_template: '{{ value_json.data.forecast.daily.pm25[4].avg }}'
+        - name: 3d
+          value_template: '{{ value_json.data.forecast.daily.pm25[5].avg }}'
+        - name: 4d
+          value_template: '{{ value_json.data.forecast.daily.pm25[6].avg }}'
+        - name: 5d
+          value_template: '{{ value_json.data.forecast.daily.pm25[7].avg }}'

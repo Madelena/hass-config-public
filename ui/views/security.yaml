@@ -1,0 +1,348 @@
+# MAXIMALIST DASHBOARD
+# Security View
+# Made by Madelena Mak 2022
+
+title: Security
+path: security
+
+visible:
+  - user: 7b356b6eaf634ffe8feb44cdb4a2c3d8
+  - user: 2d5a55df40354c07ac28bb75a217c2b8
+
+
+type: 'custom:grid-layout'
+layout: !include ../shared/snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout: !include ../shared/snippets/layout-page-columns.yaml
+    view_layout:
+      grid-area: cc
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include ../shared/snippets/layout-page-title-with-2-badges.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+
+          - type: markdown
+            style: !include ../shared/snippets/style-markdown-page-title.yaml
+            content: >
+              # Security
+
+              Front door is {{ iif(
+              is_state('binary_sensor.front_door_contact_sensor_ias_zone',
+              'on'), 'open', 'closed') }} and bathroom is {{ iif(
+              is_state('binary_sensor.bathroom_leak_sensor_wet', 'on'),
+              'wet', 'dry') }}.
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
+            view_layout:
+              place-self: center auto
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
+                cards:
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-entity-card'
+                        entity: binary_sensor.ping_dorothy_illinoise
+                        name: Sighthound ↗
+                        icon: 'mdi:dog-side'
+                        icon_color: pink
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        tap_action:
+                          action: url
+                          url_path: !secret sighthound_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-template-card'
+                        primary: Ring Cloud ↗
+                        icon: 'mdi:doorbell-video'
+                        icon_color: pink
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        tap_action:
+                          action: url
+                          url_path: 'https://account.ring.com/account/dashboard'
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
+
+
+      # [Column] Front Door
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: FRONT DOOR
+
+          - show_state: false
+            show_name: false
+            camera_view: auto
+            type: picture-entity
+            entity: camera.front_door_camera
+            name: Front Door Ring
+            style: |
+              hui-image {
+                aspect-ratio: 16/9;
+              }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: lock.front_door_lock
+                name: Lock
+                state:
+                  - value: "unlocked"
+                    color: var(--primary-color)
+                  - value: "locked"
+                    color: var(--ha-card-background)
+                variables:
+                  aspect_ratio: 2/1
+                view_layout:
+                  grid-column: span 2              
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.front_door_switchbot_contact_sensor_door_open
+                name: Contact
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: sensor.front_door_camera_last_motion
+                name: Motion Outside
+                show_state: false
+                styles:
+                  card:
+                    - background-color: var(--ha-card-background)
+                    - background-image: |
+                        [[[
+                          var diff = (new Date() - new Date(entity.state)) / 1000 / 60
+                          if (diff > 360) { return '' }
+                          var opacity = 1 - (diff / 360)
+                          return 'linear-gradient( rgba(var(--rgb-primary-color),' + opacity + '), rgba(var(--rgb-primary-color),' + opacity + '))'
+                        ]]]
+                  label:
+                    - padding-top: 8px
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.front_door_switchbot_contact_sensor_motion_detected
+                name: Motion Inside
+                show_state: false
+                styles:
+                  label:
+                    - padding-top: 8px
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                entity: sensor.front_door_camera_last_ding
+                name: Last Ding
+                color: var(--primary-background-color)
+                state_display: |
+                  [[[
+                    var diff = (new Date() - new Date(entity.state)) / 1000 / 60
+                    if (isNaN(diff)) { return 'Unknown' }
+                    var display = Math.round(diff / 60 / 24) + ' days ago'
+                    if (diff < 2) { display = 'Just now' }
+                    else if (diff < 90) { display = Math.round(diff) + ' min ago' }
+                    else if (diff < 2160) { display = Math.round(diff / 60) + ' hours ago' }
+                    return display
+                  ]]]
+                styles:
+                  card:
+                    - background-color: var(--ha-card-background)
+                    - background-image: |
+                        [[[
+                          var diff = (new Date() - new Date(entity.state)) / 1000 / 60
+                          if (diff > 360) { return '' }
+                          var opacity = 1 - (diff / 360)
+                          return 'linear-gradient( rgba(var(--rgb-primary-color),' + opacity + '), rgba(var(--rgb-primary-color),' + opacity + '))'
+                        ]]]
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_percent_bar
+                entity: sensor.front_door_switchbot_contact_sensor_battery
+                name: Contact Sensor Battery
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_percent_bar
+                entity: sensor.front_door_camera_battery
+                name: Camera Battery
+
+            layout:
+              grid-template-columns: 1fr 1fr 1fr
+              grid-template-rows: auto
+              margin: 0
+
+
+      # [Column] Living Room
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: LIVING ROOM
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1        
+            cards: !include ../shared/secret/security-living-room.yaml
+
+
+      # [Column] Kitchen
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: KITCHEN
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1        
+            cards: !include ../shared/secret/security-kitchen.yaml
+
+
+      # [Column] Windows
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: WINDOWS
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards:
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.living_room_window_sensor_center_ias_zone
+                name: Living Rm Center
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.living_room_window_sensor_right_ias_zone
+                name: Living Rm Right
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.bedroom_window_sensor_left_ias_zone
+                name: Bedroom Left
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_state_countdown
+                entity: binary_sensor.bedroom_window_sensor_center_ias_zone
+                name: Bedroom Center
+
+          - type: history-graph
+            entities:
+              - entity: binary_sensor.living_room_window_sensor_center_ias_zone
+                name: Living Rm C
+              - entity: binary_sensor.living_room_window_sensor_right_ias_zone
+                name: Living Rm R
+              - entity: binary_sensor.bedroom_window_sensor_left_ias_zone
+                name: Bedroom L
+              - entity: binary_sensor.bedroom_window_sensor_center_ias_zone
+                name: Bedroom C
+
+
+      # [Column] Bathroom
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BATHROOM
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1        
+            cards: !include ../shared/secret/security-bathroom.yaml
+
+
+      # [Column] Bedroom + Workspace
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: -1        
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BEDROOM + WORKSPACE
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: -1        
+            cards: !include ../shared/secret/security-bedroom.yaml

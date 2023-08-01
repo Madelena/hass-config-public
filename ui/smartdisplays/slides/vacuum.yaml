@@ -1,0 +1,11 @@
+# Vacuum slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_colored_conditional
+variables:
+  condition: '[[[ return (entity.attributes.bin_full) ]]]'
+entity: vacuum.peanut_hamper
+show_label: true
+label: '[[[ if (entity.attributes.bin_full) { return "The bin is full." } ]]]'

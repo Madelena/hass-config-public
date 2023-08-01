@@ -18,3 +18,9 @@
 #   token: !secret waqi_token
 #   locations:
 #     - New York
+
+# - platform: worldtidesinfo
+#   api_key: !secret worldtidesinfo_api_key
+
+- platform: illuminance
+  entity_id: sensor.valhalla_cloud_cover

@@ -1,0 +1,388 @@
+
+type: 'custom:layout-card'
+layout_type: 'custom:grid-layout'
+layout:
+  grid-template-columns: auto
+  margin: 0 16px 32px
+cards:
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto min-content
+      grid-template-rows: auto
+      mediaquery:
+        '(max-width: 799.99px)':
+          grid-template-columns: 1fr
+      margin: -1px
+    cards:
+
+      - type: 'custom:button-card'
+        name: Dorothy
+        template: title_card_with_icon
+        icon: mdi:face-woman-shimmer
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:horizontal-layout'
+        view_layout:
+          place-self: center
+        cards:
+
+          - type: 'custom:mushroom-template-card'
+            primary: Remote
+            secondary: "{{ states('input_boolean.terpsichora_show_remote') }}"
+            icon: "{{ iif( states('input_boolean.terpsichora_show_remote') == 'on', 'mdi:remote-tv', 'mdi:remote-tv-off') }}"
+            icon_color: "{{ iif( states('input_boolean.terpsichora_show_remote') == 'on', 'pink', 'grey') }}"
+            style: 'ha-card {background: none;}'
+            tap_action:
+              action: call-service
+              service: input_boolean.toggle
+              target:
+                entity_id: input_boolean.terpsichora_show_remote
+
+
+  - type: 'custom:harmony-card'
+    entity: remote.bedroom_harmony_hub
+    volume_entity: media_player.terpsichora
+    activities:
+      - name: Watch Chromecast
+        device: Google Media Player
+        volume_entity: media_player.birch_mirror
+      - name: Play PS4
+        device: Sony PS4
+      - name: Watch PC
+        device: Dorothy
+      - name: Listen to Music
+        device: DAOK H951BT
+        hide_keyPad: true
+      - name: Listen to USB
+        device: DAOK H951BT
+        hide_keyPad: true
+    theme: amoled
+    view_layout:
+      margin: -1px
+    card_mod:
+      style:
+        $: |
+          :host {
+            background: black !important;
+          }
+        .: >
+          ha-card .activities {
+            xflex-flow: column;
+            align-items: flex-start;
+          }
+
+          .card-content {
+            padding: 0 0 16px 0 !important;
+          }
+
+          .activities > mwc-button { flex-grow: unset !important; }
+
+          ha-card .activities mwc-button {
+            --mdc-button-outline-color: var(--primary-color);
+            --mdc-theme-primary: white;
+            --mdc-typography-button-font-weight: 600;
+            --mdc-typography-button-font-size: 14px;
+            --mdc-button-outline-width: 0 0 2px 0;
+            --mdc-shape-small: 0;
+            --mdc-typography-button-letter-spacing: 0;
+            --mdc-button-horizontal-padding: 16px;
+            margin: 0;
+          }
+
+          ha-card .volume-controls, ha-card .play-pause, ha-card
+          .remote, ha-card
+
+          .xbox-buttons {
+            display: none;
+          }
+        mwc-button:
+          $: |
+            .mdc-button { height: auto !important; }
+            .mdc-button {
+              padding: 16px 16px !important;
+              min-width: 0 !important;
+            }
+
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto min-content
+    mediaquery:
+      (max-width:800px):
+        grid-template-columns: auto
+    cards:
+
+      - type: 'custom:state-switch'
+        entity: select.bedroom_harmony_hub_activities
+        states:
+
+          Listen to Records:
+            type: vertical-stack
+            cards:
+              - type: 'custom:mini-media-player'
+                entity: media_player.terpsichora
+                source: full
+                artwork: full-cover
+
+          Listen to Music:
+            type: vertical-stack
+            cards:
+              - type: 'custom:mini-media-player'
+                entity: media_player.terpsichora
+                source: full
+                artwork: full-cover
+              - type: 'custom:button-card'
+                template: header_card_no_link
+                variables:
+                  name: AUDIO SOURCES
+              - type: media-control
+                entity: media_player.terpsichora
+                name: Browse Media
+                card_mod:
+                  style: |
+                    mwc-linear-progress {
+                      display: none;
+                    }
+                    div.media-info {
+                      display: none;
+                    }
+                    div.background {
+                      display: none;
+                    }
+                    .icon-name ha-state-icon {
+                      padding-left: 8px !important;
+                      padding-right: 24px !important;
+                    }
+                    ha-icon-button {
+                      display: none;
+                    }
+                    ha-icon-button.browse-media {
+                      display: block;
+                      padding-right: 10px;
+                      top: 6px;
+                    }
+                    div.title-controls {
+                      padding: 0 0 0px;
+                    }
+                    .no-progress.player {
+                      padding-top: 16px !important;
+                      padding-bottom: 16px !important;
+                    }
+                    div.player {
+                      color: inherit !important;
+                    }
+                    div.off {
+                      display: none;
+                    }
+              - type: 'custom:mini-media-player'
+                entity: media_player.dorothy_cast
+                name: Chromecast to Echo Link
+                toggle_power: true
+                volume_stateless: false
+                artwork: full-cover
+              - type: 'custom:mini-media-player'
+                entity: media_player.dorothy_echo_link
+                name: Echo Link to Daok
+                artwork: full-cover
+
+          Watch Shield:
+            type: vertical-stack
+            cards:
+              # - type: 'custom:button-card'
+              #   entity: media_player.terpsichora_shield_cast
+              #   show_icon: false
+              #   show_name: false
+              #   tap_action: none
+              #   triggers_update: all
+              #   custom_fields:
+              #     media_title: '[[[ return entity.attributes.media_title ]]]'
+              #     app_name: >-
+              #       [[[ return (entity.attributes.media_artist)? entity.attributes.media_artist :
+              #             (entity.attributes.app_name)? entity.attributes.app_name : 
+              #             states["media_player.terpsichora_shield_androidtv"].attributes.app_name
+              #       ]]]
+              #     screen: ' '
+              #     media_progress: ' '
+              #   styles:
+              #     grid:
+              #       - grid-template-areas: >-
+              #           "screen screen" "media_progress media_progress"
+              #           "media_title media_title" "app_name s"
+              #       - grid-template-rows: auto min-content min-content
+              #       - grid-template-columns: 1fr min-content
+              #     card:
+              #       - cursor: pointer
+              #       - background: none
+              #       - padding: 0
+              #     state:
+              #       - text-align: right
+              #     custom_fields:
+              #       screen:
+              #         - background: >-
+              #             [[[ 
+              #               if (states["media_player.terpsichora_shield_cast"].attributes.entity_picture != undefined) {
+              #                 return "url(" + states["media_player.terpsichora_shield_cast"].attributes.entity_picture + ")"
+              #                 }
+              #               if (states["media_player.terpsichora_shield_androidtv"].attributes.entity_picture != undefined) {
+              #                 return "url(" + states["media_player.terpsichora_shield_androidtv"].attributes.entity_picture + ")"
+              #               }
+              #             ]]]
+              #         - aspect-ratio: 16/9
+              #         - background-size: cover
+              #       media_title:
+              #         - text-align: left
+              #         - font-size: 32pt
+              #         - font-weight: 600
+              #         - padding-left: 16px
+              #       app_name:
+              #         - text-align: left
+              #         - font-size: 16pt
+              #         - padding-left: 16px
+              #         - margin: 0 0 16px 0
+              #       media_progress:
+              #         - background: >-
+              #             [[[ return "linear-gradient(90deg, var(--primary-color) 0
+              #             " + (entity.attributes.media_position /
+              #             entity.attributes.media_duration * 100) + "%,
+              #             rgb(24,24,24) " +
+              #             (entity.attributes.media_position /
+              #             entity.attributes.media_duration * 100) + "%
+              #             100%)" ]]]
+              #         - height: 4px
+              #         - margin: 0 0 8px 0
+              - type: conditional
+                conditions:
+                  - entity: media_player.terpsichora_shield_cast
+                    state_not: playing
+                  - entity: media_player.terpsichora_shield_cast
+                    state_not: paused
+                card:
+                  type: 'custom:mini-media-player'
+                  entity: media_player.terpsichora_shield_androidtv
+                  source: full
+                  artwork: full-cover
+                  card_mod:
+                    style: |
+                      .attr__app_name {font-size: var(--h1-font-size); font-weight: var(--h1-font-weight); line-height: 1.25;}
+              - type: 'custom:mini-media-player'
+                entity: media_player.terpsichora_shield_cast
+                source: full
+                artwork: full-cover
+                card_mod:
+                  style: |
+                    .attr__media_title, .attr__app_name {font-size: var(--h1-font-size); font-weight: 600; line-height: 1.25;}
+                    .attr__media_artist {font-size: var(--h1-font-size); font-weight: var(--h1-font-weight); line-height: 1.25;}
+              - type: conditional
+                conditions:
+                  - entity: media_player.terpsichora_shield_cast
+                    state: playing
+                card:
+                  type: 'custom:mini-media-player'
+                  entity: media_player.terpsichora_shield_androidtv
+                  source: full
+              - type: conditional
+                conditions:
+                  - entity: media_player.terpsichora_shield_cast
+                    state: paused
+                card:
+                  type: 'custom:mini-media-player'
+                  entity: media_player.terpsichora_shield_androidtv
+                  source: full
+              - type: 'custom:button-card'
+                template: header_card_no_link
+                variables:
+                  name: SIGNAL PATH
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  grid-template-columns: 'repeat(auto-fit, [col-start] minmax(320px, 1fr) [col-end])'
+                  margin: -1px
+                cards:
+                  - type: 'custom:mini-media-player'
+                    entity: media_player.terpsichora
+                    source: full
+                    icon: mdi:audio-video
+                  - type: 'custom:mini-media-player'
+                    entity: media_player.terpsichora_stage
+                    source: full
+                    icon: mdi:soundbar
+                  - type: 'custom:mini-media-player'
+                    entity: media_player.birch_mirror_2
+                    icon: mdi:television
+
+          Watch Shield with Receiver:
+            type: vertical-stack
+            cards:
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
+                entity: media_player.terpsichora_shield_androidtv
+                image: >-
+                  /api/media_player_proxy/media_player.terpsichora_shield_androidtv?token=c2c457e1cd2756e768441590179e92ae59e411c0d58e765d79e0fd8fcc637d7d
+              - type: 'custom:mini-media-player'
+                entity: media_player.terpsichora_shield_androidtv
+                artwork: none
+                source: full
+              - type: 'custom:mini-media-player'
+                entity: media_player.terpsichora
+              - type: entities
+                entities:
+                  - entity: media_player.terpsichora_shield
+
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.terpsichora_show_remote
+            state: "on"
+        card:
+          type: 'custom:harmony-card'
+          entity: remote.living_room_harmony_hub
+          volume_entity: media_player.terpsichora
+          scale: 1.25
+          activities:
+            - name: Watch Shield
+              device: NVIDIA Game Console
+              volume_entity: media_player.terpsichora_stage
+            - name: Watch Shield on Receiver
+              device: NVIDIA Game Console
+              volume_entity: media_player.terpsichora
+            - name: Listen to Music
+              device: Yamaha AV Receiver
+              hide_keyPad: true
+              volume_entity: media_player.terpsichora
+            - name: Listen to Records
+              device: Yamaha AV Receiver
+              volume_entity: media_player.terpsichora
+              hide_keyPad: true
+          hide_activities: true
+          hide_keyPad: false
+          buttons:
+            back:
+              command: 'Back'
+              icon: 'mdi:undo-variant'
+              hide: false
+            dpad_center: 
+              command: 'OK'
+              icon: 'mdi:checkbox-blank-circle'
+              hide: false
+            xbox:
+              command: 'Home'
+              icon: 'mdi:home'
+              hide: false
+          card_mod:
+            style:
+              .: |
+                ha-card .activities {
+                  flex-flow: column;
+                  align-items: flex-start;
+                } ha-card .xbox-buttons {
+                  display: none;
+                }
+              mwc-button$: |
+                mwc-button {
+                  color: white;
+                }

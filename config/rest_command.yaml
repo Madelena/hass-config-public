@@ -1,0 +1,44 @@
+
+switchbot_device_status:
+  url: "https://api.switch-bot.com/v1.0/devices/{{ deviceId }}/status"
+  method: get
+  content_type: "application/json"
+  headers:
+    Authorization: !secret switchbot_api_token
+    
+switchbot_device_command:
+  url: "https://api.switch-bot.com/v1.0/devices/{{ deviceId }}/commands"
+  method: post
+  content_type: "application/json"
+  headers:
+    Authorization: !secret switchbot_api_token
+  payload: '{"command": "{{ command }}","parameter": "{{ parameter }}"}'
+  verify_ssl: false
+
+astralplane_marquee_dev_post_alexa_timer:
+  url: !secret astralplane_marquee_dev_post_url
+  method: POST
+  payload: '{"alexa_timer": { "state": "{{ state }}", "process_timestamp": "{{ process_timestamp }}" }}'
+  content_type:  'application/json; charset=utf-8'
+  verify_ssl: false
+
+astralplane_marquee_dev_post_now_playing:
+  url: !secret astralplane_marquee_dev_post_url
+  method: POST
+  payload: '{"now_playing": { "state": "{{ state }}", "media_content_type": "{{ media_content_type }}", "media_title": "{{ media_title | e }}", "media_album_name": "{{ media_album_name | e }}", "media_artist": "{{ media_artist | e }}", "entity_picture": "{{ entity_picture }}" }}'
+  content_type:  'application/json; charset=utf-8'
+  verify_ssl: false
+
+astralplane_marquee_post_alexa_timer:
+  url: !secret astralplane_marquee_post_url
+  method: POST
+  payload: '{"alexa_timer": { "state": "{{ state }}", "process_timestamp": "{{ process_timestamp }}" }}'
+  content_type:  'application/json; charset=utf-8'
+  verify_ssl: false
+
+astralplane_marquee_post_now_playing:
+  url: !secret astralplane_marquee_post_url
+  method: POST
+  payload: '{"now_playing": { "state": "{{ state }}", "media_content_type": "{{ media_content_type }}", "media_title": "{{ media_title | e }}", "media_album_name": "{{ media_album_name | e }}", "media_artist": "{{ media_artist | e }}", "entity_picture": "{{ entity_picture }}" }}'
+  content_type:  'application/json; charset=utf-8'
+  verify_ssl: false

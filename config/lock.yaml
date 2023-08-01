@@ -1,0 +1,14 @@
+
+# - platform: template
+#   name: Front Door Lock
+#   value_template: "{{ is_state('sensor.front_door_lock_status', 'locked') }}"
+#   lock:
+#     service: rest_command.switchbot_device_command
+#     data:
+#       deviceId: !secret switchbot_front_door_lock_deviceID
+#       command: "lock"
+#   unlock:
+#     service: rest_command.switchbot_device_command
+#     data:
+#       deviceId: !secret switchbot_front_door_lock_deviceID
+#       command: "unlock"

@@ -1,0 +1,1532 @@
+# MAXIMALIST DASHBOARD
+# Regional View
+# Made by Madelena Mak 2023
+
+title: Weather
+path: weather
+
+type: 'custom:grid-layout'
+layout: !include ../shared/snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: cc
+    layout: !include ../shared/snippets/layout-page-columns.yaml
+
+    cards:
+
+      # [Header] Summary
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout: !include ../shared/snippets/layout-page-title.yaml
+        view_layout:
+          grid-column: 1/-1
+        cards:
+        
+          - type: markdown
+            content: >
+              # New York City
+              
+              {{ state_attr('sensor.nws_alert_rss_feed', 'entries')[0].title}}. 
+              {% set is_cold =  state_attr('weather.valhalla_hourly', 'forecast')|map(attribute='temperature')|average < 18 %}
+              {%- set is_freezing =  state_attr('weather.valhalla_hourly', 'forecast')|map(attribute='temperature')|average < 8 -%}
+              {%- set is_rainy = 'rainy' in state_attr('weather.valhalla_hourly','forecast')[:6]|map(attribute='condition')|join(',') -%}
+              {%- set is_highuv = 'on' in states('binary_sensor.protection_window') -%}
+              {%- set is_poorair = iif( states('sensor.waqi_newyork_air_quality_index') | float >= 100, true, false) -%}
+              {%- set to_wear = [iif( is_cold, 'a jacket', false), iif( is_freezing, 'a scarf', false), iif( is_highuv, 'sunscreen', false), iif( is_poorair, 'a mask', false)] | unique -%}
+              {{ iif( is_cold or is_rainy or is_highuv or is_poorair, ' You should ', '') }}{{ iif( to_wear != [''], 'wear ' + to_wear | unique | reject("boolean") | join(', '), '') }}{{ iif( is_rainy, ', and also bring an umbrella.', '.') }}
+            card_mod:
+              class: header
+            style:
+              ha-markdown$: |
+                h1 {
+                  font-size: var(--title-font-size);
+                  font-weight: 600;
+                  line-height: 1.1;
+                  margin-left: -2px;
+                  margin-block-end: -8px;
+                }
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout:
+              margin: 0
+            view_layout:
+              place-self: center auto
+            cards:
+
+              - type: 'custom:swipe-card'
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
+                cards:
+
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                        type: 'custom:mushroom-template-card'
+                        primary: EarthCam ↗
+                        icon: mdi:webcam
+                        icon_color: pink
+                        tap_action:
+                          action: url
+                          url_path: https://www.earthcam.com/usa/newyork/midtown/skyline/?cam=midtown4k
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-1
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                        type: 'custom:mushroom-entity-card'
+                        entity: weather.valhalla_2
+                        name: Accuweather ↗
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        icon_color: pink
+                        tap_action:
+                          action: url
+                          url_path: !secret accuweather_url
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                        type: 'custom:mushroom-entity-card'
+                        entity: sensor.waqi_newyork_air_quality_index
+                        name: WAQI ↗
+                        icon: mdi:weather-dust
+                        icon_color: pink
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        tap_action:
+                          action: url
+                          url_path: https://aqicn.org/station/newyork
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-3
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-4
+                        type: 'custom:mushroom-template-card'
+                        entity: sensor.nws_alerts
+                        primary: NWS Alerts
+                        secondary: "{{ states('sensor.nws_alerts') }} Alert{{ 's' if (states('sensor.nws_alerts') != 1) }}"
+                        icon: mdi:flash-alert
+                        icon_color: "{{'pink' if (states('sensor.nws_alerts') > 0) }}"
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        tap_action:
+                          action: navigate
+                          navigation_path: /ui-dashboard/sensor.nws_alert_rss_feed
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-4
+                        layout: vertical
+
+
+
+      # [Row] Camera and Maps
+
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 2.8fr 1fr
+          grid-template-rows: auto auto 0
+          grid-template-areas: '"cam map1" "cam map2" "overlay ."'
+          margin: -1
+          mediaquery:
+            '(min-width: 1634px)':
+              grid-template-columns: 2.1fr 1fr 1fr
+              grid-template-rows: auto
+              grid-template-areas: '"cam map1 map2" "overlay . ."'
+            '(max-width: 1024px)':
+              grid-template-columns: 1fr 1fr
+              grid-template-rows: 3fr 0 2fr
+              grid-template-areas: '"cam cam" "overlay overlay" "map1 map2"'
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -1
+        cards:
+
+          # - type: 'custom:button-card'
+          #   template: header_card_no_link
+          #   variables:
+          #     name: CURRENT CONDITIONS - NEW YORK CITY
+          #   view_layout:
+          #     grid-area: header
+
+          - type: iframe
+            url: https://public.earthcam.net/empirestatebuilding.tJ90CoLmq7TzrY396Yd88Ge1vZASe-fX80BJNUUBX2c!
+            # https://public.earthcam.net/empirestatebuilding.tJ90CoLmq7TzrY396Yd88Ge1vZASe-fX80BJNUUBX2c!/empire_state_building/empire_state_building_-_south_view
+            card_mod:
+              style: |
+                iframe { height: 150% !important; top: -25% !important; }
+            view_layout:
+              grid-area: cam
+
+          - type: custom:button-card
+            triggers_update: weather.valhalla_2
+            tap-action: none
+            styles:
+              card:
+                - background-image: url(//s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/usbgm/animate.png)
+                - background-size: auto 115%
+                - background-position: center top
+                - background-repeat: no-repeat
+                - height: 100%
+            view_layout:
+              grid-area: map1
+
+          - type: custom:button-card
+            triggers_update: weather.valhalla_2
+            tap-action: none
+            styles:
+              card:
+                - background-image: url(https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/ne/GEOCOLOR/GOES16-NE-GEOCOLOR-600x600.gif)
+                - background-size: auto 150%
+                - background-position: center 15%
+                - background-repeat: no-repeat
+                - height: 100%
+            view_layout:
+              grid-area: map2
+
+          - type: 'custom:button-card'
+            view_layout:
+              grid-area: overlay
+            template:
+              - weather_variables
+            show_state: true
+            show_label: true
+            icon: '[[[ return variables.weather_icon ]]]'
+            name: '[[[ return variables.weather_condition ]]]'
+            label: '[[[ return variables.weather_trend ]]]'
+            state_display: >-
+              [[[ return Math.round(states["weather.valhalla_hourly"].attributes.temperature) + "°" ]]]
+            entity: weather.valhalla_2
+            styles:
+              grid:
+                - grid-template-areas: |
+                    ". . . . ."
+                    "s l . i n"
+                - grid-template-columns: min-content min-content 1fr 64px min-content
+                - grid-template-rows: 1fr min-content
+              card:
+                - background: linear-gradient(to top, var(--ha-card-background) 0%, transparent 80%)
+                - padding: 32px
+                - height: 200px
+                - margin-top: -200px
+              state:
+                - font-size: calc(var(--h1-font-size) * 3)
+                - font-weight: 100
+                - place-self: flex-start
+                - line-height: 1
+                - padding-bottom: 8px
+              img_cell:
+                - height: 48px
+                - width: 48px
+                - place-self: flex-end
+                - margin-right: 16px
+              icon:
+                - width: 100%
+              name:
+                - font-size: var(--h2-font-size)
+                - font-weight: 600
+                - place-self: flex-end
+                - text-transform: capitalize
+                - padding-bottom: 4px
+              label:
+                - font-size: var(--h2-font-size)
+                - place-self: flex-start
+                - align-self: end
+                - padding-bottom: 8px
+
+
+      # [Column] Current Conditions
+
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include ../shared/snippets/layout-live-tile.yaml
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -3
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: CURRENT CONDITIONS
+              label: Accuweather
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: !secret accuweather_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile
+              - weather_precipitation
+            variables:
+              aspect_ratio: 2
+            entity: weather.valhalla_2
+            view_layout:
+              grid-column: span 2
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_unit
+            entity: sensor.accuweather_relative_humidity
+            name: Humidity
+            state_display: '[[[ return entity.state.replace(" %", "") ]]]'
+            custom_fields:
+              unit: '%'
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_unit
+              - weather_wind
+            entity: sensor.valhalla_wind
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_unit
+            entity: sensor.accuweather_visibility
+            name: Visibility
+            state_display: '[[[ return entity.state.replace(" km", "") ]]]'
+            custom_fields:
+              unit: km
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.accuweather_air_pressure
+            name: Pressure
+            label: '[[[ return states["sensor.valhalla_pressure_tendency"].state ]]]'
+            variables:
+              hours_to_show: 48
+            styles:
+              label:
+                - text-transform: capitalize
+
+          # - type: 'custom:button-card'
+          #   template:
+          #     - live_tile_with_unit
+          #   entity: sensor.accuweather_solar_irradiance_hourly
+          #   name: Solar Irradiance
+          #   state_display: '[[[ return parseInt(entity.state.replace(" W/m²", "")) ]]]'
+          #   custom_fields:
+          #     unit: W/m²
+
+          # - type: 'custom:button-card'
+          #   template:
+          #     - live_tile_with_unit
+          #   entity: sensor.valhalla_cloud_cover
+          #   name: Cloud Cover
+          #   state_display: '[[[ return entity.state.replace(" %", "") ]]]'
+          #   custom_fields:
+          #     unit: '%'
+
+          # - type: 'custom:button-card'
+          #   template:
+          #     - live_tile_with_unit
+          #   entity: sensor.valhalla_cloud_ceiling
+          #   name: Cloud Ceiling
+          #   state_display: '[[[ return parseInt(entity.state.replace(" m", "")) ]]]'
+          #   custom_fields:
+          #     unit: 'm'
+
+
+
+      # [Column] Indexes
+
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include ../shared/snippets/layout-live-tile.yaml
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: INDEXES
+              label: WAQI
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: !secret accuweather_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - waqi_scale
+              - weather_waqi
+            entity: sensor.waqi_newyork_air_quality_index
+            variables:
+              hours_to_show: 48
+            view_layout:
+              show:
+                mediaquery: "(min-width: 1129px)"
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - weather_uv
+            entity: sensor.valhalla_uv_index
+            variables:
+              hours_to_show: 48
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+            entity: sensor.tomorrow_io_valhalla_fire_index
+            name: Fire Index
+            variables:
+              hours_to_show: 48
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - weather_pollen
+            entity: sensor.allergy_index_forecasted_average
+            name: Allergy
+            variables:
+              hours_to_show: 48
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - weather_pollen
+            entity: sensor.cold_flu_forecasted_average
+            name: Flu
+            variables:
+              hours_to_show: 48
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - weather_pollen
+            entity: sensor.asthma_index_forecasted_average
+            name: Asthma
+            variables:
+              hours_to_show: 48
+
+
+
+      # [Column] Astrometrics
+
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: !include ../shared/snippets/layout-live-tile.yaml
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: ASTROMETRICS
+              label: More
+              arrow: 'mdi:arrow-right'
+              action: navigate
+              link: !secret accuweather_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: 'custom:button-card'
+            template:
+              - sun_card
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_card
+              - live_tile_with_state_unit
+            entity: sensor.valhalla_hours_of_sun_0d
+            name: Hours of Sun Today
+            # color: var(--ha-card-background)
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_card
+              - live_tile_with_longer_state
+            entity: sun.sun
+            name: Sun
+            label: '[[[ return "<h6>Next Rise</h6><p>" + moment(entity.attributes.next_rising).format("H:mm") + "</p><h6>Next Set</h6><p>" + moment(entity.attributes.next_setting).format("H:mm") + "</p>" ]]]'
+            show_state: false
+            styles:
+              label:
+                - padding-top: 8px
+                - opacity: 1
+            card_mod:
+              style: |
+                #label h6 { text-transform: uppercase; margin: 0; opacity: .67; }
+                #label p { margin: 0 0 8px; }
+
+          - type: 'custom:button-card'
+            template: live_tile
+            entity: sensor.moon
+            name: '[[[ return entity.state.replace("_", " ") ]]]'
+            show_state: false
+            state:
+              - value: new_moon
+                styles:
+                  card:
+                    - background: var(--primary-color)
+              - value: full_moon
+                styles:
+                  card:
+                    - background: var(--primary-color)
+
+          - type: 'custom:button-card'
+            entity: sensor.noaa_tides
+            show_state: false
+            show_icon: false
+            show_name: false
+            custom_fields:
+              picture:
+                card:
+                  type: picture
+                  image: '[[[ return "//tides.net/graph/2743/" + moment().format("yyyy/MM/D") + "_lg.png" ]]]'
+                  entity: sensor.noaa_tides                    
+                  card_mod:
+                    style: |
+                      img {position: relative; margin: -8% -8%; width: 114% !important; height: 116%; filter: sepia(1) saturate(3) hue-rotate(calc(var(--hue-primary-color) - 39deg)) var(--dark-mode-filter);}
+              cover: ' '
+              tile:
+                card:
+                  type: custom:button-card
+                  template:
+                    - live_tile_card
+                  entity: sensor.noaa_tides
+                  icon: 'mdi:waves'
+                  show_icon: false
+                  name: '[[[ return entity.state.split("at")[0] ]]]'
+                  state_display: |
+                    [[[
+                      var fromNow = moment( entity.state.split("at ")[1], "h:mm a").fromNow(true).split(" ")
+                      return (fromNow[0] == "an" ? 1 : fromNow[0]) + '<span style="font-size: var(--h6-font-size); font-weight: 600; opacity: .66; text-transform: uppercase;"> ' + fromNow[1][0] + '</span>'
+                    ]]]
+                  label: '[[[ return  moment( entity.state.split("at ")[1], "h:mm a").format("H:mm") ]]]'
+                  styles:
+                    card:
+                      - background: transparent
+                    label:
+                      - position: absolute
+                      - right: 12px
+                      - top: calc( 100% - 28px )
+                      - text-align: right
+                      - color: var(--primary-text-color)
+                      - opacity: 0.5
+                      - padding: 0 0 10px 0
+                      - justify-self: end
+                      - align-self: end
+            styles:
+              grid:
+                - grid-template-areas: |
+                    "picture"
+                    "cover"
+                    "tile"
+                - grid-template-rows: 100% 0 0
+              card:
+                - height: 100%
+              custom_fields:
+                picture:
+                  - position: absolute
+                  - top: 0
+                  - right: 0
+                  - width: 100%
+                  - height: 100%
+                  - mix-blend-mode: lighten
+                cover:
+                  - position: absolute
+                  - top: 0
+                  - right: 0
+                  - width: '[[[ return ((1 - ((parseInt(moment().format("H") * 60) + parseInt(moment().format("mm"))) / 1440)) * 100) + "%" ]]]'
+                  - height: 100%
+                  - background: var(--ha-card-background)
+                  - opacity: .75
+                  - z-index: 2
+                tile:
+                  - position: absolute
+                  - top: 0
+                  - right: 0
+                  - width: 100%
+                  - height: 100%
+                  - z-index: 3
+
+          - type: 'custom:button-card'
+            template:
+              - live_tile_card
+              - live_tile_with_longer_state
+            entity: sensor.noaa_tides
+            name: Tides
+            icon: mdi:waves
+            label: '[[[ return "<h6>Low Tide</h6><p>" + entity.attributes.low_tide_height.toFixed(1) + "m at " + moment(entity.attributes.low_tide_time).format("H:mm") + "</p><h6>High Tide</h6><p>" + entity.attributes.high_tide_height.toFixed(1) + "m at " + moment(entity.attributes.high_tide_time).format("H:mm") + "</p>" ]]]'
+            show_state: false
+            styles:
+              label:
+                - padding-top: 8px
+                - opacity: 1
+            card_mod:
+              style: |
+                #label h6 { text-transform: uppercase; margin: 0; opacity: .67; }
+                #label p { margin: 0 0 8px; }
+
+
+
+      # [Column] 12-Hour Forecast
+
+      - type: vertical-stack
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -2
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: 12-HOUR HISTORY + FORECAST
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: custom:button-card
+            show_name: false
+            show_state: false
+            show_icon: false
+            show_label: true
+            label: NOW
+            styles:
+              grid:
+                - grid-template-areas: |
+                    "history_graph forecast_graph"
+                    "label label"
+                - grid-template-columns: 1fr 1fr
+                - grid-template-rows: auto 0
+              card:
+                - padding: 0
+              label:
+                - position: absolute
+                - background-color: var(--primary-color)
+                - text-align: center
+                - z-index: 10
+                - padding: 2px 4px 4px
+                - font-weight: bold
+                - font-size: var(--h6-font-size)
+                - top: 50px
+              custom_fields:
+                history_graph:
+                  - align-self: flex-start
+                forecast_graph:
+                  - align-self: flex-start
+                  - border-left: 1px dashed var(--primary-color)
+            custom_fields:
+              history_graph:
+                card:
+                  type: history-graph
+                  show_names: false
+                  hours_to_show: 12
+                  entities:
+                    - weather.valhalla_2
+                  card_mod:
+                    style: |
+                      .content { padding: 10px 0 0 !important; }
+              forecast_graph:
+                card:
+                  type: custom:hourly-weather
+                  entity: weather.valhalla_hourly
+                  name: null
+                  hide_temperatures: true
+                  colors:
+                    partlycloudy: '#934fa1'
+                    cloudy: '#48d2d5'
+                    sunny: '#f67f1c'
+                  card_mod:
+                    style:
+                      .: |
+                        .card-content {padding: 16px 0 !important; }
+                      weather-bar$: |
+                        .bar { height: auto !important; }
+                        .bar > div:first-child { border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; }
+                        .bar > div:last-child { border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+                        .bar > div { height: 20px !important; }
+                        .condition-label { text-shadow: none !important; text-align: left !important;
+                          margin: 0 4px; font-size: 12px;}
+                        .axes { margin-top: 4px !important; }
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Temperature
+            yaxis:
+              - show: true
+                align_to: 5
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.accuweather_temperature
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.accuweather_temperature_hourly
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  const data = [[now.getTime(), hass.states["sensor.accuweather_temperature"].state ]];
+                  for(let i = 0; i <= 12; i++) {
+                    data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                  }
+                  return data.reverse();
+
+              - entity: sensor.accuweather_temperature
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  return [[now.getTime(), entity.state],[now.getTime(), entity.state]];
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Humidity
+            yaxis:
+              - show: true
+                min: 0
+                max: 100
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.accuweather_relative_humidity
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.accuweather_relative_humidity_hourly
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  const data = [[now.getTime(), hass.states["sensor.accuweather_relative_humidity"].state ]];
+                  for(let i = 0; i <= 12; i++) {
+                    data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                  }
+                  return data.reverse();
+
+              - entity: sensor.accuweather_relative_humidity
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  return [[now.getTime(), entity.state],[now.getTime(), entity.state]];
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Precipitation
+            yaxis:
+              - show: true
+                min: 0
+                max: ~10
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.accuweather_total_precipitation_hourly
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.accuweather_total_precipitation_hourly
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  const data = [[now.getTime(), entity.state ]];
+                  for(let i = 0; i <= 12; i++) {
+                    data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                  }
+                  return data.reverse();
+
+              - entity: sensor.accuweather_total_precipitation_hourly
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  return [[now.getTime(), entity.state],[now.getTime(), entity.state]];
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Air Quality - PM2.5
+            yaxis:
+              - show: true
+                align_to: 20
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.particulate_matter_pm25
+                name: WAQI
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.openmeteo_aq_forecast
+                name: OpenMeteo Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const data = [];
+                  const timearray = entity.attributes.time.replace(/\[/,'').replace(/\]/,'').split(',')
+                  const pm25array = entity.attributes.us_aqi_pm2_5.replace(/\[/,'').replace(/\]/,'').split(',')
+                  for(let i = 0; i < 48; i++) {
+                    if ( parseInt(timearray[i] * 1000) > parseInt(moment().format("x")) ) {
+                      data.push([ parseInt(timearray[i] * 1000), pm25array[i] ]);
+                    }
+                  }
+                  return data;
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Wind Speed
+            yaxis:
+              - show: true
+                align_to: 5
+                min: 0
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.valhalla_wind
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.accuweather_wind_speed_hourly
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  const data = [[now.getTime(), hass.states["sensor.valhalla_wind"].state ]];
+                  for(let i = 1; i <= 11; i++) {
+                    data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"] * .62]);
+                  }
+                  return data.reverse();
+
+              - entity: sensor.valhalla_wind
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  return [[now.getTime(), entity.state],[now.getTime(), entity.state]];
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: UV
+            yaxis:
+              - show: true
+                min: 0
+                max: ~10
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.valhalla_uv_index
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.openuv_forecast
+                name: OpenUV Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const data = [];
+                  const result = JSON.parse(entity.attributes.result.replace(/'/g, '"'))
+                  for(let i = 0; i < result.length; i++) {
+                    data.push([ result[i].uv_time, result[i].uv ]);
+                  }
+                  return data.reverse();
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Solar Irradiance
+            yaxis:
+              - show: true
+                align_to: 50
+                min: 0
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.accuweather_solar_irradiance_hourly
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.accuweather_solar_irradiance_hourly
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  const data = [[now.getTime(), entity.state]];
+                  for(let i = 0; i <= 12; i++) {
+                    data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                  }
+                  return data.reverse();
+
+              - entity: sensor.accuweather_solar_irradiance_hourly
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  return [[now.getTime(), entity.state],[now.getTime(), entity.state]];
+
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+            header:
+              title: Cloud Cover
+            yaxis:
+              - show: true
+                min: 0
+                max: 100
+                decimals: 0
+                apex_config:
+                  labels:
+                    offsetX: 24
+                    offsetY: 2
+            series:
+
+              - entity: sensor.valhalla_cloud_cover
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                opacity: .5
+                show:
+                  datalabels: true
+                  extremas: true
+                group_by:
+                  func: avg
+                  duration: 60min
+
+              - entity: sensor.accuweather_cloud_cover_hourly
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  const data = [[now.getTime(), hass.states["sensor.valhalla_cloud_cover"].state ]];
+                  for(let i = 0; i <= 12; i++) {
+                    data.push([now.getTime() + i * 1000 * 60 * 60, entity.attributes[i + "h"]]);
+                  }
+                  return data.reverse();
+
+              - entity: sensor.valhalla_cloud_cover
+                name: Accuweather
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                  extremas: true
+                data_generator: |
+                  const now = new Date();
+                  return [[now.getTime(), entity.state],[now.getTime(), entity.state]];
+
+
+
+
+      # [Column] 5-Day Forecast
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: 5-DAY FORECAST
+              label: More
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: !secret accuweather_url
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          # - type: 'custom:weather-chart-card'
+          #   entity: weather.valhalla_hourly
+
+          # - type: 'custom:hourly-weather'
+          #   entity: weather.valhalla_hourly
+          #   show_wind: "true"
+          #   show_precipitation_amounts: true
+          #   name: ''
+
+          - type: weather-forecast
+            entity: weather.valhalla_2
+            show_forecast: true
+            title: Daily Forecast
+            card_mod:
+              style: |
+                .content, .temp, .templow {display: none !important;}
+                .forecast {padding-top: 0 !important;}
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+              - weather_daily_chart
+            header:
+              title: Temperature
+            series:
+              - entity: sensor.valhalla_realfeel_temperature
+                type: area
+                name: High
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), parseFloat(hass.states["sensor.valhalla_realfeel_temperature_max_" + i + "d"].state) ]);
+                  }
+                  return data;
+              - entity: sensor.valhalla_realfeel_temperature
+                type: area
+                name: Low
+                stroke_width: 2
+                color: var(--ha-card-background)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), parseFloat(hass.states["sensor.valhalla_realfeel_temperature_min_" + i + "d"].state) ]);
+                  }
+                  return data;
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+              - weather_daily_chart
+            header:
+              title: Thunderstorm Probability
+            series:
+              - entity: sensor.valhalla_thunderstorm_probability_day_0d
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), Math.max(parseFloat(hass.states["sensor.valhalla_thunderstorm_probability_day_" + i + "d"].state), parseFloat(hass.states["sensor.valhalla_thunderstorm_probability_night_" + i + "d"].state)) ]);
+                  }
+                  return data;
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+              - weather_daily_chart
+            header:
+              title: Air Quality PM2.5
+            series:
+              - entity: sensor.waqi_forecast_pm25
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), parseInt(entity.attributes[i + "d"]) ]);
+                  }
+                  return data;
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+              - weather_daily_chart
+            header:
+              title: Wind Speed
+            series:
+              - entity: sensor.valhalla_wind_night_0d
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), (parseFloat(hass.states["sensor.valhalla_wind_day_" + i + "d"].state) + parseFloat(hass.states["sensor.valhalla_wind_night_" + i + "d"].state)) / 2 ]);
+                  }
+                  return data;
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+              - weather_daily_chart
+            header:
+              title: UV
+            series:
+              - entity: sensor.valhalla_uv_index_0d
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), parseFloat(hass.states["sensor.valhalla_uv_index_" + i + "d"].state) ]);
+                  }
+                  return data;
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - weather_chart
+              - weather_daily_chart
+            header:
+              title: Hours of Sun
+            series:
+              - entity: sensor.valhalla_hours_of_sun_0d
+                name: Accuweather Forecast
+                stroke_width: 2
+                color: var(--primary-color)
+                show:
+                  datalabels: true
+                data_generator: |
+                  const today = moment(moment().format("yyyy-MM-DD") + "T04:00:00.000Z")
+                  const data = [];
+                  for(let i = 0; i <= 4; i++) {
+                    data.push([ parseInt(moment(today).add(i,"days").format("x")), parseFloat(hass.states["sensor.valhalla_hours_of_sun_" + i + "d"].state) ]);
+                  }
+                  return data;
+
+
+      # [Column] NWS Alerts  
+
+      # - type: vertical-stack
+      #   cards:
+
+      #     - type: 'custom:button-card'
+      #       template: header_card
+      #       variables:
+      #         name: NWS Alerts
+      #         label: NOAA
+      #         arrow: 'mdi:arrow-top-right'
+      #         action: url
+      #         link: 'https://twitter.com/NotifyNYC'
+
+      #     - type: entities
+      #       entities:
+      #         - entity: sensor.nws_alert_rss_feed
+      #           type: custom:template-entity-row
+      #           state: ''
+      #           name: "{{states('sensor.nws_alert_rss_feed')}} Alert{% if states('sensor.nws_alert_rss_feed') | int > 1 %}s{% endif %} "
+
+      #     - !include ../shared/cards/nws-alerts.yaml
+
+
+      # [Column] Public Health  
+
+      - type: 'custom:layout-card'
+        layout_type: custom:grid-layout
+        layout: !include ../shared/snippets/layout-page-columns.yaml
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -1
+        cards:
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: PUBLIC HEALTH
+              label: NYC Health
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://twitter.com/NotifyNYC'
+            view_layout:
+              grid-column-start: 1
+              grid-column-end: -1
+
+          - type: entities
+            title: Cold + Flu Index
+            entities:
+
+              - entity: sensor.cold_flu_forecasted_average
+                type: 'custom:multiple-entity-row'
+                name: Forecasted Average
+                secondary_info:
+                  attribute: rating
+                entities:
+                  - attribute: trend
+
+              - entity: sensor.cold_flu_index_today
+                type: 'custom:multiple-entity-row'
+                name: Today
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.cold_flu_index_today
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - attribute: flu_index
+                    name: FLU
+                    styles:
+                      text-align: left
+                  - attribute: fever_index
+                    name: FEVER
+                    styles:
+                      text-align: left
+                  - attribute: strep_index
+                    name: STREP
+                    styles:
+                      text-align: left
+                  - attribute: cough_index
+                    name: COUGH
+                    styles:
+                      text-align: left
+
+          - type: entities
+            title: Allergy Index
+            entities:
+              - entity: sensor.allergy_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                name: Forecasted Average
+                secondary_info:
+                  attribute: rating
+                entities:
+                  - attribute: trend
+
+              - entity: sensor.allergy_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: Season
+                show_state: false
+                entities:
+                  - attribute: season
+
+              - entity: sensor.allergy_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                secondary_info:
+                  attribute: outlook
+
+              - entity: sensor.allergy_index_today
+                type: 'custom:multiple-entity-row'
+                name: Today
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.allergy_index_tomorrow
+                type: 'custom:multiple-entity-row'
+                name: Tomorrow
+                secondary_info:
+                  attribute: rating
+
+          - type: entities
+            title: Pollen
+            entities:
+              - entity: sensor.tomorrow_io_valhalla_grass_pollen_index
+                name: Grass Pollen Index
+              - entity: sensor.valhalla_grass_pollen_0d
+                name:  Grass Pollen
+              - entity: sensor.tomorrow_io_valhalla_tree_pollen_index
+                name: Tree Pollen Index
+              - entity: sensor.valhalla_tree_pollen_0d
+                name: Tree Pollen
+              - entity: sensor.tomorrow_io_valhalla_weed_pollen_index
+                name: Weed Pollen Index
+              - entity: sensor.valhalla_mold_pollen_0d
+                name: Mold Pollen
+              - entity: sensor.valhalla_ragweed_pollen_0d
+                name: Ragweed Pollen
+
+          - type: entities
+            title: Asthma Index
+            entities:
+
+              - entity: sensor.asthma_index_forecasted_average
+                type: 'custom:multiple-entity-row'
+                name: Forecasted Average
+                secondary_info:
+                  attribute: rating
+                entities:
+                  - attribute: trend
+
+              - entity: sensor.asthma_index_today
+                type: 'custom:multiple-entity-row'
+                name: Today
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.asthma_index_today
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - attribute: allergen_amount_1
+                    name: OZONE
+                    styles:
+                      text-align: left
+                  - attribute: allergen_amount_2
+                    name: PM2.5
+                    styles:
+                      text-align: left
+                  - attribute: allergen_amount_3
+                    name: PM10
+                    styles:
+                      text-align: left
+
+              - entity: sensor.asthma_index_tomorrow
+                type: 'custom:multiple-entity-row'
+                name: Tomorrow
+                secondary_info:
+                  attribute: rating
+
+              - entity: sensor.asthma_index_tomorrow
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - attribute: allergen_amount_1
+                    name: OZONE
+                    styles:
+                      text-align: left
+                  - attribute: allergen_amount_2
+                    name: PM2.5
+                    styles:
+                      text-align: left
+
+          - type: entities
+            title: UV Index
+            entities:
+
+              - entity: sensor.current_uv_index
+                type: 'custom:multiple-entity-row'
+                name: UV Index
+                show_state: false
+                secondary_info:
+                  entity: sensor.current_uv_level
+                entities:
+                  - entity: sensor.current_uv_index
+                    name: Current
+                    unit: false
+                    format: precision2
+                    styles:
+                      text-align: left
+                  - entity: sensor.max_uv_index
+                    name: Max
+                    unit: false
+                    format: precision2
+                    styles:
+                      text-align: left
+
+              - sensor.current_ozone_level
+              - binary_sensor.protection_window
+
+              - entity: sensor.skin_type_1_safe_exposure_time
+                type: 'custom:multiple-entity-row'
+                name: Safe Exposure Time
+                show_state: false
+                entities:
+                  - entity: sensor.skin_type_1_safe_exposure_time
+                    name: Type 1
+                    hide_unavailable: true
+                    styles:
+                      text-align: left
+                  - entity: sensor.skin_type_2_safe_exposure_time
+                    name: Type 2
+                    hide_unavailable: true
+                    styles:
+                      text-align: left
+                  - entity: sensor.skin_type_1_safe_exposure_time
+                    name: Type 3
+                    hide_unavailable: true
+                    styles:
+                      text-align: left
+
+              - entity: sensor.skin_type_4_safe_exposure_time
+                type: 'custom:multiple-entity-row'
+                icon: ' '
+                name: ' '
+                show_state: false
+                entities:
+                  - entity: sensor.skin_type_4_safe_exposure_time
+                    name: Type 4
+                    hide_unavailable: true
+                    styles:
+                      text-align: left
+                  - entity: sensor.skin_type_5_safe_exposure_time
+                    name: Type 5
+                    hide_unavailable: true
+                    styles:
+                      text-align: left
+                  - entity: sensor.skin_type_6_safe_exposure_time
+                    name: Type 6
+                    hide_unavailable: true
+                    styles:
+                      text-align: left

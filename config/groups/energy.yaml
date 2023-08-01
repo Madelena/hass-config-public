@@ -1,0 +1,153 @@
+
+# ENERGY BY ROOMS
+
+energy_workspace:
+  name: Workspace Energy
+  entities:
+    - sensor.astralplane_plug_smartenergy_metering
+    - sensor.makery_plug_smartenergy_metering
+    - sensor.quattro_plug_smartenergy_metering
+    - sensor.workspace_lights_energy_use
+
+energy_bedroom:
+  name: Bedroom Energy
+  entities:
+    - sensor.dorothy_plug_smartenergy_metering
+    - sensor.dorothy_devices_plug_smartenergy_metering
+    - sensor.bedroom_devices_plug_smartenergy_metering
+    - sensor.bedroom_air_conditioner_plug_smartenergy_metering
+    - sensor.bedroom_lights_energy_use
+
+energy_kitchen:
+  name: Kitchen Energy
+  entities:
+    - sensor.kitchen_fridge_plug_smartenergy_metering
+    - sensor.kitchen_microwave_plug_smartenergy_metering
+    - sensor.kitchen_aerogardens_plug_smartenergy_metering
+    - sensor.kitchen_lights_energy_use
+
+energy_kitchen_power_strip:
+  name: Kitchen Power Strip
+  entities:
+    - sensor.kitchen_counter_echo_plug_current_consumption
+    - sensor.kitchen_counter_hand_blender_current_consumption
+    - sensor.kitchen_counter_kettle_current_consumption
+    - sensor.kitchen_counter_plug_3_current_consumption
+    - sensor.kitchen_counter_rice_cooker_current_consumption
+    - sensor.kitchen_counter_toaster_current_consumption
+
+energy_living_room:
+  name: Living Room Energy
+  entities:
+    - sensor.terpsichora_plug_smartenergy_metering
+    - sensor.living_room_projector_plug_smartenergy_metering
+    - sensor.living_room_air_conditioner_plug_smartenergy_metering
+    - sensor.living_room_lights_energy_use
+
+
+# ENERGY BY CIRCUITS
+
+circuit_north:
+  name: North Circuit
+  entities:
+    - sensor.valhalla_plug_smartenergy_metering
+
+circuit_south:
+  name: South Circuit
+  entities:
+    - sensor.astralplane_plug_smartenergy_metering
+    - sensor.bedroom_devices_plug_smartenergy_metering
+    - sensor.kitchen_aerogardens_plug_smartenergy_metering
+    - sensor.living_room_air_conditioner_plug_smartenergy_metering
+    - sensor.makery_plug_smartenergy_metering
+    - sensor.quattro_plug_smartenergy_metering
+    - sensor.terpsichora_plug_smartenergy_metering
+    - sensor.kitchen_sink_lights_power
+    - sensor.kitchen_counter_accent_lights_power
+    - sensor.living_room_hue_bowl_power
+    - sensor.living_room_table_lights_power
+    - sensor.bedroom_cloud_light_power
+
+circuit_center:
+  name: Center Circuit
+  entities:
+    - sensor.dorothy_devices_plug_smartenergy_metering
+    - sensor.dorothy_plug_smartenergy_metering
+    - sensor.living_room_strala_light_power
+
+circuit_north_ceiling_lights:
+  name: North Ceiling Lights Circuit
+  entities:
+    - sensor.hallway_light_power
+  # Storage Light, Room B/C Lights
+
+circuit_living_room_lights:
+  name: Living Room Lights Circuit
+  entities:
+    - sensor.living_room_chandelier_main_power
+    - sensor.kitchen_spot_lights_power
+    - sensor.kitchen_counter_lights_power
+    - sensor.living_room_ramsele_light_power
+    - sensor.living_room_random_light_power
+
+circuit_bedroom_ac:
+  name: Bedroom A/C Circuit
+  entities:
+    - sensor.bedroom_air_conditioner_plug_smartenergy_metering
+    # Dyson Fan also
+
+circuit_fridge_counter:
+  name: Fridge + Kitchen Counter Circuit
+  entities:
+    - sensor.kitchen_fridge_plug_smartenergy_metering
+    - sensor.kitchen_microwave_plug_smartenergy_metering
+    - sensor.kitchen_counter_echo_plug_current_consumption
+    - sensor.kitchen_counter_hand_blender_current_consumption
+    - sensor.kitchen_counter_kettle_current_consumption
+    - sensor.kitchen_counter_plug_3_current_consumption
+    - sensor.kitchen_counter_rice_cooker_current_consumption
+    - sensor.kitchen_counter_toaster_current_consumption
+
+circuit_living_room_projector:
+  name: Living Room Projector Circuit
+  entities:
+    - sensor.living_room_projector_plug_smartenergy_metering
+    - sensor.living_room_decor_lights_power
+
+
+# ENERGY CATEGORIES
+
+all_computers_energy_use:
+  name: All Computers Energy Use
+  entities:
+    - sensor.valhalla_plug_smartenergy_metering
+    - sensor.astralplane_plug_smartenergy_metering
+    - sensor.makery_plug_smartenergy_metering
+    - sensor.quattro_plug_smartenergy_metering
+    - sensor.dorothy_plug_smartenergy_metering
+
+all_entertainement_energy_use:
+  name: All Entertainment Energy Use
+  entities:
+    - sensor.dorothy_devices_plug_smartenergy_metering
+    - sensor.terpsichora_plug_smartenergy_metering
+    - sensor.living_room_projector_plug_smartenergy_metering
+
+all_kitchen_energy_use:
+  name: All Kitchen Energy Use
+  entities:
+    - sensor.kitchen_aerogardens_plug_smartenergy_metering
+    - sensor.kitchen_fridge_plug_smartenergy_metering
+    - sensor.kitchen_microwave_plug_smartenergy_metering
+    - sensor.kitchen_counter_echo_plug_current_consumption
+    - sensor.kitchen_counter_hand_blender_current_consumption
+    - sensor.kitchen_counter_kettle_current_consumption
+    - sensor.kitchen_counter_plug_3_current_consumption
+    - sensor.kitchen_counter_rice_cooker_current_consumption
+    - sensor.kitchen_counter_toaster_current_consumption
+
+all_climate_energy_use:
+  name: All Climate Energy Use
+  entities:
+    - sensor.living_room_air_conditioner_plug_smartenergy_metering
+    - sensor.bedroom_air_conditioner_plug_smartenergy_metering

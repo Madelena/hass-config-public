@@ -1,0 +1,387 @@
+# AMBIENT DASHBOARD
+# Music App
+# Made by Madelena Mak 2022
+
+title: Music
+path: music
+type: 'custom:grid-layout'
+layout:
+  grid-template-columns: 94vw
+  grid-template-rows: auto
+  grid-template-areas: '"." "info"'
+  grid-column-gap: 0
+  margin: 0
+cards:
+
+
+  - type: 'custom:mod-card'
+    card_mod:
+      style: |
+        ha-card {
+          background:
+            linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(var(--rgb-primary-color),0.5) 100%),
+            url({%- if (state_attr('media_player.terpsichora_mini', 'entity_picture_local') != None) -%}
+              {{ state_attr('media_player.terpsichora_mini', 'entity_picture_local') }}
+              {%- elif (state_attr('media_player.terpsichora_mini', 'entity_picture') != None) -%}
+              {{ state_attr('media_player.terpsichora_mini', 'entity_picture') }}
+              {%- else -%}
+              {{ states('sensor.last_fm_top_artist_photo') }}
+              {%- endif -%});
+          background-repeat: no-repeat, no-repeat;
+          background-size: cover, 125%;
+          background-position-y: center, center;
+          animation-name: background, fade-in;
+          animation-duration: 120s, 5s;
+          animation-direction: alternate, normal;
+          animation-iteration-count: infinite, 1;
+          animation-fill-mode: both, forwards;
+          position: relative;
+          height: 100vh; width: 100vw; margin: -1px; overflow: hidden;
+          opacity: 0;
+        }
+        layout-card { background: none; position: relative; opacity: 0; left: 100%;
+          animation-name: fade-in2;
+          animation-fill-mode: forwards;
+          animation-duration: 2s; }
+        @keyframes fade-in {
+          0%   {opacity: 0;}
+          100% {opacity: 1;}
+        }
+        @keyframes fade-in2 {
+          0%   {opacity: 0; left: 100%;}
+          100% {opacity: 1; left: 0;}
+        }
+        @keyframes background {
+          0% {background-position-x: center, left; background-size: cover, 150%;}
+          50% {background-position-x: center, center; background-size: cover, 100%;}
+          100% {background-position-x: center, right; background-size: cover, 150%;}
+        }
+
+    card:
+
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: '-1px'
+        grid-template-areas: '"topbar" "tiles"'
+        grid-template-rows: 100% 0
+        grid-template-columns: 100%
+      cards:
+
+
+        # Title Bar
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          view_layout:
+            grid-area: topbar
+            card_margin: 0
+          layout:
+            grid-template-rows: auto
+            grid-template-columns: '12.5vw auto 25vw'
+            margin: 0
+            padding: 0
+          cards:
+
+            - !include ../snippets/topbar-back-button.yaml
+
+            - type: 'custom:button-card'
+              template: slide_page_title
+              name: MUSIC+RADIO
+
+
+        # Tiles
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          layout:
+            grid-template-columns: 100vw
+            margin: -5.33vh 0 0 0
+          view_layout:
+            grid-area: tiles
+          cards:
+
+          - type: 'custom:swipe-card'
+            card_mod:
+              style: |
+                .swiper-slide { width: fit-content !important; }
+                .swiper-wrapper { padding-left: 7.5vw !important; }
+
+            parameters:
+              slidesPerView: auto
+              observer: true
+              keyboard:
+                enabled: true
+            cards:
+
+            # - type: 'custom:auto-entities'
+            #   filter:
+            #     include:
+            #       - domain: media_player
+            #         state: playing
+            #         options: &metro-media-player
+
+              - type: conditional
+                conditions:
+                  - entity: media_player.terpsichora_mini
+                    state_not: "idle"
+                card:
+
+              # - type: custom:state-switch
+              #   entity: media_player.terpsichora_mini
+              #   default: playing
+              #   states:
+              #     playing:
+                  type: 'custom:layout-card'
+                  layout_type: 'custom:grid-layout'
+                  layout:
+                    margin: 0
+                    padding: 0 0 0 5vw
+                  cards:
+
+                    - type: 'custom:button-card'
+                      template: slide_header_card_no_link
+                      variables:
+                        name: '[[[ return (states["media_player.terpsichora_mini"].state !== "playing") ? "RESUME PLAYING" : "NOW PLAYING" ]]]'
+                      
+                    - type: 'custom:layout-card'
+                      layout_type: 'custom:grid-layout'
+                      layout:
+                        grid-template-rows: 66.66vh
+                        grid-template-columns: 75vw
+                        margin: 0
+                      cards: 
+
+                        - type: custom:button-card
+                          entity: media_player.terpsichora_mini
+                          show_state: true
+                          show_label: true
+                          show_icon: false
+                          state_display: '[[[ return entity.attributes.media_title ]]]'
+                          label: |
+                            [[[ if (entity.attributes.media_content_type == "music") {
+                                return ((typeof entity.attributes.media_album_name !== "undefined") ? entity.attributes.media_album_name : "") + ((typeof entity.attributes.media_artist !== "undefined") ? "<br><span style='font-weight: 600;'>" + entity.attributes.media_artist + "</span>" : "")
+                              } else if (entity.attributes.media_content_type == "tvshow") {
+                                return entity.attributes.media_series_title
+                              }
+                            ]]]
+                          custom_fields:
+                            picture: ' '
+                            media_control:
+                              card:
+                                type: media-control
+                                entity: '[[[ return entity.entity_id ]]]'
+                                card_mod:
+                                  style: >
+                                    ha-card { background: none; }
+                                    .media-info, .top-info, .background { display: none
+                                    !important; }
+                                    .title-controls { padding: 0 !important; }
+                                    .player { padding: 0 !important; color: rgb(255,255,255)
+                                    !important;}
+                                    mwc-linear-progress { --mdc-theme-primary:
+                                    inherit !important;}
+                                    mwc-linear-progress_inner { width: 5vw !important; }
+                                    
+                          styles:
+                            card:
+                              - aspect-ratio: 5/2
+                              - margin: 0
+                              - padding: 0
+                              - background: none
+                              - height: 66.66vh
+                            grid:
+                              - grid-template-areas: |
+                                  "picture ."
+                                  "picture n"
+                                  "picture s"
+                                  "picture l"
+                                  "picture ."
+                                  "media_control media_control"
+                              - grid-template-columns: calc(50vh + 5vw) 1fr
+                              - grid-template-rows: 1fr min-content min-content min-content 1fr min-content
+                            name:
+                              - font-size: 2.5vh
+                              - font-weight: 600
+                              - letter-spacing: .05em
+                              - padding: 2vh 0 1vh 0
+                              - white-space: normal
+                              - text-align: left
+                              - justify-self: start
+                              - align-self: end
+                              - text-transform: uppercase
+                              - opacity: 0.67
+                            state:
+                              - font-size: |
+                                  [[[ if (entity.attributes.media_content_type == "music") {
+                                      return (typeof entity.attributes.media_title !== "undefined") ? ((entity.attributes.media_title.length >= 20)? "8vh" : "10vh") : "10vh"
+                                    } else {
+                                      return "10vh"
+                                    }
+                                  ]]]
+                              - justify-self: start
+                              - padding: 0 0 2vh 0
+                              - margin-left: -4px
+                              - font-weight: 600
+                              - align-self: start
+                              - text-overflow: clip
+                              - white-space: normal
+                              - line-height: 1.1
+                              - text-align: left
+                            label:
+                              - font-size: |
+                                  [[[ if (entity.attributes.media_content_type == "music") {
+                                      return ((typeof entity.attributes.media_album_name !== "undefined") ? (entity.attributes.media_album_name.length >= 20) : false) || ((typeof entity.attributes.media_artist !== "undefined") ? (entity.attributes.media_artist.length >= 40) : false)? "4vh" : "5vh"
+                                    } else {
+                                      return "5vh"
+                                    }
+                                  ]]]
+                              - line-height: 1.25
+                              - justify-self: start
+                              - padding: 0 0 4vh 0
+                              - align-self: start
+                              - white-space: normal
+                              - text-align: left
+                              - height: 100%
+                            custom_fields:
+                              picture:
+                                - background-color: rgba(0,0,0,.25)
+                                - background: |-
+                                    [[[ 
+                                      if (entity.attributes.entity_picture != '') {
+                                        return "url(" + entity.attributes.entity_picture + "), linear-gradient(to bottom, rgba(var(--rgb-primary-color),.1), rgba(var(--rgb-primary-color),.25))"
+                                      } else if (entity.attributes.entity_picture_local != '') {
+                                        return "url(" + entity.attributes.entity_picture_local + "), linear-gradient(to bottom, rgba(var(--rgb-primary-color),.1), rgba(var(--rgb-primary-color),.25))"
+                                      }
+                                    ]]]
+                                - background-size: cover
+                                - background-position: center center
+                                - height: 50vh
+                                - aspect-ratio: 1/1
+                                - position: relative
+
+                  # idle:
+                  #   type: 'custom:layout-card'
+                  #   layout_type: 'custom:grid-layout'
+                  #   layout:
+                  #     margin: 0
+                  #     padding: 0
+                  #     grid-template-columns: 0
+
+                        #     - domain: media_player
+                        #       state: paused
+                        #       options: *metro-media-player
+
+                        # sort:
+                        #   method: friendly_name
+                        #   reverse: false
+                        # show_empty: true
+                        # card:
+                        #   type: 'custom:swipe-card'
+                        #   parameters:
+                        #     autoHeight: true
+                        #     slidesPerView: 1
+                        #     pagination:
+                        #       type: bullets
+
+                        # card_param: cards
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: TOP ALBUMS
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards: !include ../../shared/columns/me-music-top-albums.yaml
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: LOCAL RADIO
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards: 
+
+                      - &music-local-radio-station
+                        type: 'custom:button-card'
+                        template:
+                          - live_tile_card
+                          - live_tile_with_camera
+                        variables:
+                          camera: /local/logos/wqxr.png
+                          radio_station: WQXR-FM
+                        show_name: true
+                        show_state: false
+                        show_label: false
+                        color: black
+                        icon: 'mdi:radio'
+                        name: WQXR Classical
+                        tap_action:
+                          action: call-service
+                          service: media_player.play_media
+                          service_data:
+                            media_content_type: TUNEIN
+                            media_content_id: '[[[ return variables.radio_station ]]]'
+                            entity_id: media_player.terpsichora_mini_alexa
+
+                      - <<: *music-local-radio-station
+                        variables:
+                          camera: /local/logos/wnyc.png
+                          radio_station: WNYC
+                        name: WNYC News
+
+                      - <<: *music-local-radio-station
+                        variables:
+                          camera: /local/logos/wfuv.png
+                          radio_station: WFUV
+                        name: WFUV Public Radio
+
+                      - <<: *music-local-radio-station
+                        variables:
+                          camera: /local/logos/wfmu.jpg
+                          radio_station: WFMU
+                        name: WFMU Indie Music
+
+                      - <<: *music-local-radio-station
+                        variables:
+                          camera: /local/logos/hot97.png
+                          radio_station: Hot 97
+                        name: Hot 97
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 12.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: TOP ARTISTS
+                    
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards: !include ../../shared/columns/me-music-top-artists.yaml

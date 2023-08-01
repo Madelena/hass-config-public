@@ -1,0 +1,14 @@
+# New Shows on Plex slide
+
+type: 'custom:button-card'
+template:
+  - slide_basic
+  - slide_with_picture
+  - plex_variables
+name: '[[[ return "New to Plex - " + variables.plex_last_added_time ]]]'
+entity: sensor.recently_added_shows
+state_display: '[[[ return entity.attributes.data[1].title ]]]'
+show_label: true
+label: '[[[ return entity.attributes.data[1].episode ]]]'
+variables:
+  picture: '[[[ return entity.attributes.data[1].poster ]]]'

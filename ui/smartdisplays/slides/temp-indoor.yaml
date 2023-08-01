@@ -1,0 +1,14 @@
+# Indoor Average Temperature slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_graph
+  - slide_with_state_unit
+entity: sensor.indoor_average_temperature
+icon: mdi:thermometer
+show_label: true
+label: '[[[ return "It is " + states["sensor.thermal_comfort_indoor_average_perception"].state.replace(/_/g, " ") + " and " + states["sensor.thermal_comfort_indoor_average_simmerzone"].state.replace(/_/g, " ") + "." ]]]'
+variables:
+  hours_to_show: 4
+  points_per_hour: 6

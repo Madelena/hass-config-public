@@ -1,0 +1,161 @@
+# Badges and Media Controls
+
+type: custom:button-card
+show_name: false
+show_state: false
+show_label: false
+show_icon: false
+custom_fields:
+  badge:
+    card:
+      type: 'custom:auto-entities'
+      filter:
+        # template: |
+        #   {% for state in states.sensor -%}
+        #     {%- if state.entity_id | regex_findall('_next_timer',ignorecase=False) -%}
+        #       {{
+        #         { 'entity': state.entity_id,
+        #           'type': 'custom:button-card',
+        #           'template': 'slide_topbar_timer',
+        #           'show_state': true,
+        #           'triggers_update': 'all',
+        #           'name': '[[[ return entity.attributes.friendly_name.replace(" next Timer", "") ]]]',
+        #           'state_display': '[[[
+        #               var diff = moment(entity.state).diff(moment(), "seconds")
+        #               var s = (diff - Math.floor(diff / 60) * 60)
+        #               if (diff <= 0) { return "0:00" }
+        #               if (isNaN(diff)) { return " " }
+        #               return Math.floor(diff / 60) + ":" + ((s < 10) ? "0" + s : s)
+        #             ]]]',
+        #         }
+        #       }},
+        #     {%- endif %}
+        #   {%- endfor %}
+        # exclude:
+        #   - state: unavailable
+        include:
+
+          - entity_id: media_player.kitchen_echo_show
+            options:
+              type: custom:button-card
+              template: slide_topbar_prompt
+
+          - entity_id: sensor.zero
+            options:
+              type: horizontal-stack
+              cards:
+                - type: custom:mushroom-entity-card
+                  entity: sensor.kitchen_counter_motion_sensor_temperature
+                  layout: horizontal
+                  icon_color: var(--primary-color)
+                  name: Kitchen Temperature
+                  primary_info: state
+                  secondary_info: none
+                  card_mod: &topbar-badges-card-mod
+                    style:
+                      .: |
+                        ha-card {
+                          border-radius: 100px;
+                          background: rgba(var(--rgb-primary-background-color),.33);
+                          margin: 22px 1vw;
+                          padding: 4px !important;
+                        }
+                        mushroom-state-item { flex-grow: 10; }
+                        .actions { margin-right: 0; flex-basis: 0px; }
+                      mushroom-media-player-media-control$mushroom-button$: |
+                        button { border-radius: 100px !important; }
+                      mushroom-state-info$: |
+                        .primary {font-size: 2vw !important; line-height: 2.2vw; font-weight: 600 !important; margin-top: -.2vw !important;}
+                - type: custom:mushroom-entity-card
+                  entity: sensor.total_energy_use
+                  layout: horizontal
+                  icon_color: var(--primary-color)
+                  icon: mdi:lightning-bolt
+                  primary_info: state
+                  secondary_info: none
+                  card_mod: *topbar-badges-card-mod
+
+          - group: group.living_room_media_players
+            state: playing
+            options:
+              # type: 'custom:button-card'
+              # template: live_tile_media_player
+              entity: this.entity_id
+              type: custom:mushroom-media-player-card
+              use_media_info: true
+              layout: horizontal
+              # icon_type: entity-picture
+              media_controls:
+                - play_pause_stop
+              card_mod:
+                style:
+                  .: |
+                    ha-card {
+                      border-radius: 100px;
+                      background: rgba(var(--rgb-accent-color),.5);
+                    }
+                    mushroom-state-item { flex-grow: 10; }
+                    .actions { margin-right: 0; flex-basis: 0px; }
+                  mushroom-media-player-media-control$mushroom-button$: |
+                    button { border-radius: 100px !important; }
+              sort:
+                method: last_updated 
+                reverse: true
+
+          - group: group.living_room_media_players
+            state: paused
+            options:
+              type: custom:mushroom-media-player-card
+              entity: this.entity_id
+              use_media_info: true
+              layout: horizontal
+              # icon_type: entity-picture
+              media_controls:
+                - play_pause_stop
+              card_mod:
+                style:
+                  .: |
+                    ha-card {
+                      border-radius: 100px;
+                      background: rgba(var(--rgb-primary-background-color),.33);
+                      margin: 4px 1vw;
+                    }
+                    mushroom-state-item { flex-grow: 10; }
+                    .actions { margin-right: 0; flex-basis: 0px; }
+                  mushroom-media-player-media-control$mushroom-button$: |
+                    button { border-radius: 100px !important; }
+                  mushroom-state-info$: |
+                    .primary {font-size: 1.5vw !important; line-height: 1.7vw; font-weight: 600 !important; margin-top: -.2vw !important;}
+              sort:
+                method: last_updated 
+                reverse: true
+
+      show_empty: false
+      card:
+        type: 'custom:swipe-card'
+        parameters:
+          direction: vertical
+          autoHeight: true
+          height: 94
+          effect: cube
+          xautoplay:
+            xdelay: 5000
+          cubeEffect:
+            - slideShadows: false
+      card_param: cards
+
+styles:
+  grid:
+    - grid-template-areas: '". badge ."'
+    - grid-template-columns: auto 50vw auto
+    - align-items: middle
+    - justify-content: space-around
+  card:
+    - background: none
+    - z-index: 100
+    - padding: 0
+    - height: 15vw
+    - overflow: visible
+  # custom_fields:
+  #   badge:
+  #     - transform: scale(1.5)

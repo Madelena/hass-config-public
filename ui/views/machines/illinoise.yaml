@@ -1,0 +1,10 @@
+# MADELENA + THE MACHINES
+# Dorothy Illinoise View
+# Made by Madelena Mak 2022
+
+title: Illinoise
+path: illinoise
+
+type: panel
+cards:
+  - !include illinoise-cards.yaml

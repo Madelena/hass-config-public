@@ -1,0 +1,108 @@
+
+- !include slides/blank.yaml
+
+
+# Chores
+- !include slides/chores.yaml
+
+
+# Weather
+- !include slides/sun.yaml
+- !include slides/astronomy-calendar.yaml
+- !include slides/nws-alerts.yaml
+- !include slides/weather-current.yaml
+- !include slides/temp-outdoor.yaml
+- !include slides/temp-indoor.yaml
+- !include slides/weather-daily.yaml
+- !include slides/weather-hourly.yaml
+- !include slides/waqi.yaml
+- !include slides/allergy-index.yaml
+- !include slides/wind.yaml
+
+
+# Home Devices
+- !include slides/power-usage.yaml
+- !include slides/vacuum.yaml
+
+
+# Fun Stuff
+- !include slides/last-fm-artist.yaml
+- !include slides/plex-new-shows.yaml
+
+
+# Neighborhood
+- !include slides/tgtg.yaml
+
+
+# Commute
+- !include slides/subway-status.yaml
+- !include slides/gasbuddy.yaml
+- !include slides/nyc311-alt-side-parking.yaml
+- !include slides/waze-driving-time.yaml
+- !include slides/traffic-map.yaml
+
+- type: 'custom:button-card'
+  template:
+    - slide_basic
+    - slide_with_live_camera
+  entity: camera.511ny_i278_at_morgan_ave
+  name: Brooklyn-Queens Expressway at Morgan Ave
+
+- type: 'custom:button-card'
+  template:
+    - slide_basic
+    - slide_with_live_camera
+  entity: camera.511ny_i495_at_84th_street
+  name: Long Island Expressway at 84th St
+
+- type: 'custom:button-card'
+  template:
+    - slide_basic
+    - slide_with_live_camera
+  entity: camera.511ny_i278_at_state_street_upper_lvl
+  name: Brooklyn-Queens Expressway at State St
+
+- type: 'custom:button-card'
+  template:
+    - slide_basic
+    - slide_with_live_camera
+  entity: camera.511ny_i495_at_queens_midtown_tunnel
+  name: Long Island Expressway at Queens Midtown Tunnel
+
+
+# Notify NYC
+
+- &slide-notify-nyc
+  type: 'custom:button-card'
+  template: slide_basic
+  entity: sensor.notify_nyc
+  variables:
+    slide: 0
+  show_state: true
+  show_label: true
+  name: |
+    [[[
+      return "Notify NYC - " + moment(entity.attributes.entries[variables.slide].published, "DD/MMM/YYYY HH:mm:ss").fromNow()
+    ]]]
+  state_display: >-
+    [[[ return
+    entity.attributes.entries[variables.slide].title.replaceAll("Notify NYC
+    - ", "") ]]]
+  label: >-
+    [[[ return
+    entity.attributes.entries[variables.slide].summary.replaceAll(/Notification
+    issued .*/g, "").replaceAll(/For more information, .*/g,
+    "").replaceAll(/To view this message in.*/g, "") ]]]
+
+- <<: *slide-notify-nyc
+  variables:
+    aspect_ratio: 2/1
+    slide: 1
+
+- <<: *slide-notify-nyc
+  variables:
+    aspect_ratio: 2/1
+    slide: 2
+
+
+- !include slides/blank.yaml

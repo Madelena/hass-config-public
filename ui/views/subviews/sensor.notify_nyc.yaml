@@ -1,0 +1,52 @@
+# Notify NYC Subview
+# Made by Madelena Mak 2022
+
+title: Notify NYC
+path: 'sensor.notify_nyc'
+subview: true
+
+type: 'custom:grid-layout'
+layout: !include ../../shared/snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout: !include ../../shared/snippets/layout-page-columns-one.yaml
+    view_layout:
+      grid-area: cc
+
+    cards:
+      - type: 'custom:list-card'
+        entity: sensor.notify_nyc
+        feed_attribute: entries
+        columns:
+          - title: ''
+            field: title
+            style:
+              - display: block
+              - font-weight: 600
+              - font-size: var(--h4-font-size)
+              - xwhite-space: nowrap
+              - padding: 8px 0 2px
+            regex: (?<=- ).*
+          - title: ''
+            field: published
+            style:
+              - display: block
+              - font-size: var(--h6-font-size)
+              - padding: 0 0 4px
+              - opacity: 0.5
+              - text-transform: uppercase
+          - title: ''
+            field: summary
+            style:
+              - display: block
+              - padding: 0 0 8px
+            regex: (?<=.*\.\s\n+)(.|\n)*(?=\n+To view this message)
+        style: >
+          xha-card { background: none; }
+
+          table tbody:first-child { display: none; }
+
+          tbody tr:nth-child(odd), tbody tr:nth-child(even) { background:
+          none; }

@@ -4,115 +4,132 @@
 # Mini Graph Tile
 # Uses the mini-graph-card module.
 
-mini_graph_tile:
-  default:
-    - title: ''
-    - hours_to_show: 24
-    - points_per_hour: 1
-    - height: 200
-    - lower_bound: ~10000
-    - upper_bound: ~0
-    - aspect_ratio: 1/1
-    - line_width: 4
-    - icon: ''
-    - decimals: 0
-    - unit: ''
-  card:
-    type: 'custom:mini-graph-card'
-    entities: '[[entities]]'
-    name: '[[title]]'
-    icon: '[[icon]]'
-    unit: '[[unit]]'
-    hours_to_show: '[[hours_to_show]]'
-    points_per_hour: '[[points_per_hour]]'
-    hour24: true
-    line_width: '[[line_width]]'
-    smoothing: true
-    show:
-      labels: false
-      labels_secondary: false
-      points: false
-      legend: false
-    decimals: '[[decimals]]'
-    lower_bound: '[[lower_bound]]'
-    upper_bound: '[[upper_bound]]'
-    card_mod:
-      style: >
-        ha-card {
-          aspect-ratio: [[aspect_ratio]];
-          --webkit-aspect-ratio: [[aspect_ratio]];
-          padding: 0 !important;
-        }
+# mini_graph_tile:
+#   default:
+#     - title: ''
+#     - graph: line
+#     - hours_to_show: 24
+#     - points_per_hour: 1
+#     - group_by: interval
+#     - height: 120
+#     - lower_bound: ~10000
+#     - upper_bound: ~0
+#     - aspect_ratio: 1/1
+#     - line_width: 4
+#     - icon: ''
+#     - decimals: 0
+#     - unit: ''
+#     - action: more-info
+#     - link: ''
+#     - animate: true
+#     - bar_spacing: 4
+#     - name_background: rgba(var(--rgb-accent-color),.15)
+#   card:
+#     type: 'custom:mini-graph-card'
+#     entities: '[[entities]]'
+#     name: '[[title]]'
+#     icon: '[[icon]]'
+#     unit: '[[unit]]'
+#     hours_to_show: '[[hours_to_show]]'
+#     points_per_hour: '[[points_per_hour]]'
+#     group_by: '[[group_by]]'
+#     height: '[[height]]'
+#     hour24: true
+#     line_width: '[[line_width]]'
+#     bar_spacing: '[[bar_spacing]]'
+#     smoothing: true
+#     animate: '[[animate]]'
+#     show:
+#       graph: '[[graph]]'
+#       labels: false
+#       labels_secondary: false
+#       points: false
+#       legend: false
+#     decimals: '[[decimals]]'
+#     lower_bound: '[[lower_bound]]'
+#     upper_bound: '[[upper_bound]]'
+#     tap_action:
+#       action: '[[action]]'
+#       navigation_path: '[[link]]'
+#       url: '[[link]]'
+#     card_mod:
+#       style: >
+#         ha-card {
+#           aspect-ratio: [[aspect_ratio]];
+#           --webkit-aspect-ratio: [[aspect_ratio]];
+#           padding: 0 !important;
+#         }
 
-        ha-card .header {
-          order: 11;
-          padding: 4px 4px 12px 12px !important;
-          background-color: rgba(var(--rgb-accent-color),.15);
-        }
+#         ha-card .header {
+#           order: 11;
+#           padding: 8px 6px 12px 12px !important;
+#           background-color: [[name_background]];
+#         }
 
-        .name { align-self: flex-end; 
+#         .name { align-self: flex-end; 
 
-        }
+#         }
 
-        .name > span {
-          font-size: var(--body-font-size) !important;
-          font-weight: normal !important;
-          max-height: none !important;
-          opacity: 1 !important;
-          white-space: normal;
-          line-height: 1.33;
-        }
+#         .name > span {
+#           font-size: var(--body-font-size) !important;
+#           font-weight: normal !important;
+#           max-height: none !important;
+#           opacity: 1 !important;
+#           white-space: normal;
+#           line-height: 1.33;
+#         }
 
-        .states {
-          margin-top: 4px;
-          padding: 0 12px 4px 12px;
-        }
+#         .states {
+#           margin-top: 4px;
+#           padding: 0 12px 4px 12px;
+#           margin-bottom: -4px;
+#         }
 
-        .state { flex-flow: wrap !important; }
+#         .state { flex-flow: wrap !important; }
 
-        .state__value {
-          font-size: var(--h3-font-size) !important;
-          font-weight: var(--h3-font-weight) !important;
-        }
+#         .state__value {
+#           font-size: var(--h3-font-size) !important;
+#           font-weight: var(--h3-font-weight) !important;
+#         }
 
-        .state__uom {
-          font-size: var(--h6-font-size) !important;
-          text-transform: uppercase;
-          margin-bottom: 0 !important;
-          white-space: normal !important;
-          overflow: inherit !important;
-        }
+#         .state__uom {
+#           font-size: var(--h6-font-size) !important;
+#           text-transform: uppercase;
+#           margin-bottom: 0 !important;
+#           white-space: normal !important;
+#           overflow: inherit !important;
+#         }
 
-        .state__time {
-          font-size: var(--h6-font-size) !important;
-          font-weight: normal !important;
-          letter-spacing: normal !important;
-        }
+#         .state__time {
+#           font-size: var(--h6-font-size) !important;
+#           font-weight: normal !important;
+#           letter-spacing: normal !important;
+#         }
 
-        .graph {
-          margin-top: auto;
-        }
+#         .graph {
+#           margin-top: auto;
+#         }
 
-        .graph__legend {
-          font-size: var(--h6-font-size) !important;
-          font-weight: normal !important;
-          justify-content: flex-start !important;
-          padding-left: 8px !important;
-          letter-spacing: normal !important;
-        }
+#         .graph__legend {
+#           font-size: var(--h6-font-size) !important;
+#           font-weight: normal !important;
+#           justify-content: flex-start !important;
+#           padding-left: 8px !important;
+#           letter-spacing: normal !important;
+#         }
 
-        .graph__legend__item {
-          margin: 0 8px !important;
-        }
+#         .graph__legend__item {
+#           margin: 0 8px !important;
+#         }
 
-        .icon { align-self: flex-end; color: var(--primary-text-color)
-        !important; }
+#         .icon { align-self: flex-end; color: var(--primary-text-color)
+#         !important; }
 
-        .icon > ha-icon {
-          width: 16px !important;
-          height: 16px !important;
-          --mdc-icon-size: 20px;
-        }
+#         .icon > ha-icon {
+#           width: 16px !important;
+#           height: 16px !important;
+#           --mdc-icon-size: 20px;
+#         }
 
 
 # Multi Graph Card
@@ -120,6 +137,7 @@ mini_graph_tile:
 multi_graph_card:
   default:
     - title: ''
+    - icon: ''
     - hours_to_show: 48
     - points_per_hour: 2
     - height: 200
@@ -127,10 +145,15 @@ multi_graph_card:
     - upper_bound: ~0
     - animate: true
     - show_extrema: false
+    - show_header: ''
+    - show_state: ''
+    - show_legend: ''
+    - smoothing: true
   card:
     type: 'custom:mini-graph-card'
     entities: '[[entities]]'
     name: '[[title]]'
+    icon: '[[icon]]'
     hours_to_show: '[[hours_to_show]]'
     points_per_hour: '[[points_per_hour]]'
     hour24: true
@@ -138,7 +161,7 @@ multi_graph_card:
     height: '[[height]]'
     lower_bound: '[[lower_bound]]'
     upper_bound: '[[upper_bound]]'
-    smoothing: true
+    smoothing: '[[smoothing]]'
     animate: '[[animate]]'
     show:
       labels_secondary: false
@@ -149,6 +172,7 @@ multi_graph_card:
         .header {
           padding-bottom: 0;
           margin-top: -8px;
+          display: [[show_header]];
         }
         .name > span {
           font-size: var(--body-font-size) !important;
@@ -158,6 +182,7 @@ multi_graph_card:
         }
         .states {
           margin-top: -8px;
+          display: [[show_state]];
         }
         .state__value {
           font-size: var(--h1-font-size) !important;
@@ -181,6 +206,7 @@ multi_graph_card:
           padding-left: 8px !important;
           padding-bottom: 16px !important;
           letter-spacing: normal !important;
+          display: [[show_legend]];
         }
         .graph__legend__item {
           margin: 0 8px !important;
@@ -231,6 +257,7 @@ history_graph_card:
       - type: history-graph
         hours_to_show: '[[hours_to_show]]'
         refresh_interval: '[[refresh_interval]]'
+        show_names: false
         entities:
           - entity: '[[entity]]'
         card_mod:
@@ -251,67 +278,75 @@ history_graph_card:
 # BAR CARDS
 
 # Metro Bar Card
-# Uses the bar-card module.
+# Uses the bar-card module. This was my first HA dashboard modification.
 
-metro_bar_card:
-  card:
-    type: 'custom:bar-card'
-    entities: '[[entities]]'
-    positions:
-      name: inside
-      value: inside
-      indicator: 'off'
-    height: 4
-    style: |-
-      bar-card-row {
-        height: 8px;
-        padding-top: 48px;
-      }
-      bar-card-background {
-        background: var(--primary-background-color);
-      }
-      bar-card-contentbar {
-        margin-top: -16px;
-      }
-      bar-card-name, bar-card-value {
-        margin: 0;
-      }
-      bar-card-value {
-        font-size: var(--h5-font-size);
-      }
-    title:
-      - '[[title]]'
+# metro_bar_card:
+#   default:
+#     - min: 0
+#     - max: 100
+#   card:
+#     type: 'custom:bar-card'
+#     entities: '[[entities]]'
+#     positions:
+#       name: inside
+#       value: inside
+#       indicator: 'off'
+#     height: 4
+#     animation:
+#       state: 'on'
+#     min: '[[min]]'
+#     max: '[[max]]'
+#     style: |-
+#       bar-card-row {
+#         height: 8px;
+#         padding-top: 48px;
+#       }
+#       bar-card-background {
+#         background: var(--primary-background-color);
+#       }
+#       bar-card-contentbar {
+#         margin-top: -16px;
+#       }
+#       bar-card-name, bar-card-value {
+#         margin: 0;
+#       }
+#       bar-card-value {
+#         font-size: var(--h5-font-size);
+#       }
+#     title:
+#       - '[[title]]'
 
-# Metro Bar Card (No Icon)
-metro_bar_card_no_icon:
-  card:
-    type: 'custom:bar-card'
-    entities: '[[entities]]'
-    positions:
-      icon: 'off'
-      name: inside
-      value: inside
-      indicator: 'off'
-    height: 4
-    style: |-
-      bar-card-row {
-        height: 12px;
-        padding-top: 36px;
-      }
-      bar-card-background {
-        background: var(--primary-background-color);
-      }
-      bar-card-contentbar {
-        margin-top: -16px;
-      }
-      bar-card-name, bar-card-value {
-        margin: 0;
-      }
-      bar-card-value {
-        font-size: var(--h5-font-size);
-      }
-    title:
-      - '[[title]]'
+# # Metro Bar Card (No Icon)
+# metro_bar_card_no_icon:
+#   card:
+#     type: 'custom:bar-card'
+#     entities: '[[entities]]'
+#     positions:
+#       icon: 'off'
+#       name: inside
+#       value: inside
+#       indicator: 'off'
+#     animation: on
+#     height: 4
+#     style: |-
+#       bar-card-row {
+#         height: 12px;
+#         padding-top: 36px;
+#       }
+#       bar-card-background {
+#         background: var(--primary-background-color);
+#       }
+#       bar-card-contentbar {
+#         margin-top: -16px;
+#       }
+#       bar-card-name, bar-card-value {
+#         margin: 0;
+#       }
+#       bar-card-value {
+#         font-size: var(--h5-font-size);
+#       }
+#     title:
+#       - '[[title]]'
 
 
 # LIGHT CARD
@@ -332,7 +367,7 @@ light_card:
       use_state_color: true
       use_percentage_bg_opacity: true
       show_track: true
-      toggle_on_click: true
+      toggle_on_click: false
       force_square: true
     show_name: true
     show_state: true
@@ -355,13 +390,13 @@ light_card:
         overflow: visible !important;
         white-space: normal !important;
         line-height: 1.33 !important;
-        padding: 12px !important;
+        padding: 10px 12px !important;
         position: absolute;
         bottom: 0 !important;
       }
       .icon {
         --mdc-icon-size: 20px;
-        bottom: 12px !important;
+        bottom: 10px !important;
         position: absolute !important;
         right: 8px !important;
       }
@@ -372,6 +407,9 @@ light_card:
         padding: 0 !important;
         max-width: calc(100% - 24px) !important;
       }
+      .slider {
+        background: linear-gradient(to right, rgba(var(--rgb-card-background-color),0.8), rgba(var(--rgb-card-background-color),0.8)), linear-gradient(to right, var(--slider-color), var(--slider-color));
+      }
       .slider-bg {
         height: 4px !important;
         top: auto !important;
@@ -380,110 +418,10 @@ light_card:
       .state {
         font-size: var(--h3-font-size);
         font-weight: var(--h3-font-weight);
-        padding: 12px 12px;
+        padding: 14px 12px;
       }
       .slider-thumb::after {
         background: var(--slider-thumb-color) !important;
       }
 
 
-# OTHER CARDS
-
-# Metro Media Player Page
-metro_media_player_page:
-  card:
-    type: vertical-stack
-    card_mod:
-      style: |
-        ha-card {background: red;}
-    cards:
-      - type: 'custom:button-card'
-        entity: '[[entity]]'
-        color_type: card
-        size: 20px
-        show_state: true
-        show_label: true
-        show_icon: false
-        state_display: '[[[ return entity.attributes.media_title ]]]'
-        label: |-
-          [[[ if (entity.attributes.media_content_type == "music") {
-              return entity.attributes.media_album_name + "<br><span style='font-weight: 500;'>" + entity.attributes.media_artist + "</span>"
-            } else if (entity.attributes.media_content_type == "tvshow") {
-              return entity.attributes.media_series_title
-            }
-          ]]]
-        custom_fields:
-          picture: ' '
-          space: ' '
-        color: transparent
-        styles:
-          card:
-            - aspect-ratio: 5/2
-            - padding: 16px
-          grid:
-            - grid-template-areas: |
-                "picture space"
-                "picture n"
-                "picture s"
-                "picture l"
-            - grid-template-columns: calc( 40% - 16px ) 1fr
-            - grid-template-rows: 1fr min-content min-content min-content
-          name:
-            - font-size: 12pt
-            - font-weight: 500
-            - letter-spacing: .05em
-            - padding: 16px 0 8px 0
-            - white-space: normal
-            - text-align: left
-            - justify-self: start
-            - align-self: end
-            - text-transform: uppercase
-            - opacity: 0.67
-          state:
-            - font-size: 48pt
-            - justify-self: start
-            - padding: 0 0 8px 0
-            - font-weight: 500
-            - align-self: start
-            - text-overflow: clip
-            - white-space: normal
-            - line-height: 1.1
-            - text-align: left
-          label:
-            - font-size: 24pt
-            - justify-self: start
-            - padding: 0 0 32px 0
-            - align-self: start
-            - white-space: normal
-            - text-align: left
-            - height: 100%
-          custom_fields:
-            picture:
-              - background: |-
-                  [[[ 
-                    if (entity.attributes.entity_picture != '') {
-                      return "url(" + entity.attributes.entity_picture + ")"
-                    } else if (entity.attributes.entity_picture_local != '') {
-                      return "url(" + entity.attributes.entity_picture_local + ")"
-                    }
-                  ]]]
-              - background-size: cover
-              - xbackground-position: center center
-              - height: calc( 100% - 32px )
-              - aspect-ratio: 1/1
-              - position: relative
-              - xwidth: 100%
-      - type: media-control
-        entity: '[[entity]]'
-        card_mod:
-          style: >
-            ha-card { background: none; }
-
-            .media-info, .top-info, .background { display: none
-            !important; }
-
-            .title-controls { padding: 0 !important; }
-
-            .player { padding-top: 0 !important; color: rgb(255,255,255)
-            !important;} mwc-linear-progress { --mdc-theme-primary:
-            inherit !important; }

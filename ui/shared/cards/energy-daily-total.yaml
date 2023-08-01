@@ -1,0 +1,68 @@
+type: vertical-stack
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: entity
+        entity: sensor.total_energy_use_daily_max
+        name: Yesterday
+        icon: none
+      - type: entity
+        entity: sensor.total_energy_use_hourly_max
+        name: Last Hour
+        icon: 'mdi:home-lightning-bolt'
+  - type: 'custom:mini-graph-card'
+    name: Daily Total
+    show:
+      graph: bar
+      icon: false
+    height: 150
+    hours_to_show: 168
+    aggregate_func: max
+    group_by: date
+    bar_spacing: 48
+    unit: Wh
+    update_interval: 30000
+    line_color: 'rgba(var(--rgb-primary-color), .5)'
+    lower_bound: 0
+    upper_bound: ~0
+    entities:
+      - entity: sensor.total_energy_use_daily
+        name: Total Energy Consumption
+    card_mod:
+      style: >
+        ha-card {border-bottom: 1px solid
+        rgba(var(--rgb-primary-text-color),.1);} .header {
+          padding-bottom: 0;
+          margin-top: -8px;
+        } .name > span {
+          font-size: var(--body-font-size) !important;
+          font-weight: normal !important;
+          max-height: none !important;
+          opacity: 1 !important;
+        } .states {
+          margin-top: -8px;
+        } .state__value {
+          font-size: var(--h1-font-size) !important;
+          font-weight: 100 !important;
+          padding: 8px 0;
+        } .state__uom {
+          font-size: var(--h6-font-size) !important;
+          text-transform: uppercase;
+          margin-bottom: 2px !important;
+          padding: 8px 0;
+        } .state__time {
+          font-size: var(--h6-font-size) !important;
+          font-weight: normal !important;
+          letter-spacing: normal !important;
+        } .graph__legend {
+          font-size: var(--h6-font-size) !important;
+          font-weight: normal !important;
+          justify-content: flex-start !important;
+          padding-left: 8px !important;
+          letter-spacing: normal !important;
+        } .graph__legend__item {
+          margin: 0 8px !important;
+        } .icon {
+          margin-top: 12px;
+        }
+in_card: true

@@ -1,0 +1,31 @@
+
+- !include slides/big-clock-space-theme.yaml
+
+
+# Chores
+- !include slides/chores.yaml
+
+
+# Weather
+- !include slides/sun.yaml
+- !include slides/nws-alerts.yaml
+- !include slides/weather-current.yaml
+- !include slides/temp-outdoor.yaml
+- !include slides/temp-indoor.yaml
+- !include slides/weather-daily.yaml
+- !include slides/weather-hourly.yaml
+
+
+# Fun Stuff
+- !include slides/last-fm-artist.yaml
+- !include slides/plex-new-shows.yaml
+
+
+# Commute
+- !include slides/subway-status.yaml
+- !include slides/gasbuddy.yaml
+- !include slides/nyc311-alt-side-parking.yaml
+- !include slides/waze-driving-time.yaml
+
+
+- !include slides/blank.yaml

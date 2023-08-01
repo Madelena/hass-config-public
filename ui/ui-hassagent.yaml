@@ -2,27 +2,20 @@
 # Made by Madelena Mak 2022
 # https://mmak.es
 
-title: Home Assistant Agent Menu
+title: Home Assistant Agent
 
 views:
   - title: Workspace
 
     type: 'custom:grid-layout'
-    layout: !include views/snippets/layout-page-margin.yaml
+    layout: !include shared/snippets/layout-page-margin.yaml
     cards:
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include views/snippets/layout-page-columns.yaml
+        layout: !include shared/snippets/layout-page-columns.yaml
         view_layout:
           grid-area: cc
         cards: !include views/rooms/workspace-cards.yaml
 
 decluttering_templates: !include templates/decluttering-card.yaml
 button_card_templates: !include_dir_merge_named templates/button-card/
-popup_cards: !include_dir_merge_named popups/
-
-kiosk_mode:
-  mobile_settings:
-    hide_menubutton: true
-    hide_overflow: true
-    hide_header: true

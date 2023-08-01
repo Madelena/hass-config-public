@@ -1,0 +1,13 @@
+# Power Usage slide
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_graph
+  - slide_with_state_unit
+entity: sensor.total_energy_use
+name: Current Total Energy Use
+icon: mdi:home-lightning-bolt
+variables:
+  hours_to_show: 4
+  points_per_hour: 6

@@ -1,0 +1,82 @@
+
+- platform: template
+  switches:
+    bedroom_humidifier:
+      friendly_name: "Bedroom Humidifier"
+      icon_template: '{{ iif (states("sensor.bedroom_humidifier_power") == on, "mdi:air-humidifier", "mdi:air-humidifier-off") }}'
+      value_template: "{{ is_state('sensor.bedroom_humidifier_power', 'on') }}"
+      turn_on:
+        service: rest_command.switchbot_device_command
+        data:
+          deviceId: !secret switchbot_humidifier_deviceID
+          command: turnOn
+      turn_off:
+        service: rest_command.switchbot_device_command
+        data:
+          deviceId: !secret switchbot_humidifier_deviceID
+          command: turnOff
+
+    bedroom_air_conditioner:
+      friendly_name: "Bedroom Air Conditioner"
+      icon_template: '{{ iif (states("binary_sensor.bedroom_air_conditioner_power") == on, "mdi:fan", "mdi:fan-off") }}'
+      value_template: "{{ is_state('binary_sensor.bedroom_air_conditioner_power', 'on') }}"
+      turn_on:
+        service: media_player.play_media
+        data:
+          media_content_id: Turn on Bedroom Air Conditioner
+          media_content_type: custom
+        target:
+          entity_id: media_player.bedroom_echo_show
+      turn_off:
+        service: media_player.play_media
+        data:
+          media_content_id: Turn off Bedroom Air Conditioner
+          media_content_type: custom
+        target:
+          entity_id: media_player.bedroom_echo_show
+
+# - platform: rest
+#   name: "Bedroom Humidifier"
+#   resource: !secret switchbot_humidifier_post
+#   method: POST
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   body_on: '"command": "turnOn"'
+#   body_off: '"command": "turnOff"'
+# - platform: rest
+#   name: "Bedroom Humidifier Auto Mode"
+#   resource: !secret switchbot_humidifier_post
+#   method: POST
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   body_on: '"command": "setMode",	"parameter": "auto"'
+#   body_off: '"command": "turnOff"'
+# - platform: rest
+#   name: "Bedroom Humidifier Low Mode"
+#   resource: !secret switchbot_humidifier_post
+#   method: POST
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   body_on: '"command": "setMode",	"parameter": "101"'
+#   body_off: '"command": "turnOff"'
+# - platform: rest
+#   name: "Bedroom Humidifier Medium Mode"
+#   resource: !secret switchbot_humidifier_post
+#   method: POST
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   body_on: '"command": "setMode",	"parameter": "102"'
+#   body_off: '"command": "turnOff"'
+# - platform: rest
+#   name: "Bedroom Humidifier High Mode"
+#   resource: !secret switchbot_humidifier_post
+#   method: POST
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   body_on: '"command": "setMode",	"parameter": "103"'
+#   body_off: '"command": "turnOff"'

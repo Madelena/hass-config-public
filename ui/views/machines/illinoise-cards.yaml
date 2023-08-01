@@ -1,0 +1,420 @@
+
+type: 'custom:layout-card'
+layout_type: 'custom:grid-layout'
+layout:
+  margin: 0 16px 32px
+cards:
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    layout:
+      grid-template-columns: auto max-content
+      grid-template-rows: auto
+      mediaquery:
+        '(max-width: 799.99px)':
+          grid-template-columns: 1fr
+      margin: 0
+      card_margin: 0
+    cards:
+
+      - type: 'custom:button-card'
+        template: title_card_with_icon
+        name: Dorothy Illinoise
+        icon: mdi:factory
+        entity: binary_sensor.dorothy_illinoise
+
+
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+        view_layout:
+          place-self: center auto
+        cards:
+
+          - type: 'custom:swipe-card'
+            parameters: !include ../../shared/snippets/parameters-page-title-swipe-card.yaml
+            style: !include ../../shared/snippets/style-page-title-swipe-card.yaml
+            cards:
+
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-1
+                    type: 'custom:mushroom-entity-card'
+                    entity: button.dorothy_lock
+                    name: Lock
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    icon: mdi:lock
+                    secondary_info: none
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-1
+                    layout: vertical
+
+              - type: custom:state-switch
+                entity: mediaquery
+                states:
+                  "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
+                    type: 'custom:mushroom-entity-card'
+                    entity: button.dorothy_restart
+                    name: Restart
+                    icon_color: pink
+                    style: 'ha-card {background: none;}'
+                    icon: mdi:restart
+                    secondary_info: none
+                  "(min-width: 800px) and (max-width: 1023.99px)":
+                    <<: *title-badge-2
+                    layout: vertical
+
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:masonry-layout'
+    layout:
+      width: 328
+      max_width: 655
+      max_cols: 10
+      card_margin: 0 16px
+      margin: 0 -16px
+    cards:
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: SESSION
+          - type: entities
+            entities:
+              - entity: binary_sensor.ping_dorothy_illinoise
+                name: Ping
+              - entity: sensor.dorothy_lastsystemstatechange
+                name: Last System State Change
+              - entity: sensor.dorothy_lastactive
+                name: Last Active
+                type: custom:multiple-entity-row
+                format: relative
+                secondary_info:
+                  entity: sensor.dorothy_lastactive
+                  format: datetime
+              - entity: sensor.dorothy_lastboot
+                name: Last Boot
+                type: custom:multiple-entity-row
+                format: relative
+                secondary_info:
+                  entity: sensor.dorothy_lastboot
+                  format: datetime
+              - entity: sensor.dorothy_sessionstate
+                name: Session State
+              - entity: binary_sensor.dorothy_microphoneactive
+                name: Microphone Active
+              - entity: binary_sensor.dorothy_webcamactive
+                name: Webcam Active
+              - entity: sensor.dorothy_monitorpowerstate
+                name: Monitor Power State
+
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: BACKUPS
+
+          - type: vertical-stack
+            in_card: true
+            title: Remote
+            cards:
+
+              - type: sensor
+                name: Crashplan Status
+                entity: sensor.dorothy_crashplan
+
+              - type: entities
+                entities:
+                  - entity: sensor.dorothy_crashplan
+                    type: custom:multiple-entity-row
+                    name: Reporting Period
+                    secondary_info:
+                      attribute: reporting_period
+                    show_state: false
+                    entities:
+                      - attribute: date
+                        format: relative
+                  - entity: sensor.dorothy_crashplan
+                    type: custom:multiple-entity-row
+                    name: Selected
+                    show_state: false
+                    entities:
+                      - attribute: selected_files
+                        unit: files
+                      - attribute: selected_size
+                  - entity: sensor.dorothy_crashplan
+                    type: custom:multiple-entity-row
+                    name: Backed Up
+                    show_state: false
+                    entities:
+                      - attribute: difference_files
+                        unit: files
+                      - attribute: difference_size
+
+          - type: entities
+            title: Local (SyncBackSE)
+            entities:
+              - entity: sensor.dorothy_syncback_collections
+                type: custom:multiple-entity-row
+                name: Collections
+                secondary_info:
+                  attribute: difference
+                show_state: false
+                entities:
+                  - attribute: profile_end_time
+                    format: relative
+              - entity: sensor.dorothy_syncback_personal
+                type: custom:multiple-entity-row
+                name: Personal
+                secondary_info:
+                  attribute: difference
+                show_state: false
+                entities:
+                  - attribute: profile_end_time
+                    format: relative
+              - entity: sensor.dorothy_syncback_portfolio
+                type: custom:multiple-entity-row
+                name: Portfolio
+                secondary_info:
+                  attribute: difference
+                show_state: false
+                entities:
+                  - attribute: profile_end_time
+                    format: relative
+              - entity: sensor.dorothy_syncback_practices
+                type: custom:multiple-entity-row
+                name: Practices
+                secondary_info:
+                  attribute: difference
+                show_state: false
+                entities:
+                  - attribute: profile_end_time
+                    format: relative
+              - entity: sensor.dorothy_syncback_projects
+                type: custom:multiple-entity-row
+                name: Projects
+                secondary_info:
+                  attribute: difference
+                show_state: false
+                entities:
+                  - attribute: profile_end_time
+                    format: relative
+
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: STATUS
+
+          # - type: 'custom:decluttering-card'
+          #   template: multi_graph_card
+          #   variables:
+          #     - title: CPU Load
+          #     - hours_to_show: 24
+          #     - points_per_hour: 12
+          #     - line_width: 1
+          #     - upper_bound: 100
+          #     - lower_bound: 0
+          #     - entities:
+          #         - entity: sensor.dorothy_intel_core_i5_750_load_cpu_total
+          #           name: CPU Load
+          #         - entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_1
+          #           name: Core 1
+          #         - entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_3
+          #           name: Core 2
+          #         - entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_3
+          #           name: Core 3
+          #         - entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_4
+          #           name: Core 4
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            cards:
+              - hours_to_show: 24
+                graph: line
+                type: sensor
+                entity: sensor.dorothy_intel_core_i5_750_load_cpu_total
+                detail: 2
+                name: CPU Load
+                icon: mdi:cpu-64-bit
+                view_layout:
+                  grid-area: main
+              - hours_to_show: 24
+                graph: line
+                type: sensor
+                name: Core 1
+                icon: mdi:cpu-64-bit
+                view_layout:
+                  grid-area: core1
+                entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_1
+              - hours_to_show: 24
+                graph: line
+                type: sensor
+                name: Core 2
+                icon: mdi:cpu-64-bit
+                view_layout:
+                  grid-area: core2
+                entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_2
+              - hours_to_show: 24
+                graph: line
+                type: sensor
+                name: Core 3
+                icon: mdi:cpu-64-bit
+                view_layout:
+                  grid-area: core3
+                entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_3
+              - hours_to_show: 24
+                graph: line
+                type: sensor
+                name: Core 4
+                icon: mdi:cpu-64-bit
+                view_layout:
+                  grid-area: core4
+                entity: sensor.dorothy_intel_core_i5_750_load_cpu_core_4
+            layout:
+              grid-template-columns: 50% 50%
+              grid-template-areas: |
+                "main main"
+                "core1 core2"
+                "core3 core4"
+              margin: 0
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: >-
+              sensor.dorothy_asus_p7h55_m_pro_winbond_w83667hg_b_temperatures_system
+            detail: 2
+            name: Motherboard Temperature
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.dorothy_plug_smartenergy_metering
+            detail: 2
+            name: Energy Consumption
+          - hours_to_show: 24
+            graph: line
+            type: sensor
+            entity: sensor.dorothy_generic_memory_load_memory
+            detail: 2
+            name: Memory Load
+            icon: mdi:memory
+          - type: entities
+            entities:
+              - entity: sensor.dorothy_asus_p7h55_m_pro_winbond_w83667hg_b_fans_auxiliary_fan
+                name: Auxiliary Fan
+                icon: mdi:fan
+              - entity: sensor.dorothy_asus_p7h55_m_pro_winbond_w83667hg_b_fans_cpu_fan
+                name: CPU Fan
+                icon: mdi:fan
+              - entity: sensor.dorothy_asus_p7h55_m_pro_winbond_w83667hg_b_fans_system_fan
+                name: System Fan
+                icon: mdi:fan
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: STORAGE
+
+          - type: entities
+            entities:
+              - entity: sensor.dorothy_generic_hard_disk_load_used_space
+                type: custom:button-card
+                template: bar_row
+                name: Techpolika Storage Space
+                variables: &dorothy-storage-variables
+                  bar_reverse: true
+                  bar_warning_percent: 80
+                  bar_error_percent: 95
+                  bar_warning_text: Almost Full
+                  bar_error_text: Full
+              - entity: sensor.dorothy_generic_hard_disk_load_used_space_2
+                type: custom:button-card
+                template: bar_row
+                name: Techpolika Storage Space Mirror
+                variables: *dorothy-storage-variables
+              - entity: sensor.dorothy_samsung_ssd_860_evo_500gb_load_used_space_2
+                type: custom:button-card
+                template: bar_row
+                name: Dorothy Windows 10
+                variables: *dorothy-storage-variables
+              - entity: sensor.dorothy_samsung_ssd_860_evo_500gb_load_used_space
+                type: custom:button-card
+                template: bar_row
+                name: Dorothy Windows 10 Mirror
+                variables: *dorothy-storage-variables
+            style: |
+              #states > div > * {overflow: visible !important;}
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: PLEX
+          - type: entity
+            entity: sensor.plex_dorothy
+          - !include illinoise-plex-library.yaml
+
+      - type: vertical-stack
+        cards:
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: DOWNLOADERS
+          - type: entities
+            entities:
+              - entity: switch.nzbget_download
+              - entity: sensor.nzbget_download_paused
+              - entity: sensor.nzbget_speed
+              - entity: sensor.nzbget_average_speed
+              - entity: sensor.nzbget_post_processing_jobs
+              - entity: sensor.nzbget_post_processing_paused
+              - entity: sensor.nzbget_disk_free
+              - entity: sensor.nzbget_queue_size
+              - entity: sensor.nzbget_size
+              - entity: sensor.nzbget_article_cache
+              - entity: sensor.nzbget_uptime
+            title: NZBGet
+          - type: entities
+            entities:
+              - entity: sensor.sonarr_queue
+              - entity: sensor.sonarr_upcoming
+              - entity: sensor.sonarr_shows
+              - entity: sensor.sonarr_disk_space
+            title: Sonarr
+          - type: entities
+            entities:
+              - entity: sensor.radarr_disk_space_movies
+              - entity: sensor.radarr_movies
+              - entity: binary_sensor.radarr_health
+            title: Radarr
+          - type: entities
+            entities:
+              - sensor.deluge_status
+              - sensor.deluge_down_speed
+              - sensor.deluge_up_speed
+            title: Deluge
+ 
+
+  - type: vertical-stack
+    cards:
+
+      - type: 'custom:button-card'
+        template: header_card_no_link
+        variables:
+          name: GLANCES
+
+      - type: iframe
+        url: !secret dorothy_glances_url
+        aspect_ratio: 75%

@@ -1,0 +1,83 @@
+- type: 'custom:mushroom-light-card'
+  use_light_color: true
+  show_brightness_control: true
+  show_color_temp_control: true
+  show_color_control: true
+  entity: light.workspace_desk_spot_light_left
+
+- type: 'custom:mushroom-light-card'
+  entity: light.workspace_desk_spot_light_right
+  show_brightness_control: true
+  use_light_color: true
+  show_color_temp_control: true
+  show_color_control: true
+
+- type: 'custom:layout-card'
+  layout_type: 'custom:grid-layout'
+  layout: !include ../../shared/snippets/layout-live-tile-mini.yaml
+  entities:
+
+    - type: 'custom:decluttering-card'
+      template: light_card
+      variables:
+        - entity: switch.adaptive_lighting_workspace_desk_spot_lights
+        - name: Adaptive Lighting
+      view_layout:
+        grid-column: span 2
+        grid-row: span 2
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_energize
+      variables:
+        name: Energize
+        color: 'rgb(64, 64, 64)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_concentrate
+      variables:
+        name: Concentrate
+        color: 'rgb(251, 212, 180)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_bright
+      variables:
+        name: Bright
+        color: 'rgb(250, 207, 125)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_read
+      variables:
+        name: Read
+        color: 'rgb(248, 173, 107)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_relax
+      variables:
+        name: Relax
+        color: 'rgb(195, 150, 71)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_lights_camera_action
+      variables:
+        name: 'Lights, Camera, Action!'
+        color: 'rgb(141, 97, 59)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_dimmed
+      variables:
+        name: Dimmed
+        color: 'rgb(64, 47, 33)'
+
+    - type: 'custom:button-card'
+      template: hue_scene_card_mini
+      entity: scene.workspace_key_lights_nightlight
+      variables:
+        name: Nightlight
+        color: 'rgb(63, 46, 25)'

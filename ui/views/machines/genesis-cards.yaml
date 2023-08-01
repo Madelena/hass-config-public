@@ -15,7 +15,7 @@ cards:
       grid-template-columns: auto max-content
       grid-template-rows: auto
       mediaquery:
-        '(max-width: 800px)':
+        '(max-width: 799.99px)':
           grid-template-columns: 1fr
       margin: 0
     view_layout:
@@ -34,23 +34,12 @@ cards:
         layout:
           margin: 0
         view_layout:
-          place-self: center start
+          place-self: center auto
         cards:
 
           - type: 'custom:swipe-card'
-            parameters:
-              enabled: true
-              slidesPerView: 1.66
-              width: 480
-              breakpoints:
-                '800':
-                  enabled: false
-                  slidesPerView: 3
-                  width: 360
-                '1024':
-                  enabled: false
-                  slidesPerView: 3
-                  width: 600
+            parameters: !include ../../shared/snippets/parameters-page-title-swipe-card.yaml
+            style: !include ../../shared/snippets/style-page-title-swipe-card.yaml
             cards:
 
               - type: custom:state-switch
@@ -62,6 +51,7 @@ cards:
                     name: Pause
                     icon: 'mdi:pause'
                     icon_color: pink
+                    secondary_info: none
                     style: 'ha-card {background: none;}'
                   "(min-width: 800px) and (max-width: 1023.99px)":
                     <<: *title-badge-1
@@ -76,6 +66,7 @@ cards:
                     name: Resume
                     icon: 'mdi:play'
                     icon_color: pink
+                    secondary_info: none
                     style: 'ha-card {background: none;}'
                   "(min-width: 800px) and (max-width: 1023.99px)":
                     <<: *title-badge-2
@@ -90,6 +81,7 @@ cards:
                     name: Stop
                     icon: 'mdi:stop'
                     icon_color: pink
+                    secondary_info: none
                     style: 'ha-card {background: none;}'
                   "(min-width: 800px) and (max-width: 1023.99px)":
                     <<: *title-badge-3
@@ -103,12 +95,6 @@ cards:
         template: header_card_no_link
         variables:
           name: STATUS
-
-      - hours_to_show: 24
-        graph: line
-        type: sensor
-        entity: sensor.octoprint_job_percentage
-        detail: 2
 
       - type: entities
         entities:
@@ -125,9 +111,9 @@ cards:
 
       - type: entities
         entities:
-          - entity: switch.genesis_makery_fan_socket
+          - entity: switch.genesis_makery_fan
           - entity: light.workspace_makery_lights
-          - entity: switch.genesis_makery_plug_socket
+          - entity: switch.genesis_makery_plug
           - entity: switch.makery_plug_on_off
 
   - type: vertical-stack
@@ -149,11 +135,31 @@ cards:
       - type: 'custom:decluttering-card'
         template: multi_graph_card
         variables:
-          - title: Temperatures
-          - hours_to_show: 2
+          - title: Job Progress
+          - hours_to_show: 4
           - points_per_hour: 30
-          - line_width: 1
+          - line_width: .5
+          - upper_bound: 100
+          - lower_bound: 0
+          - height: 50
           - entities:
+            - entity: sensor.octoprint_job_percentage
+
+      - type: 'custom:decluttering-card'
+        template: multi_graph_card
+        variables:
+          - title: Temperatures
+          - hours_to_show: 4
+          - points_per_hour: 30
+          - line_width: .5
+          - upper_bound: ~100
+          - lower_bound: 0
+          - height: 100
+          - entities:
+              - entity: sensor.genesis_temperatures_sensor_temperature
+                name: Enclosure
+              - entity: sensor.octoprint_actual_a_temp
+                name: Processor
               - entity: sensor.octoprint_actual_bed_temp
                 name: Actual Bed
               - entity: sensor.octoprint_target_bed_temp
@@ -162,18 +168,28 @@ cards:
                 name: Actual Tool
               - entity: sensor.octoprint_target_tool0_temp
                 name: Target Tool
-              - entity: sensor.genesis_thermometer_temperature
-                name: Enclosure
 
-      - hours_to_show: 2
-        graph: line
-        type: sensor
-        entity: sensor.makery_plug_smartenergy_metering
-        detail: 2
-        name: Makery Energy Use
+      - type: 'custom:decluttering-card'
+        template: multi_graph_card
+        variables:
+          - title: Energy Usage
+          - hours_to_show: 4
+          - points_per_hour: 30
+          - line_width: .5
+          - lower_bound: 0
+          - height: 50
+          - entities:
+            - entity: sensor.makery_plug_smartenergy_metering
 
-      - hours_to_show: 2
-        graph: line
-        type: sensor
-        entity: sensor.genesis_thermometer_humidity
-        detail: 2
+      - type: 'custom:decluttering-card'
+        template: multi_graph_card
+        variables:
+          - title: Humidity
+          - hours_to_show: 4
+          - points_per_hour: 30
+          - line_width: .5
+          - height: 50
+          - upper_bound: 100
+          - lower_bound: 0
+          - entities:
+            - entity: sensor.genesis_temperatures_sensor_humidity

@@ -6,7 +6,7 @@ title: Workspace
 path: workspace
 
 type: 'custom:grid-layout'
-layout: !include ../snippets/layout-page-margin.yaml
+layout: !include ../../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
@@ -21,15 +21,15 @@ cards:
 
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include ../snippets/layout-page-title.yaml
+        layout: !include ../../shared/snippets/layout-page-title.yaml
         cards:
 
           - type: markdown
-            style: !include ../snippets/style-markdown-page-title.yaml
+            style: !include ../../shared/snippets/style-markdown-page-title.yaml
             content: >
               # Workspace
 
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include ../snippets/layout-page-columns.yaml
+        layout: !include ../../shared/snippets/layout-page-columns.yaml
         cards: !include workspace-cards.yaml

@@ -1,0 +1,48 @@
+# Clock
+
+type: 'custom:button-card'
+show_state: true
+state_display: >-
+  [[[ return moment().format("H:mm") ]]]
+name: >-
+  [[[ return moment().format("dddd, MMM D") ]]]
+triggers_update: all
+styles:
+  grid:
+    - grid-template-areas: '"s" "n"'
+    - grid-template-columns: auto min-content
+    - grid-template-rows: min-content min-content auto
+    - align-content: center
+    - overflow: visible
+  card:
+    - background: none
+    - position: absolute
+    - top: 0
+    - right: -15vw
+    - padding: 0
+    - z-index: 100
+    - opacity: 0.75
+    - color: var(--primary-text-color)
+    - width: 25vw
+    - height: 15vw
+    - overflow-x: visible
+  name:
+    - font-size: 1.5vw
+    - font-weight: 700
+    - text-transform: uppercase
+    - place-self: end
+    - text-align: right
+    - padding: .5vw 4vw .5vw 0
+    - white-space: nowrap
+    - overflow: visible
+  state:
+    - font-size: 6vw
+    - font-weight: 100
+    - line-height: 1
+    - place-self: end
+    - text-align: right
+    - white-space: nowrap
+    - padding: 0 4vw 0 0
+    - overflow: visible
+tap_action:
+  action: none

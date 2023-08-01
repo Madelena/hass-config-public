@@ -1,0 +1,16 @@
+# Wind slide
+# This needed to convert from km/h to mph because I set my Hass to metric but I'm used to mph.
+
+type: 'custom:button-card'
+template:
+  - slide_with_big_state
+  - slide_with_graph
+entity: sensor.valhalla_wind
+name: Wind
+show_label: true
+label: '[[[ return states["sensor.wind_strength"].state + " from " + states["sensor.wind_direction"].state ]]]'
+state_display: |
+  [[[
+    return (Math.round(parseFloat(states["sensor.valhalla_wind"].state) * 0.6213712 * 10) / 10) + 
+      "<span style='font-size: .5em; opacity: .5;'> MPH</span>"
+  ]]]

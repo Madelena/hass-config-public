@@ -9,5 +9,20 @@
   client_id: !secret google_client_id
   client_secret: !secret google_client_secret
 
-- platform: torque
-  email: !secret torque_email
+# - platform: torque
+#   email: !secret torque_email
+
+- platform: ics
+  name: Astronomy Calendar
+  url: https://cantonbecker.com/astronomy-calendar/astrocal.ics
+  icon: mdi:weather-night
+
+- platform: plex_recently_added
+  name: Recently Added Shows
+  token: !secret plex_token
+  host: !secret plex_host
+  port: 32400
+  section_types:
+    - movie
+    - show
+  image_resolution: 800

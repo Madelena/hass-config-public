@@ -1,0 +1,8 @@
+# Allergy Index slide
+
+type: 'custom:button-card'
+template: slide_with_big_state
+entity: sensor.allergy_index_forecasted_average
+show_label: true
+state_display: '[[[ return entity.attributes.rating ]]]'
+label: '[[[ return entity.attributes.outlook ]]]'

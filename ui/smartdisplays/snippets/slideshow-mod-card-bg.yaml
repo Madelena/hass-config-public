@@ -1,0 +1,30 @@
+style: |
+    ha-card { background: none; position: relative;
+    height: 100vh; width: 100vw; margin: -1px; overflow: hidden;
+    }
+    layout-card { background: none; position: relative; opacity: 0; left: 100%;
+      animation-name: fade-in2;
+      animation-duration: 2s;
+      animation-fill-mode: forwards;
+      animation-iteration-count: 1;  
+    }
+    @keyframes fade-in2 {
+      0%   {opacity: 0; left: 100%;}
+      100% {opacity: 1; left: 0;}
+    }
+
+# Extravagant 3D transition
+# style: |
+#     ha-card { background: none; position: relative;
+#     height: 100vh; width: 100vw; margin: -1px; overflow: hidden; opacity: 0; left: 100%;
+#       animation-name: fade-in2;
+#       animation-duration: 2s;
+#       animation-fill-mode: forwards;
+#       animation-iteration-count: 1;  
+#     }
+#     layout-card { background: none; position: relative; 
+#     }
+#     @keyframes fade-in2 {
+#       0%   {opacity: 0; left: 100%; transform: perspective(1000px) rotateY(-90deg);}
+#       100% {opacity: 1; left: 0; transform: perspective(1000px) rotateY(0deg);}
+#     }

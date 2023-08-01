@@ -1,0 +1,133 @@
+
+# subway_service_status:
+#   state_display: >-
+#     [[[ 
+#       if (( entity.state == 'No Data' ) || ( entity.state == 'unavailable')) { return 'No Data' }
+#       return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses.north : entity.state)
+#     ]]]
+#   label: |-
+#     [[[ 
+#       if (( entity.state == 'No Data' ) || ( entity.state == 'unavailable')) { return '' }
+#       if ( entity.state == 'No Service') {
+#         var label = entity.attributes.service_change_summaries.both[0] 
+#       } else {
+#         var label = ((entity.attributes.service_change_summaries.north.length > 0) ? entity.attributes.service_change_summaries.north[0] : '') +
+#           ((entity.attributes.delay_summaries.north != null) ? entity.attributes.delay_summaries.north : '') +
+#           ((entity.attributes.service_irregularity_summaries.north != null) ? entity.attributes.service_irregularity_summaries.north : '') +
+#           ((entity.attributes.service_change_summaries.both.length > 0) ? entity.attributes.service_change_summaries.both[0] : '') }
+#       if ((label !== undefined) || (label !== null)) { return label.charAt(0).toUpperCase() + label.slice(1) }
+#     ]]]
+
+subway_service_status:
+  variables:
+    direction: "north"
+    station: !secret subway_station
+  state_display: >-
+    [[[
+      if (entity.attributes.service_changes["both"].length > 0) {
+        if (entity.attributes.service_changes["both"][0]["stations_affected"] !== undefined) {
+          let stations = entity.attributes.service_changes["both"][0]["stations_affected"]
+          if (stations.includes(variables.station)) {
+            return "No Train Service"
+          }
+        }
+      }
+      return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses[variables.direction] : "No Data")
+    ]]]
+  label: |-
+    [[[
+      if (entity.state != 'unavailable') {
+        var label = ((entity.attributes.service_change_summaries[variables.direction].length > 0) ? entity.attributes.service_change_summaries[variables.direction][0] : '') +
+          ((entity.attributes.delay_summaries[variables.direction] != null) ? entity.attributes.delay_summaries[variables.direction] : '') +
+          ((entity.attributes.service_irregularity_summaries[variables.direction] != null) ? entity.attributes.service_irregularity_summaries[variables.direction] : '')
+        if ((label == undefined) || (label == null) || (label == '')) {
+          label = (entity.attributes.service_change_summaries["both"].length > 0) ? entity.attributes.service_change_summaries["both"][0] : ''
+        }
+        label = label.replace(/<L>/g, "&#127323;")
+        return label.charAt(0).toUpperCase() + label.slice(1)
+      }
+    ]]]
+
+# subway_service_status_south:
+#   state_display: >-
+#     [[[ 
+#       return ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses.south : "No Data")
+#     ]]]
+#   label: |-
+#     [[[ 
+#       var label = ((entity.attributes.service_change_summaries.south.length > 0) ? entity.attributes.service_change_summaries.south[0] : '') +
+#         ((entity.attributes.delay_summaries.south != null) ? entity.attributes.delay_summaries.south : '') +
+#         ((entity.attributes.service_irregularity_summaries.south != null) ? entity.attributes.service_irregularity_summaries.south : '')
+#       if ((label !== undefined) || (label !== null)) { return label.charAt(0).toUpperCase() + label.slice(1) }
+#     ]]]
+
+# subway_service_status_background:
+#   state:
+#     - value: Slow
+#       styles:
+#         card:
+#           - background: rgba(var(--rgb-primary-color), .33)
+#           - color: var(--primary-text-color)
+#     - value: 'Not Good'
+#       color: 'rgba(var(--rgb-primary-color), .5)'
+#     - value: No Service
+#       styles:
+#         card:
+#           - background: var(--accent-color)
+#           - color: var(--accent-text-color)
+#     - value: Service Change
+#       styles:
+#         card:
+#           - background: var(--accent-color)
+#           - color: var(--accent-text-color)
+#     - value: Delay
+#       color: var(--primary-color)
+#     - value: No Data
+#       color: var(--primary-color)
+#     - value: Good Service
+#       styles:
+#         card:
+#           - background: var(--ha-card-background)
+#           - color: var(--disabled-text-color)
+
+subway_service_status_background:
+  variables:
+    direction: north
+  styles:
+    card:
+      - background: |
+          [[[
+            var status = ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses[variables.direction] : "No Data")
+            switch (status) {
+              case "Slow":
+                return "rgba(var(--rgb-primary-color), .33)"
+              case "Not Good":
+                return "rgba(var(--rgb-primary-color), .5)"
+              case "No Service":
+              case "Service Change":
+                return "var(--accent-color)"
+              case "Delay":
+              case "No Data":
+                return "var(--primary-color)"
+              case "Good Service":
+              default:
+                return "var(--ha-card-background)"
+            }
+          ]]]
+      - color: |
+          [[[
+            var status = ((entity.attributes.direction_statuses != undefined) ? entity.attributes.direction_statuses[variables.direction] : "No Data")
+            switch (status) {
+              case "No Service":
+              case "Service Change":
+                return "var(--accent-text-color)"
+              case "Slow":
+              case "Not Good":
+              case "Delay":
+              case "No Data":
+                return "var(--primary-text-color)"
+              case "Good Service":
+              default:
+                return "var(--disabled-text-color)"
+            }
+          ]]]

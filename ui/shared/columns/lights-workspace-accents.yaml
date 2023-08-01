@@ -1,0 +1,53 @@
+- view_layout:
+    grid-column: span 2
+  type: 'custom:button-card'
+  template:
+    - light_button_card_group
+  entity: group.workspace_accents_lights
+  name: All Accents Lights
+  icon: 'mdi:lightbulb-multiple'
+  variables:
+    aspect_ratio: 2/1
+
+- type: 'custom:button-card'
+  template:
+    - live_tile_with_graph
+    - live_tile_with_state_unit
+  entity: sensor.workspace_room_hue_sensor_light_level
+  name: Light Level
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.workspace_back_ledge_lights
+    - name: Back Ledge
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.workspace_back_shelf_lights
+    - name: Back Shelf
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.workspace_desk_bottom_lights
+    - name: Desk Bottom
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.workspace_bench_bottom_lights
+    - name: Bench Bottom
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.workspace_bloom_left
+    - name: Bloom Left
+
+- type: 'custom:decluttering-card'
+  template: light_card
+  variables:
+    - entity: light.workspace_bloom_right
+    - name: Bloom Right

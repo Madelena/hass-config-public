@@ -1,0 +1,10 @@
+grid-template-columns: auto max-content
+grid-template-rows: auto
+mediaquery:
+  '(min-width: 1024px)':
+    grid-template-columns: auto max-content
+  '(min-width: 800px)':
+    grid-template-columns: auto max-content
+  '(max-width: 799.99px)':
+    grid-template-columns: calc(100vw - 32px)
+margin: 0

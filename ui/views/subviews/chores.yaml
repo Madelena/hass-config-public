@@ -1,0 +1,23 @@
+# All On Off Switches Subview
+# Made by Madelena Mak 2022
+
+title: Chores
+path: 'chores'
+subview: true
+
+type: 'custom:grid-layout'
+layout: !include ../../shared/snippets/layout-page-margin.yaml
+
+cards:
+  - type: 'custom:layout-card'
+    layout_type: 'custom:masonry-layout'
+    layout:
+      width: 328
+      max_width: 655
+      max_cols: 10
+      card_margin: 16px 16px 32px 16px
+      margin: 0 -16px
+    view_layout:
+      grid-area: cc
+
+    cards: !include ../../shared/columns/chores-all-list.yaml

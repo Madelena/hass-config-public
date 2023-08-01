@@ -1,0 +1,62 @@
+# AMBIENT DASHBOARD - Minimal Version
+# Home Page
+# Made by Madelena Mak 2022
+
+title: Home
+path: home
+type: 'custom:grid-layout'
+layout:
+  margin: -1px
+  grid-template-areas: '"topbar" "slides"'
+  grid-template-rows: 0 100%
+  grid-template-columns: 100%
+cards:
+
+  # Top Bar
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: topbar
+      card_margin: 0
+    layout:
+      grid-template-rows: auto
+      grid-template-columns: 'auto 15vw'
+      margin: '0 0 0 0'
+    cards:
+      - type: custom:button-card
+        template: blank
+      - !include ../snippets/topbar-clock-simple.yaml
+
+
+  # The Slides
+
+  - type: 'custom:swipe-card'
+    view_layout:
+      grid-area: slides
+    parameters:
+      effect: cube
+      speed: 2000
+      cubeEffect:
+        - slideShadows: false
+      loop: true
+      autoHeight: true
+      autoplay:
+        delay: 8000
+        disableOnInteraction: false
+      pagination:
+        type: progressbar
+      keyboard:
+        enabled: true
+    card_mod:
+      style: |
+        .swiper-container-cube { overflow: hidden !important; z-index: 100 !important; }
+        .swiper-slide { transition: opacity 2s, transform !important; }
+        .swiper-slide-prev, .swiper-slide-next { opacity: 0; }
+        .swiper-slide-active { opacity: 1; }
+        .swiper-container-horizontal > .swiper-pagination-progressbar, .swiper-container-vertical > .swiper-pagination-progressbar.swiper-pagination-progressbar-opposite {
+          top: auto !important; bottom: -1px !important; height: 1vh !important;
+        }
+    cards: !include ../slides-bedroom.yaml
+
+

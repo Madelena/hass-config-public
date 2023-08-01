@@ -27,6 +27,7 @@ tilt:
         }
       ]]]
 
+
 # Require Confirmation Dialog
 
 require_confirmation:
@@ -35,3 +36,16 @@ require_confirmation:
       [[[ return `Are you sure you want to toggle
       ${entity.attributes.friendly_name}?` ]]]
 
+
+# Blank Card
+
+blank:
+  show_name: false
+  show_state: false
+  show_label: false
+  show_icon: false
+  tap_action:
+    action: none
+  styles:
+    card:
+      - background: none

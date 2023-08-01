@@ -12,7 +12,7 @@ cards:
       grid-template-columns: auto max-content
       grid-template-rows: auto
       mediaquery:
-        '(max-width: 800px)':
+        '(max-width: 799.99px)':
           grid-template-columns: 1fr
       margin: 0
     cards:
@@ -131,11 +131,11 @@ cards:
             variables:
               name: STORAGE
 
-          - hours_to_show: 24
-            graph: line
-            type: sensor
-            entity: sensor.influxdb_database_size
-            detail: 1
+          # - hours_to_show: 24
+          #   graph: line
+          #   type: sensor
+          #   entity: sensor.influxdb_database_size
+          #   detail: 1
 
           - hours_to_show: 240
             graph: line

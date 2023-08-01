@@ -1,0 +1,63 @@
+# AMBIENT DASHBOARD
+# Home Page
+# Made by Madelena Mak 2022
+
+title: Home
+path: slides
+type: 'custom:grid-layout'
+layout:
+  margin: -1px
+  grid-template-areas: '"slides" "topbar"'
+  grid-template-rows: 100% 0
+  grid-template-columns: 100%
+cards:
+
+  # The Slides
+
+  - type: 'custom:swipe-card'
+    view_layout:
+      grid-area: slides
+    parameters:
+      effect: cube
+      speed: 2000
+      cubeEffect:
+        - slideShadows: false
+      loop: true
+      autoHeight: true
+      autoplay:
+        delay: 8000
+        disableOnInteraction: false
+      pagination:
+        type: progressbar
+      keyboard:
+        enabled: true
+    card_mod:
+      style: |
+        .swiper-container-cube { overflow: hidden !important; z-index: 100 !important; }
+        .swiper-slide { transition: opacity 2s, transform !important; }
+        .swiper-slide-prev, .swiper-slide-next { opacity: 0; }
+        .swiper-slide-active { opacity: 1; }
+        .swiper-container-horizontal > .swiper-pagination-progressbar, .swiper-container-vertical > .swiper-pagination-progressbar.swiper-pagination-progressbar-opposite {
+          top: auto !important; bottom: -1px !important; height: 1vh !important;
+        }
+    cards: !include ../slides.yaml
+
+
+  # Top Bar
+
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    view_layout:
+      grid-area: topbar
+      card_margin: 0
+    layout:
+      grid-template-rows: auto
+      grid-template-columns: '15vw auto 15vw'
+      margin: '-100vh 0 0 0'
+      padding: 0
+    cards:
+      -  !include ../snippets/topbar-start-button.yaml
+      -  !include ../snippets/topbar-badges.yaml
+      -  !include ../snippets/topbar-clock.yaml
+
+

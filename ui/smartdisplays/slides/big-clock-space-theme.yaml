@@ -1,0 +1,74 @@
+# Space Theme Clock
+
+type: 'custom:button-card'
+template: slide_basic
+show_state: true
+show_label: true
+triggers_update: all
+name: " "
+state_display: >-
+  [[[ return moment().format("H:mm") ]]]
+label: >-
+  [[[ return moment().format("dddd, MMMM D") ]]]
+# tap_action:
+#   action: navigate
+#   navigation_path: /ui-smart-displays-bedroom
+custom_fields:
+  moon: ''
+  moonshadow: ''
+  glow: ''
+  earth: ''
+styles:
+  grid:
+    - grid-template-areas: '"n" "s" "l" "glow" "earth" "moon" "moonshadow"'
+    - grid-template-columns: 92vw
+    - grid-template-rows: auto 60vh auto 0 0 0 0
+  card:
+    # - background: "linear-gradient(to bottom, black, #333333)"
+    - background: "radial-gradient(circle 100vw at center calc(66.66vh + 50vw), rgba(0,30,121,1), black)"
+  state:
+    - font-size: 60vh
+    - font-weight: 800
+    - justify-content: center
+    - place-self: center
+    - padding: 0
+  name:
+    - font-size: 5vh
+    - font-weight: 700
+    - text-transform: uppercase
+    - place-self: start center
+    - padding: 1.5vh 0 0
+    - letter-spacing: .75vw
+    - z-index: 17
+  label:
+    - font-size: 5vh
+    - font-weight: 700
+    - text-transform: uppercase
+    - place-self: start center
+    - padding: 1.5vh 0 0
+    - letter-spacing: .75vw
+    - z-index: 17
+  custom_fields:
+    glow:
+      - position: absolute
+      - top: 0
+      - left: 0
+      - width: 100%
+      - height: 100%
+      - background: "radial-gradient(circle 100vw at center calc(66.66vh + 50vw), transparent 33%, rgba(0,20,40,.5) 45%, rgba(0,20,40,.8) 50%, rgba(0,60,121,.75) 50.01%, transparent 51%, rgba(0,60,121,.25) 55%, transparent 67%)"
+      - z-index: 16
+    earth:
+      - position: absolute
+      - top: 0
+      - left: 0
+      - width: 100%
+      - height: 100%
+      - background: |
+          [[[
+            return "url(" + states["camera.cdn_star_nesdis_noaa_gov"].attributes.entity_picture + ")"
+          ]]]
+      - background-size: 100% auto
+      - background-position: 0 66.66vh
+      - background-repeat: no-repeat
+      - clip-path: "circle(50vw at center calc(66.66vh + 50vw))" 
+      - z-index: 15

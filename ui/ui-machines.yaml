@@ -6,6 +6,7 @@ title: My Machines
 # Yes, it's the one by Battles ft. Gary Numan
 
 views:
+  - !include views/machines/all-devices.yaml
   - !include views/machines/unison.yaml
   - !include views/machines/terpsichora.yaml
   - !include views/machines/genesis.yaml
@@ -17,20 +18,7 @@ views:
 
 decluttering_templates: !include templates/decluttering-card.yaml
 button_card_templates: !include_dir_merge_named templates/button-card/
-popup_cards: !include_dir_merge_named popups/
 
 swipe_nav:
   animate: swipe
   prevent_default: true
-
-kiosk_mode:
-  user_settings:
-    - users:
-        - Strawberry
-        - Maddy
-      hide_sidebar: true
-      hide_menubutton: true
-      hide_overflow: true
-  mobile_settings:
-    hide_menubutton: true
-    hide_overflow: true

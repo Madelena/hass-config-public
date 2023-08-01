@@ -34,20 +34,20 @@
     - temperature
     - lackWater
 
-- platform: rest
-  name: "Front Door Lock Status"
-  resource: !secret switchbot_front_door_lock_get
-  method: GET
-  scan_interval: 60
-  headers:
-    Authorization: !secret switchbot_api_token
-    Content-Type: "application/json"
-  value_template: "{{ value_json.body.lockState }}"
-  json_attributes_path: "$.body"
-  json_attributes:
-    - deviceId
-    - deviceType
-    - hubDeviceId
-    - lockState
-    - doorState
-    - calibrate
+# - platform: rest
+#   name: "Front Door Lock Status"
+#   resource: !secret switchbot_front_door_lock_get
+#   method: GET
+#   scan_interval: 60
+#   headers:
+#     Authorization: !secret switchbot_api_token
+#     Content-Type: "application/json"
+#   value_template: "{{ value_json.body.lockState }}"
+#   json_attributes_path: "$.body"
+#   json_attributes:
+#     - deviceId
+#     - deviceType
+#     - hubDeviceId
+#     - lockState
+#     - doorState
+#     - calibrate

@@ -17,8 +17,8 @@
 
     - type: 'custom:layout-card'
       layout_type: 'custom:grid-layout'
-      layout: !include ../snippets/layout-live-tile.yaml
-      cards: !include ../columns/lights-workspace-accents.yaml
+      layout: !include ../../shared/snippets/layout-live-tile.yaml
+      cards: !include ../../shared/columns/lights-workspace-accents.yaml
 
 
 # [Column] Workspace Desk
@@ -38,7 +38,57 @@
       layout_type: 'custom:grid-layout'
       layout:
         margin: -1        
-      cards: !include ../columns/lights-workspace-desk.yaml
+      cards: !include ../../shared/columns/lights-workspace-desk.yaml
+
+
+# [Column] Bedroom Lights
+
+- type: 'custom:layout-card'
+  layout_type: 'custom:grid-layout'
+  layout:
+    margin: -1        
+  cards:
+
+    - type: 'custom:button-card'
+      template: header_card
+      variables:
+        name: BEDROOM
+        label: Scenes
+        action: more-info
+        link: popup.bedroom_scenes
+
+    - type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout: !include ../../shared/snippets/layout-live-tile.yaml
+      cards: !include ../../shared/columns/lights-bedroom.yaml
+
+
+# [Column] Media
+
+- type: vertical-stack
+  cards:
+
+    - type: 'custom:button-card'
+      template: header_card_no_link
+      variables:
+        name: MEDIA
+
+    - type: custom:mini-media-player
+      entity: media_player.astralplane_echo_link
+      name: Echo Link
+
+    - type: custom:mini-media-player
+      entity: media_player.etherealm_2
+
+    - type: custom:mini-media-player
+      entity: media_player.astralplane_echo_dot
+      name: Echo Dot
+
+    - type: custom:mini-media-player
+      entity: media_player.etherealm
+
+    - type: custom:mini-media-player
+      entity: media_player.plex_etherealm
 
 
 # [Column] Workbench Studio
@@ -58,7 +108,27 @@
       layout_type: 'custom:grid-layout'
       layout:
         margin: -1        
-      cards: !include ../columns/lights-workspace-studio.yaml
+      cards: !include ../../shared/columns/lights-workspace-studio.yaml
+
+
+# [Column] Security
+
+- type: 'custom:layout-card'
+  layout_type: 'custom:grid-layout'
+  layout:
+    margin: -1        
+  cards:
+
+    - type: 'custom:button-card'
+      template: header_card_no_link
+      variables:
+        name: SECURITY
+
+    - type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: -1        
+      cards: !include ../../shared/secret/security-bedroom.yaml
 
 
 # [Column] Energy
@@ -81,14 +151,13 @@
             {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='Workspace', replace='') | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Energy Use', replace='') -%}
             {{
               { 'entity': sensor.entity_id,
-                'type': 'custom:decluttering-card',
-                'template': 'mini_graph_tile',
-                'variables': [
-                  {'entities': [sensor.entity_id]},
-                  {'title': name},
-                  {'lower_bound': 0},
-                  {'upper_bound': '~200'}
-                ],
+                'type': 'custom:button-card',
+                'template': ['live_tile_with_graph', 'live_tile_with_state_unit'],
+                'name': name,
+                'variables': {
+                  'lower_bound': 0,
+                  'upper_bound': '~200'
+                }
               }
             }},
           {%- endfor %}
@@ -99,34 +168,14 @@
       card:
         type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout_options: !include ../snippets/layout-live-tile.yaml
-
-
-# [Column] Security
-
-- type: 'custom:layout-card'
-  layout_type: 'custom:grid-layout'
-  layout:
-    margin: -1        
-  cards:
-
-    - type: 'custom:button-card'
-      template: header_card_no_link
-      variables:
-        name: SECURITY
-
-    - type: 'custom:layout-card'
-      layout_type: 'custom:grid-layout'
-      layout:
-        margin: -1        
-      cards: !include ../secret/security-bedroom.yaml
+        layout_options: !include ../../shared/snippets/layout-live-tile.yaml
 
 
 # [Column] Environment
 
 - type: 'custom:layout-card'
   layout_type: 'custom:grid-layout'
-  layout: !include ../snippets/layout-live-tile.yaml     
+  layout: !include ../../shared/snippets/layout-live-tile.yaml     
   cards:
 
     - type: 'custom:button-card'
@@ -136,48 +185,22 @@
       view_layout:
         grid-column: 1/-1
 
-    - type: 'custom:decluttering-card'
-      template: mini_graph_tile
+    - type: 'custom:button-card'
+      template:
+        - live_tile_with_graph
+        - live_tile_with_state_unit
+      entity: sensor.workspace_env_sensor_temperature
+      name: Temperature
       variables:
-        - entities:
-            - entity: sensor.workspace_env_sensor_temperature
-        - title: Temperature
-        - aspect_ratio: 2
+        aspect_ratio: 2
+        line_width: 2
+        graph_height: 80
       view_layout:
         grid-column: span 2
 
-    - type: 'custom:decluttering-card'
-      template: mini_graph_tile
-      variables:
-        - entities:
-            - entity: sensor.workspace_env_sensor_humidity
-        - title: Humidity
-
-
-# [Column] Media
-
-- type: vertical-stack
-  cards:
-
     - type: 'custom:button-card'
-      template: header_card_no_link
-      variables:
-        name: MEDIA
-
-    - type: custom:mini-media-player
-      entity: media_player.astralplane_echo_link
-      name: Echo Link
-      artwork: full-cover
-
-    - type: custom:mini-media-player
-      entity: media_player.astralplane_echo_dot
-      name: Echo Dot
-      artwork: full-cover
-
-    - type: custom:mini-media-player
-      entity: media_player.etherealm
-      artwork: full-cover
-
-    - type: custom:mini-media-player
-      entity: media_player.plex_etherealm
-      artwork: full-cover
+      template:
+        - live_tile_with_graph
+        - live_tile_with_state_unit
+      entity: sensor.workspace_env_sensor_humidity
+      name: Humidity

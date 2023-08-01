@@ -1,0 +1,9 @@
+# Genesis Subview
+# Made by Madelena Mak 2022
+
+path: genesis
+subview: true
+
+type: panel
+cards: 
+  - !include ../machines/genesis-cards.yaml

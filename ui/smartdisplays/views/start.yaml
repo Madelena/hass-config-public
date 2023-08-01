@@ -1,0 +1,130 @@
+# AMBIENT DASHBOARD
+# Start Menu
+# Made by Madelena Mak 2022
+
+type: 'custom:grid-layout'
+title: Menu
+path: start
+layout:
+  grid-template-rows: 100vh
+  grid-template-columns: 100vw
+  margin: 0
+cards:
+
+  - type: 'custom:mod-card'
+    card:
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        grid-template-rows: 100vh
+        grid-template-columns: 100vw
+        margin: 0
+        padding: 0
+      cards:
+
+        - type: custom:button-card
+          show_name: false
+          show_state: false
+          show_icon: false
+          styles:
+            grid:
+              - grid-template-areas: '"back swipe_card"'
+              - grid-template-columns: 15vw auto
+              - align-items: start
+            card:
+              - padding: 0
+              - background: none
+          custom_fields:
+
+            back:
+              card: !include ../snippets/topbar-back-button.yaml
+
+            swipe_card:
+              card:
+                type: 'custom:swipe-card'
+                start_card: 2
+                parameters:
+                  slidesPerView: 4
+                  direction: vertical
+                  height: '[[[ return window.innerHeight ]]]'
+                  effect: coverflow
+                  centeredSlides: true
+                  coverflowEffect:
+                    rotate: -10
+                    depth: 20
+                  initialSlide: 2
+                card_mod:
+                  style: |
+                    .swiper-slide { transition: opacity .5s, transform !important; opacity: 0.33; }
+                    .swiper-slide-prev, .swiper-slide-next { opacity: 0.66; }
+                    .swiper-slide-active { opacity: 1; }
+
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: chores
+                    tap_action:
+                      action: navigate
+                      navigation_path: chores
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: lights
+                    tap_action:
+                      action: navigate
+                      navigation_path: lights
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: vacuum
+                    tap_action:
+                      action: navigate
+                      navigation_path: vacuum
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: music+radio
+                    tap_action:
+                      action: navigate
+                      navigation_path: music
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: tv+movies
+                    tap_action:
+                      action: navigate
+                      navigation_path: tv
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: climate
+                    tap_action:
+                      action: navigate
+                      navigation_path: climate
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: power usage
+                    tap_action:
+                      action: navigate
+                      navigation_path: energy
+
+                  - type: 'custom:button-card'
+                    template: menu_item
+                    name: weather
+                    tap_action:
+                      action: navigate
+                      navigation_path: weather
+
+    card_mod:
+      style: >
+        ha-card { background: linear-gradient(to right, transparent, transparent, var(--primary-background-color), var(--primary-background-color)); background-position: 100% 0; background-size: 300% 100%; background-repeat: no-repeat; position: relative;
+        height: 100vh; width: 100vw; margin: -1px; overflow: hidden; 
+          animation-name: fade-in; animation-timing-function: ease-out;
+          animation-duration: 2s; }
+        @keyframes fade-in {
+          0%   {opacity: 0; transform: rotateY(80deg) translateX(200%); background-position: -300% 0;}
+          50%  {opacity: 1; transform: rotateY(0deg) translateX(0%); background-position: 0% 0;}
+          100% {opacity: 1; transform: rotateY(0deg) translateX(0%); background-position: 100% 0;}
+        }

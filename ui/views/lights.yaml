@@ -6,12 +6,12 @@ title: Light
 path: lights
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
     layout_type: 'custom:grid-layout'
-    layout: !include snippets/layout-page-columns.yaml
+    layout: !include ../shared/snippets/layout-page-columns.yaml
     view_layout:
       grid-area: cc
     cards:
@@ -20,13 +20,13 @@ cards:
       
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title-with-2-badges.yaml
+        layout: !include ../shared/snippets/layout-page-title-with-2-badges.yaml
         view_layout:
           grid-column: 1/-1
         cards:
 
           - type: markdown
-            style: !include snippets/style-markdown-page-title.yaml
+            style: !include ../shared/snippets/style-markdown-page-title.yaml
             content: >
               # Light
 
@@ -41,23 +41,12 @@ cards:
             layout:
               margin: 0
             view_layout:
-              place-self: center start
+              place-self: center auto
             cards:
 
               - type: 'custom:swipe-card'
-                parameters:
-                  enabled: true
-                  slidesPerView: 1.66
-                  width: 480
-                  breakpoints:
-                    '800':
-                      enabled: false
-                      slidesPerView: 2
-                      width: 240
-                    '1024':
-                      enabled: false
-                      slidesPerView: 2
-                      width: 400
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
                 cards:
 
                   - type: custom:state-switch
@@ -68,7 +57,7 @@ cards:
                         entity: binary_sensor.ping_valhalla_rainbow
                         name: Rainbow Hub ↗
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: !secret rainbow_hub_url
@@ -81,43 +70,135 @@ cards:
                     states:
                       "(max-width: 799.99px), (min-width: 1024px)": &title-badge-2
                         type: 'custom:mushroom-entity-card'
+                        entity: switch.valhalla_rainbow_plug_switch
+                        name: Rainbow Plug
+                        icon_color: pink
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        tap_action:
+                          confirmation: true
+                          action: toggle
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-2
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-3
+                        type: 'custom:mushroom-entity-card'
                         entity: binary_sensor.ping_valhalla_insteon
                         name: Insteon Hub ↗
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: !secret insteon_hub_url
                       "(min-width: 800px) and (max-width: 1023.99px)":
-                        <<: *title-badge-2
+                        <<: *title-badge-3
+                        layout: vertical
+
+                  - type: custom:state-switch
+                    entity: mediaquery
+                    states:
+                      "(max-width: 799.99px), (min-width: 1024px)": &title-badge-4
+                        type: 'custom:mushroom-entity-card'
+                        entity: switch.valhalla_insteon_plug_switch
+                        name: Insteon Plug
+                        icon_color: pink
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
+                        tap_action:
+                          confirmation: true
+                          action: toggle
+                      "(min-width: 800px) and (max-width: 1023.99px)":
+                        <<: *title-badge-4
                         layout: vertical
 
 
       # [Column] Daylight
 
-      - type: 'custom:layout-card'
-        layout_type: 'custom:grid-layout'
-        layout:
-          margin: -1        
-        cards:
+      # - type: 'custom:layout-card'
+      #   layout_type: 'custom:grid-layout'
+      #   layout:
+      #     margin: -1        
+      #   cards:
 
-          - type: 'custom:button-card'
-            template: header_card_no_link
-            variables:
-              name: DAYLIGHT
+      #     - type: 'custom:button-card'
+      #       template: header_card_no_link
+      #       variables:
+      #         name: DAYLIGHT
 
-          - type: 'custom:layout-card'
-            layout_type: 'custom:vertical-layout'
-            cards:
+      #     - type: 'custom:layout-card'
+      #       layout_type: 'custom:vertical-layout'
+      #       in_card: true
+      #       cards:
 
-              - type: 'custom:decluttering-card'
-                template: multi_graph_card
-                variables:
-                  - entities:
-                      - entity: sensor.south_facade_hue_sensor_light_level
-                        name: South Facade
-                  - title: Light Level
-                  - line_width: 1
+      #         - type: 'custom:decluttering-card'
+      #           template: multi_graph_card
+      #           variables:
+      #             - entities: &light-level-graph-card-entities
+      #                 - entity: sensor.illuminance
+      #                   name: Estimate
+      #                 - entity: sensor.south_facade_hue_sensor_light_level
+      #                   name: South Facade
+      #                 - entity: sensor.living_room_hue_sensor_light_level
+      #                   name: Living Room
+      #                 - entity: sensor.kitchen_counter_motion_sensor_light_level
+      #                   name: Kitchen
+      #                 - entity: sensor.workspace_room_hue_sensor_light_level
+      #                   name: Workspace
+      #                 - entity: sensor.bedroom_hue_sensor_light_level
+      #                   name: Bedroom
+      #             - title: Light Level
+      #             - line_width: 1
+      #             - hours_to_show: 24
+      #             - lower_bound: 10001
+      #             - height: 80
+      #             - smoothing: false
+      #             - animate: false
+
+      #         - type: 'custom:decluttering-card'
+      #           template: multi_graph_card
+      #           variables:
+      #             - entities: *light-level-graph-card-entities
+      #             - line_width: 1
+      #             - hours_to_show: 24
+      #             - height: 80
+      #             - smoothing: false
+      #             - animate: false
+      #             - upper_bound: 10000
+      #             - lower_bound: 1001
+      #             - show_header: none !important
+      #             - show_state: none !important
+      #             - show_legend: none !important
+
+      #         - type: 'custom:decluttering-card'
+      #           template: multi_graph_card
+      #           variables:
+      #             - entities: *light-level-graph-card-entities
+      #             - line_width: 1
+      #             - hours_to_show: 24
+      #             - height: 80
+      #             - smoothing: false
+      #             - animate: false
+      #             - upper_bound: 1000
+      #             - lower_bound: 101
+      #             - show_header: none !important
+      #             - show_state: none !important
+      #             - show_legend: none !important
+
+      #         - type: 'custom:decluttering-card'
+      #           template: multi_graph_card
+      #           variables:
+      #             - entities: *light-level-graph-card-entities
+      #             - line_width: 1
+      #             - hours_to_show: 24
+      #             - height: 80
+      #             - smoothing: false
+      #             - animate: false
+      #             - upper_bound: 100
+      #             - show_header: none !important
+      #             - show_state: none !important
+      #             - show_legend: none !important
 
 
       # [Column] Living Room
@@ -138,8 +219,8 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-live-tile.yaml
-            cards: !include columns/lights-living-room.yaml
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards: !include ../shared/columns/lights-living-room.yaml
 
 
       # [Column] Living Room Accents
@@ -160,8 +241,8 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-live-tile.yaml
-            cards: !include columns/lights-living-room-accents.yaml
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards: !include ../shared/columns/lights-living-room-accents.yaml
 
 
       # [Column] Kitchen
@@ -182,8 +263,8 @@ cards:
             
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-live-tile.yaml
-            cards: !include columns/lights-kitchen.yaml
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards: !include ../shared/columns/lights-kitchen.yaml
 
 
       # [Column] Bedroom
@@ -206,8 +287,8 @@ cards:
             
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-live-tile.yaml
-            cards: !include columns/lights-bedroom.yaml
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards: !include ../shared/columns/lights-bedroom.yaml
 
 
       # [Column] Workspace Accents
@@ -228,8 +309,8 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-live-tile.yaml
-            cards: !include columns/lights-workspace-accents.yaml
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards: !include ../shared/columns/lights-workspace-accents.yaml
 
 
       # [Column] Workspace Desk
@@ -249,7 +330,7 @@ cards:
             layout_type: 'custom:grid-layout'
             layout:
               margin: -1        
-            cards: !include columns/lights-workspace-desk.yaml
+            cards: !include ../shared/columns/lights-workspace-desk.yaml
 
 
       # [Column] Workbench Studio
@@ -269,5 +350,8 @@ cards:
             layout_type: 'custom:grid-layout'
             layout:
               margin: -1        
-            cards: !include columns/lights-workspace-studio.yaml
+            cards: !include ../shared/columns/lights-workspace-studio.yaml
 
+  - type: 'custom:layout-card'
+    layout_type: 'custom:grid-layout'
+    cards: !include ../shared/popups/scenes.yaml

@@ -1,0 +1,26 @@
+type: vertical-stack
+in_card: true
+cards:
+  - type: entity
+    entity: sensor.total_energy_use
+    name: Current Total
+    icon: 'mdi:lightning-bolt'
+  - type: history-graph
+    hours_to_show: 48
+    entities:
+      - entity: sensor.total_energy_use
+    card_mod:
+      style:
+        .: |
+          ha-card { overflow: hidden; }
+          .content {
+            margin: 4px -13px -8px -66px !important;
+            padding: 0 0 12px 0 !important;
+            overflow: hidden;
+            filter: hue-rotate( calc( var(--hue-primary-color) - 215deg) ) saturate(2) opacity(.66)
+          }
+        state-history-charts$state-history-chart-line$ha-chart-base$: |
+          .chartLegend { display: none;}
+card_mod:
+  style: |
+    ha-card { aspect-ratio: 1; }

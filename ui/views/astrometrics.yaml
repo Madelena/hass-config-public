@@ -6,7 +6,7 @@ title: Astrometrics
 path: astrometrics
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
@@ -21,7 +21,7 @@ cards:
       mediaquery:
         # '(min-width: 2320px)':
         #   grid-template-columns: 'repeat(auto-fill, [col-start] minmax(720px, 1fr) [col-end])'
-        '(max-width: 800px)':
+        '(max-width: 799.99px)':
           grid-template-columns: 'repeat(auto-fill, [col-start] minmax(256px, 1fr) [col-end])'
 
     cards:
@@ -29,7 +29,7 @@ cards:
       # [Header] Summary
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include snippets/layout-page-title-with-2-badges.yaml
+        layout: !include ../shared/snippets/layout-page-title-with-2-badges.yaml
         view_layout:
           grid-column: 1/-1
         cards:
@@ -47,7 +47,7 @@ cards:
               ha-markdown$: |
                 h1 {
                   font-size: var(--title-font-size);
-                  font-weight: 500;
+                  font-weight: 600;
                   line-height: 1.1;
                   margin-left: -2px;
                   margin-block-end: -8px;
@@ -58,23 +58,12 @@ cards:
             layout:
               margin: 0
             view_layout:
-              place-self: center start
+              place-self: center auto
             cards:
 
               - type: 'custom:swipe-card'
-                parameters:
-                  enabled: true
-                  slidesPerView: 1.66
-                  width: 480
-                  breakpoints:
-                    '800':
-                      enabled: false
-                      slidesPerView: 2
-                      width: 240
-                    '1024':
-                      enabled: false
-                      slidesPerView: 2
-                      width: 400
+                parameters: !include ../shared/snippets/parameters-page-title-swipe-card.yaml
+                style: !include ../shared/snippets/style-page-title-swipe-card.yaml
                 cards:
 
                   - type: custom:state-switch
@@ -86,7 +75,7 @@ cards:
                         name: OPAS Tynan ↗
                         icon: mdi:rocket-launch
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: 'https://MadelenaMak.com'
@@ -103,7 +92,7 @@ cards:
                         name: Sky Watch ↗
                         icon: 'mdi:cloud'
                         icon_color: pink
-                        style: 'ha-card {background: none;}'
+                        style: !include ../shared/snippets/style-page-title-swipe-card-tile.yaml
                         tap_action:
                           action: url
                           url_path: 'https://www.astrospheric.com/'
@@ -127,7 +116,7 @@ cards:
 
           # - type: 'custom:layout-card'
           #   layout_type: 'custom:grid-layout'
-          #   layout: !include snippets/layout-page-columns.yaml
+          #   layout: !include ../shared/snippets/layout-page-columns.yaml
           #   cards:
 
           #     - type: vertical-stack
@@ -135,7 +124,7 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include snippets/layout-live-tile.yaml
+            layout: !include ../shared/snippets/layout-live-tile.yaml
             cards:
 
               - type: custom:button-card
@@ -158,46 +147,46 @@ cards:
                   grid-row: span 2
                   margin: 0
 
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_with_graph
+                  - live_tile_with_state_unit
+                entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bt
+                name: Magnetic Fields - Bt
 
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                    - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bt
-                  - title: Magnetic Fields - Bt
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_with_graph
+                  - live_tile_with_state_unit
+                entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bz
+                name: Magnetic Fields - Bz
 
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_with_graph
+                  - live_tile_with_state_unit
+                entity: sensor.noaa_space_weather_solar_wind_speed
+                name: Solar Wind Speed
                 variables:
-                  - entities:
-                    - entity: sensor.noaa_space_weather_solar_wind_magnetic_fields_bz
-                  - title: Magnetic Fields - Bz
-
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                    - entity: sensor.noaa_space_weather_solar_wind_speed
-                  - title: Solar Wind Speed
-                  - aspect_ratio: 2/1
-                  - line_width: 2
+                  aspect_ratio: 2/1
+                  line_width: 2
+                  graph_height: 80
                 view_layout:
                   grid-column: span 2
 
-              - type: 'custom:decluttering-card'
-                template: mini_graph_tile
-                variables:
-                  - entities:
-                    - entity: sensor.noaa_space_weather_noon_10_7cm_radio_flux
-                  - title: 10.7cm Radio Flux
-
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_with_graph
+                  - live_tile_with_state_unit
+                entity: sensor.noaa_space_weather_noon_10_7cm_radio_flux
+                name: 10.7cm Radio Flux
 
               # - type: vertical-stack
               #   cards:
 
               #     - type: 'custom:layout-card'
               #       layout_type: 'custom:grid-layout'
-              #       layout: !include snippets/layout-live-tile.yaml
+              #       layout: !include ../shared/snippets/layout-live-tile.yaml
               #       cards:
 
               - type: custom:button-card
@@ -251,6 +240,13 @@ cards:
                       - filter: grayscale(1) brightness(.85)
                 tap_action:
                   action: none
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                entity: sensor.aurora_visibility_aurora_visibility
+                name: Aurora Visibility
+
           # - type: custom:list-card
           #   entity: sensor.noaa_space_weather_alerts
           #   title: Space Weather Alerts
@@ -282,7 +278,7 @@ cards:
                     - padding-bottom: 4px
                   state:
                     - font-size: var(--h5-font-size)
-                    - font-weight: 500
+                    - font-weight: 600
                     - place-self: center start
                     - white-space: normal
                     - text-align: left
@@ -357,20 +353,32 @@ cards:
           #       content: '### The Belt + Outer Planets'
           #       style: 'ha-card {background: none;}'
 
-          - type: iframe
-            url: https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=-550&cz=550&fov=45
-            # url: >-
-              # https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=0&cz=7500&fov=45
-            aspect_ratio: 66.67%
-            card_mod:
-              style: >
-                :host {margin-bottom: 16px !important;}
-                ha-card { overflow: hidden; }
 
-                iframe { width: 300% !important; height: 300% !important; position:
-                relative; top: -100% !important; left: -100% !important; transform:
-                scale(1.75);}
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: '## Orbits'
+                style: |
+                  ha-card {background: none;}
+                  ha-markdown {
+                    position: absolute;
+                    z-index: 10;
+                    background: var(--ha-card-background);
+                  }
+                      
+              - type: iframe
+                url: https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=-550&cz=550&fov=45
+                # url: >-
+                  # https://mgvez.github.io/jsorrery/?scenario=SolarSystemDwarves&planetScale=10&lookFrom=orbital&lookAt=universe&deltaT=36000&cx=0&cy=0&cz=7500&fov=45
+                aspect_ratio: 100%
+                card_mod:
+                  style: >
+                    :host {margin-bottom: 16px !important;}
+                    ha-card { overflow: hidden; }
 
+                    iframe { width: 300% !important; height: 300% !important; position:
+                    relative; top: -100% !important; left: -100% !important; transform:
+                    scale(1.75); filter: contrast(0.95) brightness(1.75);}
 
 
           - type: 'custom:layout-card'
@@ -612,13 +620,105 @@ cards:
               table tbody:first-child { display: none; }
               tbody tr:nth-child(odd), tbody tr:nth-child(even) {
               background: none; }
-              td.title a {font-weight: 500;}
+              td.title a {font-weight: 600;}
 
 
-      # [Column] Look Up The Stars
+      # [Column] Ships Around Sol III
       - type: vertical-stack
         view_layout:
-          grid-column: span 1
+          grid-column: span 2
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card
+            variables:
+              name: SHIPS
+              label: null
+              arrow: 'mdi:arrow-top-right'
+              action: url
+              link: 'https://'
+
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: '## Starlink'
+                style: |
+                  ha-card {background: none;}
+                  ha-markdown {
+                    position: absolute;
+                    z-index: 10;
+                    background: var(--ha-card-background);
+                  }
+
+              - type: iframe
+                url: https://satellitemap.space/?constellation=starlink
+                aspect_ratio: 100%
+                card_mod:
+                  style: >
+                    :host {margin-bottom: 16px !important;}
+                    ha-card { overflow: hidden; }
+
+                    iframe { width: 100% !important; height: 140% !important; position:
+                    relative; top: -20% !important; left: 0 !important;
+                    filter: hue-rotate(calc(var(--hue-primary-color) - 205deg));}
+
+          - type: entities
+            entities:
+              - &astrometrics-rocket-launch
+                type: 'custom:button-card'
+                entity: sensor.rocketlaunch_live_next_1
+                show_icon: false
+                show_state: true
+                show_label: true
+                name: '[[[ return `${entity.attributes.date} &bull; ${entity.attributes.tags}` ]]]'
+                state_display: '[[[ return entity.attributes.name ]]]'
+                label: '[[[ return entity.attributes.launch_description ]]]'
+                styles:
+                  card:
+                    - background: none
+                    - padding: 8px 0
+                  grid:
+                    - grid-template-areas: '"n" "s" "l"'
+                    - grid-template-rows: min-content min-content min-content
+                  name:
+                    - font-size: var(--small-font-size)
+                    - place-self: center start
+                    - padding-bottom: 4px
+                  state:
+                    - font-size: var(--h5-font-size)
+                    - font-weight: 600
+                    - place-self: center start
+                    - white-space: normal
+                    - text-align: left
+                    - padding-bottom: 4px
+                  label:
+                    - font-size: var(--body-font-size)
+                    - place-self: center start
+                    - white-space: normal
+                    - text-align: left
+                tap_action:
+                  action: url
+                  url_path: '[[[ return entity.attributes.link ]]]'
+                hold_action:
+                  action: more-info
+                confirmation:
+                  text: '[[[ return `Open link for ${entity.state}?` ]]]'
+              - <<: *astrometrics-rocket-launch
+                entity: sensor.rocketlaunch_live_next_2
+              - <<: *astrometrics-rocket-launch
+                entity: sensor.rocketlaunch_live_next_3
+              - <<: *astrometrics-rocket-launch
+                entity: sensor.rocketlaunch_live_next_4
+              - <<: *astrometrics-rocket-launch
+                entity: sensor.rocketlaunch_live_next_5
+            title: Departures
+
+
+      # [Column] "Look Up (The Stars)." - Is that Agnes Jurati or Coldplay?
+
+      - type: vertical-stack
+        # view_layout:
+        #   grid-column: span 1
         cards:
           - type: 'custom:button-card'
             template: header_card
@@ -638,86 +738,52 @@ cards:
               margin: -1px
             cards:
 
-              - type: vertical-stack
-                cards:
-                  - type: markdown
-                    content: '### Northern Hemisphere'
-                    style: 'ha-card {background: none;}'
-                  - type: iframe
-                    url: >-
-                      https://virtualsky.lco.global/embed/index.html?longitude=-73.951442&latitude=40.698470&gradient=false&projection=polar&showstarlabels=true&showorbits=true&showdate=false&showposition=false&gridlines_gal=true&showgalaxy=true&magnitude=4.5&live=true&fontfamily=SegoeUI&fontsize=10px
-                    aspect_ratio: 100%
-                    card_mod:
-                      style: >
-                        :host {margin-bottom: 16px !important;}
-                        ha-card {border-radius: 50%;  border: 2px solid
-                        rgba(255,255,255,.1);}
+              - type: custom:button-card
+                template:
+                  - live_tile_card
+                  - live_tile_with_picture
+                name: Sky North
+                color_type: icon
+                custom_fields:
+                  picture:
+                    card:
+                      type: iframe
+                      url: !secret skymap_north_url
+                      aspect_ratio: 100%
+                      card_mod:
+                        style: >
+                          :host {margin-bottom: 16px !important;}
+                          ha-card {border-radius: 50%;  border: 2px solid
+                          rgba(255,255,255,.1);}
+                variables:
+                  picture: none
+                tap_action:
+                  action: none
 
-                  - type: entities
-                    entities:
-                      - &astrometrics-rocket-launch
-                        type: 'custom:button-card'
-                        entity: sensor.rocketlaunch_live_next_1
-                        show_icon: false
-                        show_state: true
-                        show_label: true
-                        name: '[[[ return `${entity.attributes.date} &bull; ${entity.attributes.tags}` ]]]'
-                        state_display: '[[[ return entity.attributes.name ]]]'
-                        label: '[[[ return entity.attributes.launch_description ]]]'
-                        styles:
-                          card:
-                            - background: none
-                            - padding: 8px 0
-                          grid:
-                            - grid-template-areas: '"n" "s" "l"'
-                            - grid-template-rows: min-content min-content min-content
-                          name:
-                            - font-size: var(--small-font-size)
-                            - place-self: center start
-                            - padding-bottom: 4px
-                          state:
-                            - font-size: var(--h5-font-size)
-                            - font-weight: 500
-                            - place-self: center start
-                            - white-space: normal
-                            - text-align: left
-                            - padding-bottom: 4px
-                          label:
-                            - font-size: var(--body-font-size)
-                            - place-self: center start
-                            - white-space: normal
-                            - text-align: left
-                        tap_action:
-                          action: url
-                          url_path: '[[[ return entity.attributes.link ]]]'
-                        hold_action:
-                          action: more-info
-                        confirmation:
-                          text: '[[[ return `Open link for ${entity.state}?` ]]]'
-                      - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_2
-                      - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_3
-                      - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_4
-                      - <<: *astrometrics-rocket-launch
-                        entity: sensor.rocketlaunch_live_next_5
-                    title: Rocket Launches
-                        
+              - type: custom:button-card
+                template:
+                  - live_tile_card
+                  - live_tile_with_picture
+                name: Sky South
+                color_type: icon
+                custom_fields:
+                  picture:
+                    card:
+                      type: iframe
+                      url: !secret skymap_south_url
+                      aspect_ratio: 100%
+                      card_mod:
+                        style: >
+                          :host {margin-bottom: 16px !important;}
+                          ha-card {border-radius: 50%;  border: 2px solid
+                          rgba(255,255,255,.1);}
+                variables:
+                  picture: none
+                tap_action:
+                  action: none
+
               - type: vertical-stack
                 cards:
-                  - type: markdown
-                    content: '### Southern Hemisphere'
-                    style: 'ha-card {background: none;}'
-                  - type: iframe
-                    url: >-
-                      https://virtualsky.lco.global/embed/index.html?longitude=106.048558&latitude=-40.698470&az=0&gradient=false&projection=polar&showstarlabels=true&showorbits=true&showdate=false&showposition=false&gridlines_gal=true&showgalaxy=true&magnitude=4.5&live=true&fontfamily=SegoeUI&fontsize=10px
-                    aspect_ratio: 100%
-                    card_mod:
-                      style: >
-                        :host {margin-bottom: 16px !important;}
-                        ha-card {border-radius: 50%;  border: 2px solid
-                        rgba(255,255,255,.1);}
 
                   - type: 'custom:home-feed-card'
                     title: Astronomy Events

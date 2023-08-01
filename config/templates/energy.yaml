@@ -124,6 +124,11 @@
       state: >
         {{ expand('group.circuit_center') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
 
+    - name: Circuit North Ceiling Lights Power
+      unit_of_measurement: W
+      state: >
+        {{ expand('group.circuit_north_ceiling_lights') | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='state') | map('float') | sum | round(2) }}
+
     - name: Circuit Living Room Lights Power
       unit_of_measurement: W
       state: >

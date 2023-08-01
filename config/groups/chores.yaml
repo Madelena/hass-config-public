@@ -1,0 +1,69 @@
+
+# CHORES
+
+chore_plants:
+  name: Plant Chores
+  entities:
+    - input_button.chore_water_plants
+    - input_button.chore_fertilize_plants
+    - input_button.chore_refill_reservoir
+    - input_button.chore_apply_insecticide
+
+chore_kitchen:
+  name: Kitchen Chores
+  entities:
+    - input_button.chore_clean_kitchen_sink
+    - input_button.chore_clean_kitchen_counter
+    - input_button.chore_clean_kitchen_stove
+    - input_button.chore_dust_lights
+    - input_button.chore_replace_uv_lamp
+    - input_button.chore_wipe_handles
+    - input_button.chore_clean_kitchen_exhaust_fan
+    - input_button.chore_change_sponge
+    - input_button.chore_clean_kitchen_floor
+    - input_button.chore_change_kitchen_hand_towels
+    - input_button.chore_change_empty_trash
+    - input_button.chore_change_water_filter
+    - input_button.chore_pest_exterminator
+    - input_button.chore_vacuum_mop_pad
+
+chore_bathroom:
+  name: Bathroom Chores
+  entities:
+    - input_button.chore_clean_bathroom_floor
+    - input_button.chore_clean_bathtub
+    - input_button.chore_clean_toilet
+    - input_button.chore_change_hand_towels
+    - input_button.chore_change_bath_mat
+    - input_button.chore_change_shower_curtain
+    - input_button.chore_change_face_towel
+    - input_button.chore_change_body_sponge
+    
+chore_living_room:
+  name: Living Room Chores
+  entities:
+    - input_button.chore_wipe_floors
+    - input_button.chore_dust_bookshelves
+    - input_button.chore_dust_stereos
+    - input_button.chore_clean_windows
+    - input_button.chore_clean_tables
+    - input_button.chore_dust_window_blinds
+
+chore_personal:
+  name: Personal Chores
+  entities:
+    - input_button.chore_clothes_laundry
+    - input_button.chore_heavy_laundry
+    - input_button.chore_change_bed_sheets
+    - input_button.chore_wash_hair
+    - input_button.chore_body_deep_clean
+    - input_button.chore_clean_bedroom_floor
+    - input_button.chore_pluck_eyebrows
+    - input_button.chore_mouthwash
+    - input_button.chore_facial
+
+chore_car:
+  name: Car Chores
+  entities:
+    - input_button.chore_car_oil_change
+    - input_button.chore_car_car_wash

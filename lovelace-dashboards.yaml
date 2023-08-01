@@ -37,6 +37,22 @@ ui-smart-displays:
   mode: yaml
   filename: ui/ui-smartdisplays.yaml
 
+ui-smart-displays-bedroom:
+  show_in_sidebar: false
+  icon: mdi:devices
+  title: For Smart Displays (Bedroom)
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-smartdisplays-bedroom.yaml
+
+ui-smart-displays-minimal:
+  show_in_sidebar: false
+  icon: mdi:devices
+  title: For Smart Displays (Minimal)
+  require_admin: false
+  mode: yaml
+  filename: ui/ui-smartdisplays-minimal.yaml
+
 # Experiments
 ui-experiments:
   show_in_sidebar: false

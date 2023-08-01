@@ -1,0 +1,84 @@
+
+# Using Pop Up Card to hide a card.
+- type: custom:popup-card
+  card:
+    &me-music-card-top-artists
+    type: 'custom:button-card'
+    template:
+      - live_tile_card
+      - live_tile_with_long_state
+    variables:
+      item: 0
+    entity: sensor.last_fm_top_artists_json
+    show_name: false
+    color: black
+    icon: 'mdi:numeric-2-box-multiple'
+    state_display: '[[[ return entity.attributes.artist[variables.item].name ]]]'
+    label: >-
+      [[[ return entity.attributes.artist[variables.item].name +
+      "<br/>" + entity.attributes.artist[variables.item].playcount + " Plays"
+      ]]]
+    styles:
+      card:
+        - background-image: >
+            [[[ return "linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.33) 100%), url('" +
+            entity.attributes.artist[variables.item].image[3]['#text'] + "')"
+            ]]]
+        - background-size: cover
+    tap_action:
+      action: call-service
+      service: media_player.play_media
+      service_data:
+        media_content_type: TIDAL
+        media_content_id: |
+          [[[ return "play songs by " + entity.attributes.artist[variables.item].name ]]]
+        entity_id: media_player.terpsichora_mini_alexa
+
+- <<: *me-music-card-top-artists
+  icon: 'mdi:numeric-1-box-multiple'
+  template: large_tile_card
+  variables:
+    item: 0
+  view_layout:
+    grid-column: span 2
+    grid-row: span 2
+  name: Top Artist
+  show_name: true
+  label: >-
+    [[[ return "by " + entity.attributes.artist[0].name +
+    "<br/>" + entity.attributes.artist[0].playcount + " Plays" ]]]
+  styles:
+    card:
+      - background-image: |
+          [[[ return "linear-gradient(to bottom, rgba(0,0,0,.66) 0%, rgba(0,0,0,0) 100%), url('" +
+            states["sensor.last_fm_top_artist_photo"].state + "')" ]]]
+
+- <<: *me-music-card-top-artists
+  icon: 'mdi:numeric-2-box-multiple'
+  variables:
+    item: 1
+
+- <<: *me-music-card-top-artists
+  icon: 'mdi:numeric-3-box-multiple'
+  variables:
+    item: 2
+
+- <<: *me-music-card-top-artists
+  icon: 'mdi:numeric-4-box-multiple'
+  variables:
+    item: 3
+
+- <<: *me-music-card-top-artists
+  icon: 'mdi:numeric-5-box-multiple'
+  variables:
+    item: 4
+
+# - <<: *me-music-card-top-artists
+#   icon: 'mdi:numeric-6-box-multiple'
+#   variables:
+#     item: 5
+
+# - <<: *me-music-card-top-artists
+#   icon: 'mdi:numeric-7-box-multiple'
+#   variables:
+#     item: 6

@@ -16,13 +16,13 @@
           {% if states('sensor.valhalla_apparent_temperature') | float < 12.7778 %}
             20
           {% else %}
-            null
+            0
           {% endif %}
         {% else %}
           {% if states('sensor.valhalla_apparent_temperature') | float < 20 %}
             16.6667
           {% else %}
-            null
+            0
           {% endif %}
         {% endif %}
 

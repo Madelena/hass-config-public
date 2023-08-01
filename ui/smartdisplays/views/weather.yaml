@@ -1,0 +1,270 @@
+# AMBIENT DASHBOARD
+# Weather App
+# Made by Madelena Mak 2022
+
+title: Weather
+path: weather
+type: panel
+cards:
+
+  - type: 'custom:mod-card'
+    card_mod: !include ../snippets/slideshow-mod-card-bg.yaml
+    card:
+
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout:
+        margin: '-1px'
+        grid-template-areas: '"topbar" "tiles"'
+        grid-template-rows: min-content auto
+        grid-template-columns: 100%
+      cards:
+
+
+        # Title Bar
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          view_layout:
+            grid-area: topbar
+            card_margin: 0
+          layout:
+            grid-template-rows: auto
+            grid-template-columns: '12.5vw auto 25vw'
+            margin: 0
+            padding: 0
+          cards:
+
+            - !include ../snippets/topbar-back-button.yaml
+
+            - type: 'custom:button-card'
+              template: slide_page_title
+              name: WEATHER
+
+
+        # Tiles
+
+        - type: 'custom:layout-card'
+          layout_type: 'custom:grid-layout'
+          layout:
+            grid-template-columns: 100vw
+            margin: -5.33vh 0 0 0
+          view_layout:
+            grid-area: tiles
+          cards:
+
+          - type: 'custom:swipe-card'
+            card_mod:
+              style: |
+                .swiper-slide { width: fit-content !important; }
+                .swiper-wrapper { padding-left: 7.5vw !important; }
+
+            parameters:
+              autoHeight: true
+              slidesPerView: auto
+              keyboard:
+                enabled: true
+            cards:
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: CURRENT CONDITIONS
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout_options: !include ../snippets/slideshow-tiles-layout-options.yaml
+                    cards:
+                    
+                      - type: 'custom:button-card'
+                        view_layout:
+                          grid-row: span 2
+                          grid-column: span 2
+                        template:
+                          - weather_variables
+                        show_state: true
+                        show_label: true
+                        icon: '[[[ return variables.weather_icon ]]]'
+                        name: '[[[ return variables.weather_condition ]]]'
+                        label: '[[[ return variables.weather_trend ]]]'
+                        state_display: >-
+                          [[[ return Math.round(states["weather.valhalla_hourly"].attributes.temperature) + "°"
+                          ]]]
+                        entity: weather.valhalla_hourly
+                        styles:
+                          grid:
+                            - grid-template-areas: |
+                                "s s l"
+                                "i n n"
+                            - grid-template-columns: 10vh min-content 100%
+                            - grid-template-rows: min-content min-content 1fr
+                          card:
+                            - background: none
+                            - padding: 0
+                            - height: 66.66vh
+                          state:
+                            - font-size: 33.33vh
+                            - font-weight: 100
+                            - place-self: flex-start
+                            - line-height: 1
+                            - padding-bottom: 3vh
+                          img_cell:
+                            - height: 7.5vh
+                            - width: 7.5vh
+                            - place-self: flex-start
+                            - margin-right: 5vh
+
+                          icon:
+                            - width: 100%
+                          name:
+                            - font-size: 5vh
+                            - font-weight: 600
+                            - place-self: flex-start
+                            - text-transform: capitalize
+                          label:
+                            - font-size: 5vh
+                            - place-self: flex-start
+                            - align-self: end
+                            - padding-bottom: 4vh
+
+                      - type: 'custom:button-card'
+                        template: live_tile
+                        variables:
+                          day: |
+                            [[[
+                              var hour = new Date
+                              hour = parseInt( hour.getHours() )
+                              if (hour < 4) { return 1 }
+                              if (hour < 21) { return 0 } else { return 1 }
+                            ]]]
+
+                        entity: weather.valhalla_2
+                        name: Precipitation
+                        state_display: '[[[ return states["weather.valhalla_2"].attributes.forecast[variables.day].precipitation_probability + "%" ]]]'
+                        icon: '[[[ return (states["weather.valhalla_2"].attributes.forecast[variables.day].precipitation_probability >= 33) ? "mdi:water" : "mdi:water-outline" ]]]'
+                        label: '[[[ return states["weather.valhalla_2"].attributes.forecast[variables.day].precipitation ]]]'
+                        show_units: false
+                        styles:
+                          grid:
+                            - background: '[[[ return "rgba(var(--rgb-primary-color)," + (parseInt(states["weather.valhalla_2"].attributes.forecast[variables.day].precipitation_probability)/100) + ")" ]]]'
+                          card:
+                            - background: var(--ha-card-background)
+
+                      - type: 'custom:button-card'
+                        template:
+                          - live_tile
+                          - waqi_scale
+                        entity: sensor.waqi_newyork_air_quality_index
+                        state_display: |
+                          [[[ return Math.round(entity.state) ]]]
+                        name: AQI
+                        icon: mdi:molecule
+                        label: '[[[ return variables.level ]]]'
+                        show_units: false
+                        styles:
+                          card:
+                            - background: |
+                                [[[
+                                  if (entity.state > 300) {
+                                    return "maroon"
+                                  } else if (entity.state > 200) {
+                                    return "purple"
+                                  } else if (entity.state > 150) {
+                                    return "rgba(var(--rgb-primary-color),1)"
+                                  } else if (entity.state > 100) {
+                                    return "rgba(var(--rgb-primary-color),.66)"
+                                  } else if (entity.state > 50) {
+                                    return "rgba(var(--rgb-primary-color),.33)"
+                                  } else {
+                                    return "var(--ha-card-background)"
+                                  }
+                                ]]]
+
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: RADAR
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout_options:
+                      grid-template-columns: 91vh
+                      grid-template-rows: 66.66vh
+                      margin: 0
+                    cards:
+                      - type: picture
+                        image: //s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/usbgm/animate.png
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0
+                  padding: 0 0 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: HOURLY
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout_options:
+                      grid-template-columns: 80vw
+                      grid-template-rows: 66.66vh
+                      margin: 0
+                    cards:
+                      - type: 'custom:weather-chart-card'
+                        entity: weather.valhalla_hourly
+                        show_main: false
+                        show_attributes: false
+
+
+              - type: 'custom:layout-card'
+                layout_type: 'custom:grid-layout'
+                layout:
+                  margin: 0 
+                  padding: 0 12.5vw 0 5vw
+                cards:
+
+                  - type: 'custom:button-card'
+                    template: slide_header_card_no_link
+                    variables:
+                      name: DAILY
+
+                  - type: 'custom:layout-card'
+                    layout_type: 'custom:grid-layout'
+                    layout_options:
+                      grid-template-columns: 80vw
+                      grid-template-rows: 66.66vh
+                      margin: 0
+                    cards:
+                      - type: weather-forecast
+                        entity: weather.valhalla_2
+                        show_forecast: true
+                        title: Daily Forecast
+                        card_mod:
+                          style: |
+                            .content {display: none !important;}
+                            .forecast {padding-top: 0 !important;}

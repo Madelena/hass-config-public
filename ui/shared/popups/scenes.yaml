@@ -1,0 +1,150 @@
+
+- type: custom:popup-card
+  entity: popup.workspace_accents_scenes
+  title: Workspace Accents Scenes
+  card: 
+    type: 'custom:auto-entities'
+    filter:
+      template: |
+        {% for state in states.scene -%}
+          {%- if state.entity_id | regex_match('scene.workspace_accents_',ignorecase=False) -%}
+            {%- set NAME = state_attr(state.entity_id,"friendly_name") | regex_replace(find='Workspace Accents ', replace='') -%}
+            {{
+              { 'entity': state.entity_id,
+                'type': 'custom:button-card',
+                'template': 'hue_scene_card',
+                'variables': {
+                  'name': NAME
+                },
+              }
+            }},
+          {%- endif -%} 
+        {%- endfor %}
+    sort:
+      method: friendly_name
+    card:
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout_options: !include ../../shared/snippets/layout-live-tile.yaml
+    view_layout:
+      grid-column: 1/-1
+
+- type: custom:popup-card
+  entity: popup.bedroom_scenes
+  title: Bedroom Scenes
+  card: 
+    type: 'custom:auto-entities'
+    filter:
+      template: |
+        {% for state in states.scene -%}
+          {%- if state.entity_id | regex_match('scene.bedroom_',ignorecase=False) -%}
+            {%- set NAME = state_attr(state.entity_id,"friendly_name") | regex_replace(find='Bedroom ', replace='') -%}
+            {{
+              { 'entity': state.entity_id,
+                'type': 'custom:button-card',
+                'template': 'hue_scene_card',
+                'variables': {
+                  'name': NAME
+                },
+              }
+            }},
+          {%- endif -%} 
+        {%- endfor %}
+    sort:
+      method: friendly_name
+    card:
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout_options: !include ../../shared/snippets/layout-live-tile.yaml
+    view_layout:
+      grid-column: 1/-1
+
+- type: custom:popup-card
+  entity: popup.living_room_scenes
+  title: Living Room Scenes
+  card: 
+    type: 'custom:auto-entities'
+    filter:
+      template: |
+        {% for state in states.scene -%}
+          {%- if state.entity_id | regex_match('scene.living_room_main_',ignorecase=False) -%}
+            {%- set NAME = state_attr(state.entity_id,"friendly_name") | regex_replace(find='Living Room Main ', replace='') -%}
+            {{
+              { 'entity': state.entity_id,
+                'type': 'custom:button-card',
+                'template': 'hue_scene_card',
+                'variables': {
+                  'name': NAME
+                },
+              }
+            }},
+          {%- endif -%} 
+        {%- endfor %}
+    sort:
+      method: friendly_name
+    card:
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout_options: !include ../../shared/snippets/layout-live-tile.yaml
+    view_layout:
+      grid-column: 1/-1
+
+- type: custom:popup-card
+  entity: popup.living_room_accents_scenes
+  title: Living Room Accents Scenes
+  card: 
+    type: 'custom:auto-entities'
+    filter:
+      template: |
+        {% for state in states.scene -%}
+          {%- if state.entity_id | regex_match('scene.living_room_accents_',ignorecase=False) -%}
+            {%- set NAME = state_attr(state.entity_id,"friendly_name") | regex_replace(find='Living Room Accents ', replace='') -%}
+            {{
+              { 'entity': state.entity_id,
+                'type': 'custom:button-card',
+                'template': 'hue_scene_card',
+                'variables': {
+                  'name': NAME
+                },
+              }
+            }},
+          {%- endif -%} 
+        {%- endfor %}
+    sort:
+      method: friendly_name
+    card:
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout_options: !include ../../shared/snippets/layout-live-tile.yaml
+    view_layout:
+      grid-column: 1/-1
+
+- type: custom:popup-card
+  entity: popup.kitchen_scenes
+  title: Kitchen Scenes
+  card: 
+    type: 'custom:auto-entities'
+    filter:
+      template: |
+        {% for state in states.scene -%}
+          {%- if state.entity_id | regex_match('scene.kitchen_',ignorecase=False) -%}
+            {%- set NAME = state_attr(state.entity_id,"friendly_name") | regex_replace(find='Kitchen ', replace='') -%}
+            {{
+              { 'entity': state.entity_id,
+                'type': 'custom:button-card',
+                'template': 'hue_scene_card',
+                'variables': {
+                  'name': NAME
+                },
+              }
+            }},
+          {%- endif -%} 
+        {%- endfor %}
+    sort:
+      method: friendly_name
+    card:
+      type: 'custom:layout-card'
+      layout_type: 'custom:grid-layout'
+      layout_options: !include ../../shared/snippets/layout-live-tile.yaml
+    view_layout:
+      grid-column: 1/-1

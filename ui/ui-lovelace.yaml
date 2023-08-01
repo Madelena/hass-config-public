@@ -7,37 +7,37 @@ title: Dashboard
 
 views:
   - !include views/summary.yaml
-  - !include views/network.yaml
   - !include views/energy.yaml
   - !include views/lights.yaml
   - !include views/security.yaml
   - !include views/maintenance.yaml
   - !include views/environment.yaml
+  - !include views/network.yaml
   - !include views/neighborhood.yaml
+  - !include views/weather.yaml
   - !include views/media.yaml
   - !include views/me.yaml
   - !include views/astrometrics.yaml
 
+  - !include views/subviews/chores.yaml
+  - !include views/subviews/group.all_on_off.yaml
+  - !include views/subviews/genesis.yaml
+  - !include views/subviews/unison.yaml
+  - !include views/subviews/illinoise.yaml
+  - !include views/subviews/plex.yaml
+  - !include views/subviews/sensor.notify_nyc.yaml
+  - !include views/subviews/binary_sensor.iss.yaml
+  - !include views/subviews/sensor.nws_alert_rss_feed.yaml
+  - !include views/subviews/transit.yaml
+
 decluttering_templates: !include templates/decluttering-card.yaml
 button_card_templates: !include_dir_merge_named templates/button-card/
 apexcharts_card_templates: !include templates/apexcharts-card.yaml
-popup_cards: !include_dir_merge_named popups/
 
 swipe_nav:
   animate: swipe
   prevent_default: true
 
-kiosk_mode:
-  user_settings:
-    - users:
-        - Strawberry
-        - Maddy
-      hide_sidebar: true
-      hide_menubutton: true
-      hide_overflow: true
-  mobile_settings:
-    hide_menubutton: true
-    hide_overflow: true
 
 # Remove the x for background.
 xbackground: >-

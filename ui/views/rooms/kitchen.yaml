@@ -6,12 +6,12 @@ title: Kitchen
 path: kitchen
 
 type: 'custom:grid-layout'
-layout: !include ../snippets/layout-page-margin.yaml
+layout: !include ../../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
     layout_type: 'custom:grid-layout'
-    layout: !include ../snippets/layout-page-columns.yaml
+    layout: !include ../../shared/snippets/layout-page-columns.yaml
     view_layout:
       grid-area: cc
     cards:
@@ -20,13 +20,13 @@ cards:
       
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include ../snippets/layout-page-title.yaml
+        layout: !include ../../shared/snippets/layout-page-title.yaml
         view_layout:
           grid-column: 1/-1
         cards:
 
           - type: markdown
-            style: !include ../snippets/style-markdown-page-title.yaml
+            style: !include ../../shared/snippets/style-markdown-page-title.yaml
             content: >
               # Kitchen
 
@@ -46,8 +46,8 @@ cards:
 
           - type: 'custom:layout-card'
             layout_type: 'custom:grid-layout'
-            layout: !include ../snippets/layout-live-tile.yaml
-            cards: !include ../columns/lights-kitchen.yaml
+            layout: !include ../../shared/snippets/layout-live-tile.yaml
+            cards: !include ../../shared/columns/lights-kitchen.yaml
 
 
       # [Column] Energy
@@ -63,32 +63,7 @@ cards:
             variables:
               name: ENERGY
 
-          - type: 'custom:auto-entities'
-            filter:
-              template: |
-                {% for sensor in expand('group.energy_kitchen', 'group.energy_kitchen_power_strip') -%}
-                  {%- set name = state_attr(sensor.entity_id,"friendly_name") | regex_replace(find='Kitchen ', replace='') | regex_replace(find='smartenergy_metering', replace='') | regex_replace(find=' Plug', replace='') | regex_replace(find='Counter ', replace='') | regex_replace(find=' Current Consumption', replace='') | regex_replace(find='Energy Use', replace='') -%}
-                  {{
-                    { 'entity': sensor.entity_id,
-                      'type': 'custom:decluttering-card',
-                      'template': 'mini_graph_tile',
-                      'variables': [
-                        {'entities': [sensor.entity_id]},
-                        {'title': name},
-                        {'lower_bound': 0},
-                        {'upper_bound': '~200'}
-                      ],
-                    }
-                  }},
-                {%- endfor %}
-            sort:
-              method: state
-              reverse: true
-              numeric: true
-            card:
-              type: 'custom:layout-card'
-              layout_type: 'custom:grid-layout'
-              layout_options: !include ../snippets/layout-live-tile.yaml
+          - !include ../../shared/cards/energy-kitchen.yaml
 
 
       # [Column] Security
@@ -108,7 +83,7 @@ cards:
             layout_type: 'custom:grid-layout'
             layout:
               margin: -1        
-            cards: !include ../secret/security-kitchen.yaml
+            cards: !include ../../shared/secret/security-kitchen.yaml
 
 
       # [Column] Chores
@@ -124,24 +99,14 @@ cards:
             variables:
               name: CHORES
 
-          - type: 'custom:auto-entities'
-            filter:
-              include:
-                - group: group.chore_kitchen
-                  options:
-                    type: 'custom:button-card'
-                    template: chore_tile
-            card:
-              type: 'custom:layout-card'
-              layout_type: 'custom:grid-layout'
-              layout_options: !include ../snippets/layout-live-tile.yaml
+          - !include ../../shared/cards/chores-kitchen.yaml
 
 
       # [Column] Environment
 
       - type: 'custom:layout-card'
         layout_type: 'custom:grid-layout'
-        layout: !include ../snippets/layout-live-tile.yaml     
+        layout: !include ../../shared/snippets/layout-live-tile.yaml     
         cards:
 
           - type: 'custom:button-card'
@@ -151,12 +116,15 @@ cards:
             view_layout:
               grid-column: 1/-1
 
-          - type: 'custom:decluttering-card'
-            template: mini_graph_tile
+          - type: 'custom:button-card'
+            template:
+              - live_tile_with_graph
+              - live_tile_with_state_unit
+            entity: sensor.kitchen_counter_motion_sensor_temperature
+            name: Temperature
             variables:
-              - entities:
-                  - entity: sensor.bedroom_hue_sensor_temperature
-              - title: Temperature
-              - aspect_ratio: 2
+              aspect_ratio: 2
+              line_width: 2
+              graph_height: 96
             view_layout:
               grid-column: span 2

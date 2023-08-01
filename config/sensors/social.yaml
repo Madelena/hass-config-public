@@ -1,13 +1,13 @@
 
-- platform: rest
-  name: My Twitter Followers Count
-  json_attributes_path: "$.[0]"
-  json_attributes:
-    - name
-    - screen_name
-  resource: https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=MadelenaMak
-  value_template: "{{ value_json[0].followers_count | int }}"
-  unit_of_measurement: "followers"
+# - platform: rest
+#   name: My Twitter Followers Count
+#   json_attributes_path: "$.[0]"
+#   json_attributes:
+#     - name
+#     - screen_name
+#   resource: https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=MadelenaMak
+#   value_template: "{{ value_json[0].followers_count | int }}"
+#   unit_of_measurement: "followers"
 
 - platform: rest
   name: Reddit Profile (mmakes)
@@ -22,3 +22,21 @@
     - awardee_karma
     - awarder_karma
 
+- platform: filter
+  name: Reddit Profile (mmakes) Filtered
+  entity_id: sensor.reddit_profile_mmakes
+  filters:
+    - filter: outlier
+      window_size: 5
+      radius: 500.0
+      precision: 0
+
+- platform: rest
+  name: Mastodon (@madelena@mastodon.online)
+  resource: https://mastodon.online/api/v1/accounts/109268768615203874
+  value_template: "{{ value_json.followers_count | int }}"
+  unit_of_measurement: "followers"
+  json_attributes:
+    - following_count
+    - statuses_count
+    - last_status_at

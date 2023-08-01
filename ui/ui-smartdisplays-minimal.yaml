@@ -1,0 +1,20 @@
+# The Ambient Smart Displays Dashboard - Minimal Version
+# For use on smaller Echo Show and Google Home displays
+# Made by Madelena Mak 2022
+# https://mmak.es
+
+
+title: Smart Display (Minimal)
+
+decluttering_templates: !include templates/decluttering-card.yaml
+button_card_templates: !include_dir_merge_named templates/button-card/
+
+views:
+  - !include smartdisplays/views/home-minimal.yaml
+
+# 
+# background: var(--primary-color)
+animated_background:
+  default_url: 'https://cdn.flixel.com/flixel/7a0iejyutuuc9p8rdss3.hd.mp4'
+  # default_url: "/local/pexels-rostislav-uzunov-10613972.mp4"
+

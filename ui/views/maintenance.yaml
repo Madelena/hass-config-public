@@ -6,12 +6,12 @@ title: Maintenance
 path: maintenance
 
 type: 'custom:grid-layout'
-layout: !include snippets/layout-page-margin.yaml
+layout: !include ../shared/snippets/layout-page-margin.yaml
 
 cards:
   - type: 'custom:layout-card'
     layout_type: 'custom:grid-layout'
-    layout: !include snippets/layout-page-columns.yaml
+    layout: !include ../shared/snippets/layout-page-columns.yaml
     view_layout:
       grid-area: cc
 
@@ -19,102 +19,571 @@ cards:
 
       # [Header] Summary 
       - type: markdown
-        style: !include snippets/style-markdown-page-title.yaml
+        style: !include ../shared/snippets/style-markdown-page-title.yaml
         view_layout:
           grid-column: 1/-1
         content: >
           # Maintenance
 
-          Peanut Hamper is {{ states('vacuum.peanut_hamper') }}{{ iif(
+          Peanut Hamper is {{ states('vacuum.peanut_hamper_s7') }}{{ iif(
           is_state('binary_sensor.peanut_hamper_bin_full', 'on'), ' and
           needs to be emptied. ', '. ') }} There are {{ state_attr('sensor.chores_done', 'entities')|length }} chores done, {{
           state_attr('sensor.chores_to_do', 'entities')|length }} to do soon, and {{
           state_attr('sensor.chores_overdue', 'entities')|length }} overdue.
 
 
-      # [Column] My Machines
+      # [Column] Cleaning
 
-      - type: vertical-stack
+      - type: 'custom:layout-card'
+        layout_type: 'custom:grid-layout'
+        layout:
+          margin: 0
+          grid-template-columns: 'repeat(auto-fill, [col-start] minmax(360px, 1fr) [col-end])'
+        view_layout:
+          grid-column-start: 1
+          grid-column-end: -2
         cards:
+
           - type: 'custom:button-card'
             template: header_card_no_link
             variables:
-              name: MY MACHINES
+              name: CLEANING
             view_layout:
-              grid-column: 1/-1
+              grid-column-start: 1
+              grid-column-end: -1
 
-          - type: horizontal-stack
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include ../shared/snippets/layout-live-tile.yaml
             cards:
 
               - type: 'custom:vacuum-card'
-                entity: vacuum.peanut_hamper
+                entity: vacuum.peanut_hamper_s7
+                view_layout:
+                  grid-column-start: 1
+                  grid-column-end: -1
                 image: default
-                show_toolbar: true
+                show_toolbar: false
                 show_status: true
                 compact_view: false
                 card_mod:
                   style: >
-                    .preview {font-size: var(--body-font-size); font-weight:
-                    normal;} .metadata {position: absolute; top: 0;
-                    text-align: left; padding: 0 16px;} .vacuum-name
-                    {font-size: var(--card-title-font-size) !important;
-                    font-weight: 500 !important;} .status {justify-content:
-                    flex-start !important;} .status-text {margin-left: 0
-                    !important;} ha-card .header {padding-top: 0 !important;
-                    height: auto !important;} .battery {padding: 12px 16px
-                    !important;} .stats-block {text-align: left !important;
-                    padding: 8px 16px;} .vacuum {filter: invert(1);} ha-card
-                    {--vc-background: none; --vc-spacing: 16px;} .tips
-                    {flex-direction: row-reverse;} .toolbar {background:
-                    none !important;}
+                    ha-card { aspect-ratio: 1; }
+                    .preview {
+                      font-size: var(--body-font-size);
+                      font-weight: normal;
+                    }
+                    .metadata {
+                      position: absolute;
+                      top: 0;
+                      text-align: left;
+                      padding: 0 16px;
+                    }
+                    .vacuum-name {
+                      font-size: var(--card-title-font-size) !important;
+                      font-weight: 600 !important;
+                    }
+                    .status { justify-content: flex-start !important; }
+                    .status-text { margin-left: 0 !important; }
+                    ha-card .header {
+                      padding-top: 0 !important;
+                      height: auto !important;
+                    }
+                    .battery { padding: 12px 16px !important; }
+                    .stats-block {
+                      text-align: left !important;
+                      padding: 8px 16px;
+                    }
+                    .vacuum {
+                      filter: invert(1);
+                      max-width: 50%;
+                      max-height: auto;
+                      margin: 12.5% auto;
+                    }
+                    ha-card {
+                      --vc-background: none;
+                      --vc-spacing: 16px;
+                    }
+                    .tips {
+                      flex-direction: row-reverse;
+                      display: none !important;
+                    }
+                    .toolbar { background: none !important; }
+                    .header { flex-direction: row-reverse; }
 
-          - type: entities
-            entities:
-              - entity: binary_sensor.peanut_hamper_bin_full
-                type: 'custom:template-entity-row'
-                name: Vacuum Bin
-                state: >-
-                  {{ iif( is_state('binary_sensor.peanut_hamper_bin_full',
-                  'on'), 'Full', 'Not Full') }}
-                secondary: >-
-                  Since {{
-                  states.binary_sensor.peanut_hamper_bin_full.last_changed |
-                  relative_time }} ago
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_percent_bar
+                variables:
+                  percent: '[[[ return entity.attributes.battery_level ]]]'
+                entity: vacuum.peanut_hamper_s7
+                name: Battery
+                state_display: '[[[ return entity.attributes.battery_level + "%" ]]]'
+                icon: mdi:battery-charging-100
 
-          - type: 'custom:logbook-card'
-            entity: vacuum.peanut_hamper
-            history: 5
-            max_items: 10
-            date_format: 'MMM D hh:mm'
-            show:
-              state: true
-              duration: true
-              start_date: true
-              end_date: true
-              icon: false
-              separator: false
-            collapse: 3
-            title: ' '
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                name: Fan Speed
+                entity: vacuum.peanut_hamper_s7
+                state_display: '[[[ return entity.attributes.fan_speed ]]]'
+                icon:  |
+                  [[[
+                    switch(entity.attributes.fan_speed) {
+                      case "Silent":
+                        return "mdi:fan-remove"
+                        break
+                      case "Standard":
+                        return "mdi:fan-speed-1"
+                        break
+                      case "Medium":
+                        return "mdi:fan-speed-2"
+                        break
+                      case "Turbo":
+                        return "mdi:fan-speed-3"
+                        break
+                      case "Auto":
+                        return "mdi:fan-auto"
+                        break
+                      case "Gentle":
+                        return "mdi:fan-minus"
+                        break
+                      default:
+                        return "mdi:fan"
+                        break
+                    }                            
+                  ]]]
+                styles:
+                  card:
+                    - background: |
+                        [[[
+                          switch(entity.attributes.fan_speed) {
+                            case "Medium":
+                              return "rgba(var(--rgb-primary-color), .5)"
+                              break
+                            case "Turbo":
+                              return "rgba(var(--rgb-primary-color), 1)"
+                              break
+                            case "Gentle":
+                              return "rgba(var(--rgb-primary-color), .25)"
+                              break
+                            case "Silent":
+                              return "rgba(var(--rgb-primary-color), .25)"
+                              break
+                            default:
+                              return "var(--ha-card-background)"
+                              break
+                          }                            
+                        ]]]
+                    - color: var(--primary-text-color)
 
-          - type: entities
-            entities:
-              - type: 'custom:multiple-entity-row'
-                entity: sensor.bedroom_humidifier_power
-                secondary_info:
-                  attribute: lackWater
-            title: Bedroom Humidifier
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                entity: binary_sensor.roborock_vacuum_a15_water_shortage
+                name: Water
 
-          - type: entities
-            entities:
-              - entity: sensor.pure_hot_cool_link_filter_life
-            title: Bedroom Dyson Pure
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_reversed_state_colors
+                entity: binary_sensor.roborock_vacuum_a15_mop_attached
+                name: Mop
+                state_display: '[[[ return (entity.state == "on") ? "Attached" : "Detached" ]]]'
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_reversed_state_colors
+                entity: binary_sensor.roborock_vacuum_a15_water_box_attached
+                name: Water Box
+                state_display: '[[[ return (entity.state == "on") ? "Attached" : "Detached" ]]]'
+
+              - type: 'custom:button-card'
+                template:
+                  - live_tile
+                entity: sensor.roborock_vacuum_a15_total_clean_count
+                name: Total Clean Count
+
+
+          - type: vertical-stack
+            in_card: true
+            cards:
+
+              - type: custom:xiaomi-vacuum-map-card
+                map_source:
+                  camera: camera.peanut_hamper_s7
+                calibration_source:
+                  camera: true
+                entity: vacuum.peanut_hamper_s7
+                vacuum_platform: default
+                map_locked: false
+                tiles: []
+                icons:
+                  - icon: mdi:play
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: cleaning
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: error
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: returning
+                    tooltip: Start
+                    tap_action:
+                      action: call-service
+                      service: vacuum.start
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                  - icon: mdi:pause
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: docked
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: idle
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: error
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: paused
+                    tooltip: Pause
+                    tap_action:
+                      action: call-service
+                      service: vacuum.pause
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                  - icon: mdi:stop
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: docked
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: idle
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: error
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: paused
+                    tooltip: Stop
+                    tap_action:
+                      action: call-service
+                      service: vacuum.stop
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                  - icon: mdi:home-map-marker
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: docked
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: returning
+                    tooltip: Return to base
+                    tap_action:
+                      action: call-service
+                      service: vacuum.return_to_base
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                  - icon: mdi:target-variant
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: docked
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: error
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: cleaning
+                      - entity: vacuum.peanut_hamper_s7
+                        value_not: returning
+                    tooltip: Clean spot
+                    tap_action:
+                      action: call-service
+                      service: vacuum.clean_spot
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                  - icon: mdi:map-marker
+                    tooltip: Locate
+                    tap_action:
+                      action: call-service
+                      service: vacuum.locate
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                  - icon: mdi:fan-remove
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value: Silent
+                    tooltip: Change fan speed
+                    tap_action:
+                      action: call-service
+                      service: vacuum.set_fan_speed
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                        fan_speed: Standard
+                  - icon: mdi:fan-speed-1
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value: Standard
+                    tooltip: Change fan speed
+                    tap_action:
+                      action: call-service
+                      service: vacuum.set_fan_speed
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                        fan_speed: Medium
+                  - icon: mdi:fan-speed-2
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value: Medium
+                    tooltip: Change fan speed
+                    tap_action:
+                      action: call-service
+                      service: vacuum.set_fan_speed
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                        fan_speed: Turbo
+                  - icon: mdi:fan-speed-3
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value: Turbo
+                    tooltip: Change fan speed
+                    tap_action:
+                      action: call-service
+                      service: vacuum.set_fan_speed
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                        fan_speed: Silent
+                  - icon: mdi:fan-alert
+                    conditions:
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value_not: Silent
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value_not: Standard
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value_not: Medium
+                      - entity: vacuum.peanut_hamper_s7
+                        attribute: fan_speed
+                        value_not: Turbo
+                    tooltip: Change fan speed
+                    tap_action:
+                      action: call-service
+                      service: vacuum.set_fan_speed
+                      service_data:
+                        entity_id: vacuum.peanut_hamper_s7
+                        fan_speed: Silent
+                # map_modes:
+                #   - name: Zone cleanup
+                #     icon: mdi:select-drag
+                #     run_immediately: false
+                #     coordinates_rounding: true
+                #     selection_type: MANUAL_RECTANGLE
+                #     max_selections: 5
+                #     repeats_type: EXTERNAL
+                #     max_repeats: 3
+                #     service_call_schema:
+                #       service: xiaomi_miio.vacuum_clean_zone
+                #       service_data:
+                #         zone: '[[selection]]'
+                #         repeats: '[[repeats]]'
+                #         entity_id: '[[entity_id]]'
+                #     predefined_selections: []
+                #     variables: {}
+                #   - name: Pin & Go
+                #     icon: mdi:map-marker-plus
+                #     run_immediately: false
+                #     coordinates_rounding: true
+                #     selection_type: MANUAL_POINT
+                #     max_selections: 999
+                #     repeats_type: NONE
+                #     max_repeats: 1
+                #     service_call_schema:
+                #       service: xiaomi_miio.vacuum_goto
+                #       service_data:
+                #         x_coord: '[[point_x]]'
+                #         y_coord: '[[point_y]]'
+                #         entity_id: '[[entity_id]]'
+                #     predefined_selections: []
+                #     variables: {}
+                card_mod:
+                  style: |
+                    ha-card {
+                      --map-card-internal-big-radius: var(--ha-card-border-radius) !important;
+                      --map-card-internal-small-radius: var(--ha-card-border-radius) !important;
+                      --map-card-internal-secondary-text-color: var(--primary-text-color) !important;
+                      --map-card-internal-secondary-color: transparent !important;
+                    }
+
+
+          # - type: vertical-stack
+          #   view_layout:
+          #     show:
+          #       mediaquery: '(min-width: 1080px)'
+          #   cards: &column-maintenance-vacuum-sessions
+
+          #     - type: entities
+          #       title: Current Session
+          #       entities:
+          #         - entity: sensor.roborock_vacuum_a15_current_clean_area
+          #           name: Area
+          #         - entity: sensor.roborock_vacuum_a15_current_clean_duration
+          #           name: Duration
+
+          #     - type: entities
+          #       title: Last Session
+          #       entities:
+          #         - entity: sensor.roborock_vacuum_a15_last_clean_area
+          #           name: Area
+          #         - entity: sensor.roborock_vacuum_a15_last_clean_duration
+          #           name: Duration
+          #         - entity: sensor.roborock_vacuum_a15_last_clean_start
+          #           name: Started at
+          #           type: custom:multiple-entity-row
+          #           format: datetime
+          #         - entity: sensor.roborock_vacuum_a15_last_clean_end
+          #           name: Ended at
+          #           type: custom:multiple-entity-row
+          #           format: datetime
+                    
+          #     - type: entities
+          #       title: Lifetime Total
+          #       entities:
+          #         - entity: sensor.roborock_vacuum_a15_total_clean_area
+          #           name: Area
+          #         - entity: sensor.roborock_vacuum_a15_total_duration
+          #           name: Duration
+
+
+          # - type: 'custom:logbook-card'
+          #   entity: vacuum.peanut_hamper_s7
+          #   history: 5
+          #   max_items: 10
+          #   date_format: 'MMM D hh:mm'
+          #   show:
+          #     state: true
+          #     duration: true
+          #     start_date: true
+          #     end_date: true
+          #     icon: false
+          #     separator: false
+          #   collapse: 3
+          #   title: ' '
+
+
+      # [Column] Gardening
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
+            variables:
+              name: GARDENING
+
+          - type: 'custom:layout-card'
+            layout_type: 'custom:grid-layout'
+            layout: !include ../shared/snippets/layout-live-tile.yaml
+            cards:
+
+              - &maintenance-plant-tile
+                type: 'custom:button-card'
+                template:
+                  - live_tile_card
+                  - live_tile_with_long_state
+                  - plant_status
+                entity: plant.kitchen_garden_basil
+                name: Basil
+                variables:
+                  plant: basil
+
+              - <<: *maintenance-plant-tile
+                entity: plant.kitchen_garden_cilantro
+                name: Cilantro
+                variables:
+                  plant: cilantro
+
+              - <<: *maintenance-plant-tile
+                entity: plant.living_room_garden_jade_plant
+                name: Jade
+                variables:
+                  plant: jade
+
+              - <<: *maintenance-plant-tile
+                entity: plant.living_room_garden_lavender_tree
+                name: Lavender
+                variables:
+                  plant: lavender
+
+              - <<: *maintenance-plant-tile
+                entity: plant.bathroom_garden_zamia
+                name: Zamia
+                variables:
+                  plant: zamia
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.kitchen_garden_basil_moisture
+                    name: Basil
+                  - entity: sensor.kitchen_garden_cilantro_moisture
+                    name: Cilantro
+                  - entity: sensor.living_room_garden_jade_plant_moisture
+                    name: Jade
+                  - entity: sensor.living_room_garden_lavender_tree_moisture
+                    name: Lavender
+                  - entity: sensor.bathroom_garden_zamia_moisture
+                    name: Zamia
+              - title: Moisture
+              - height: 120
+              - hours_to_show: 168
+              - points_per_hour: .5
+
+          # - type: 'custom:decluttering-card'
+          #   template: multi_graph_card
+          #   variables:
+          #     - entities:
+          #         - entity: sensor.kitchen_garden_basil_illuminance
+          #           name: Basil
+          #         - entity: sensor.kitchen_garden_cilantro_illuminance
+          #           name: Cilantro
+          #         - entity: sensor.living_room_garden_jade_plant_illuminance
+          #           name: Jade
+          #         - entity: sensor.living_room_garden_lavender_tree_illuminance
+          #           name: Lavender
+          #         - entity: sensor.bathroom_garden_zamia_illuminance
+          #           name: Zamia
+          #     - title: Illuminance
+          #     - height: 120
+          #     - hours_to_show: 168
+          #     - points_per_hour: .5
+          #     - upper_bound: 2000
+
+          - type: 'custom:decluttering-card'
+            template: multi_graph_card
+            variables:
+              - entities:
+                  - entity: sensor.kitchen_garden_basil_conductivity
+                    name: Basil
+                  - entity: sensor.kitchen_garden_cilantro_conductivity
+                    name: Cilantro
+                  - entity: sensor.living_room_garden_jade_plant_conductivity
+                    name: Jade
+                  - entity: sensor.living_room_garden_lavender_tree_conductivity
+                    name: Lavender
+                  - entity: sensor.bathroom_garden_zamia_conductivity
+                    name: Zamia
+              - title: Conductivity
+              - height: 120
+              - hours_to_show: 168
+              - points_per_hour: .5
+
 
 
       # [Column] Chores
 
       - type: vertical-stack
-        view_layout:
-          grid-column: 2/-2
+        # view_layout:
+        #   grid-column: 2/-2
         cards:
 
           - type: 'custom:button-card'
@@ -129,63 +598,7 @@ cards:
               card_margin: 1px 16px
               width: 360
 
-
-            cards:
-
-              - type: 'custom:auto-entities'
-                filter:
-                  include:
-                    - group: group.chore_plants
-                      options:
-                        type: 'custom:button-card'
-                        template: chore_card
-                card:
-                  type: entities
-                  title: Plants
-
-              - type: 'custom:auto-entities'
-                filter:
-                  include:
-                    - group: group.chore_kitchen
-                      options:
-                        type: 'custom:button-card'
-                        template: chore_card
-                card:
-                  type: entities
-                  title: Kitchen
-
-              - type: 'custom:auto-entities'
-                filter:
-                  include:
-                    - group: group.chore_bathroom
-                      options:
-                        type: 'custom:button-card'
-                        template: chore_card
-                card:
-                  type: entities
-                  title: Bathroom
-
-              - type: 'custom:auto-entities'
-                filter:
-                  include:
-                    - group: group.chore_living_room
-                      options:
-                        type: 'custom:button-card'
-                        template: chore_card
-                card:
-                  type: entities
-                  title: Living Room
-
-              - type: 'custom:auto-entities'
-                filter:
-                  include:
-                    - group: group.chore_personal
-                      options:
-                        type: 'custom:button-card'
-                        template: chore_card
-                card:
-                  type: entities
-                  title: Personal
+            cards: !include ../shared/columns/chores-all-list.yaml
 
 
       # [Column] Batteries
@@ -197,46 +610,420 @@ cards:
             template: header_card_no_link
             variables:
               name: BATTERIES
-            view_layout:
-              grid-column: 1/-1
 
-          - type: 'custom:decluttering-card'
-            template: metro_bar_card_no_icon
-            variables:
-              - entities:
-                  - entity: sensor.front_door_camera_battery
-                  - entity: sensor.front_door_switchbot_contact_sensor_battery
-                  - entity: sensor.kitchen_leak_sensor_power
-              - title: Crucial
+          - type: entities
+            entities:
+              - entity: sensor.front_door_camera_battery
+                type: custom:button-card
+                template: bar_row
+                name: Front Door Camera
+              - entity: sensor.front_door_lock_battery
+                type: custom:button-card
+                template: bar_row
+                name: Front Door Deadbolt Lock
+                label: 2×CR123A
+                show_label: true
+              - entity: sensor.front_door_switchbot_contact_sensor_battery
+                type: custom:button-card
+                template: bar_row
+                name: Front Door Contact Sensor
+                label: 1×AA
+                show_label: true
+              - entity: sensor.kitchen_leak_sensor_power
+                type: custom:button-card
+                template: bar_row
+                name: Kitchen Leak Sensor
+            title: Crucial
+            style: &style-maintenance-entities |
+              #states > div > * {overflow: visible !important;}
 
-          - type: 'custom:decluttering-card'
-            template: metro_bar_card_no_icon
-            variables:
-              - entities:
-                  - entity: sensor.netatmo_strawberry_land_indoor_outdoor_battery_percent
-                  - entity: sensor.living_room_window_sensor_center_power
-                  - entity: sensor.living_room_window_sensor_right_power
-                  - entity: sensor.bedroom_window_sensor_left_power
-                  - entity: sensor.bedroom_window_sensor_center_power
-                  - entity: sensor.bedroom_hue_sensor_battery
-                  - entity: sensor.living_room_hue_sensor_battery
-                  - entity: sensor.workspace_room_hue_sensor_battery
-                  - entity: binary_sensor.kitchen_sink_motion_sensor_battery
-                  - entity: sensor.kitchen_leak_sensor_power
-                  - entity: sensor.bathroom_env_sensor_power
-              - title: Sensors
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.netatmo_strawberry_land_indoor_outdoor_battery_percent
+                type: custom:button-card
+                template: bar_row
+                name: Netatmo Outside
+              - entity: sensor.bathroom_env_sensor_power
+                type: custom:button-card
+                template: bar_row
+                name: Bathroom
+              - entity: sensor.living_room_env_sensor_power
+                type: custom:button-card
+                template: bar_row
+                name: Living Room
+              - entity: sensor.lumi_lumi_airmonitor_acn01_power
+                type: custom:button-card
+                template: bar_row
+                name: Kitchen Stove
+              - entity: sensor.workspace_env_sensor_power
+                type: custom:button-card
+                template: bar_row
+                name: Workspace
+              # - entity: sensor.genesis_thermometer_battery
+              #   type: custom:button-card
+              #   template: bar_row
+              #   name: Workspace Makery
+            title: Environmental Sensors
 
-          - type: 'custom:decluttering-card'
-            template: metro_bar_card_no_icon
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.astralplane_hue_sensor_battery
+                type: custom:button-card
+                template: bar_row
+                name: Astralplane
+                label: 2×AA
+                show_label: true
+              - entity: sensor.bedroom_hue_sensor_battery
+                type: custom:button-card
+                template: bar_row
+                name: Bedroom
+                label: 2×AA
+                show_label: true
+              - entity: sensor.living_room_hue_sensor_battery
+                type: custom:button-card
+                template: bar_row
+                name: Living Room
+                label: 2×AA
+                show_label: true
+              - entity: sensor.workspace_room_hue_sensor_battery
+                type: custom:button-card
+                template: bar_row
+                name: Workspace
+                label: 2×AA
+                show_label: true
+              - entity: sensor.kitchen_counter_motion_sensor_device_power
+                type: custom:button-card
+                template: bar_row
+                name: Kitchen Counter
+                label: 2×AA
+                show_label: true
+              - entity: sensor.south_facade_hue_sensor_device_power
+                type: custom:button-card
+                template: bar_row
+                name: South Facade
+                label: 2×AA
+                show_label: true
+            title: Motion Sensors
+
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              # - entity: sensor.kitchen_garden_basil_battery
+              #   type: custom:button-card
+              #   template: bar_row
+              #   name: Basil
+              - entity: sensor.kitchen_garden_cilantro_battery
+                type: custom:button-card
+                template: bar_row
+                name: Cilantro
+              - entity: sensor.living_room_garden_jade_plant_battery
+                type: custom:button-card
+                template: bar_row
+                name: Jade
+              - entity: sensor.living_room_garden_lavender_tree_battery
+                type: custom:button-card
+                template: bar_row
+                name: Lavender
+              # - entity: sensor.bathroom_garden_zamia_battery
+              #   type: custom:button-card
+              #   template: bar_row
+              #   name: Zamia
+            title: Plant Sensors
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.living_room_window_sensor_center_power
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Center
+              - entity: sensor.living_room_window_sensor_right_power
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Right
+              - entity: sensor.bedroom_window_sensor_left_power
+                type: custom:button-card
+                template: bar_row
+                name: Bedroom Left
+              - entity: sensor.bedroom_window_sensor_center_power
+                type: custom:button-card
+                template: bar_row
+                name: Bedroom Center
+              - entity: sensor.bedroom_window_curtain_left_battery
+                type: custom:button-card
+                template: bar_row
+                name: Bedroom Curtain Left
+              - entity: sensor.bedroom_window_curtain_right_battery
+                type: custom:button-card
+                template: bar_row
+                name: Bedroom Curtain Right
+            title: Windows
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.hue_tap_dial_switch_1_battery
+                type: custom:button-card
+                template: bar_row
+                name: Bedroom Hue Dial
+              - entity: sensor.astralplane_hue_dimmer_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Astralplane Hue Dimmer
+                label: CR2450
+                show_label: true
+              - entity: sensor.bedroom_hue_dimmer_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Workspace Desk Top Hue Dimmer
+                label: CR2450
+                show_label: true
+              - entity: sensor.living_room_hue_dimmer_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Hue Dimmer
+              - entity: sensor.living_room_accents_dimmer_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Accents Hue Dimmer
+                label: CR2450
+                show_label: true
+              - entity: sensor.living_room_dining_table_dimmer_power
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Dining Table Dimmer
+              - entity: sensor.living_room_dimmer_knob_power
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Dining Table Knob
+              - entity: sensor.living_room_couch_dimmer_power
+                type: custom:button-card
+                template: bar_row
+                name: Living Room Couch Dimmer
+              - entity: sensor.hallway_dimmer_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Hallway Hue Dimmer
+                label: CR2450
+                show_label: true
+              - entity: sensor.kitchen_chore_buttons_power
+                type: custom:button-card
+                template: bar_row
+                name: Kitchen Chore Buttons
+              - entity: sensor.workbench_studio_lights_dimmer_battery
+                type: custom:button-card
+                template: bar_row
+                name: Workspace Studio Lights Dimmer
+              - entity: sensor.workspace_makery_button_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Workspace Makery Button
+              - entity: sensor.terpsichora_beogram_button_c4a3b6fe_power
+                type: custom:button-card
+                template: bar_row
+                name: Terpsichora Beogram Button
+            title: Remotes
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.astralplane_ensign_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Astralplane Ensign
+              - entity: sensor.astralplane_ups_battery_charge
+                type: custom:button-card
+                template: bar_row
+                name: Astralplane UPS
+              # - entity: sensor.dorothy_battery_charge_remaining_percentage
+              #   type: custom:button-card
+              #   template: bar_row
+              #   name: Dorothy
+              - entity: sensor.etherealm_battery_charge_remaining_percentage
+                type: custom:button-card
+                template: bar_row
+                name: Etherealm
+              - entity: sensor.kaleidoscape_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Kaleidoscape
+              - entity: sensor.nullaby_battery_level
+                type: custom:button-card
+                template: bar_row
+                name: Nullaby
+              - entity: vacuum.peanut_hamper_s7
+                type: custom:button-card
+                template: bar_row
+                name: Peanut Hamper
+                state_display: '[[[ return entity.attributes.battery_level + "%" ]]]'
+                variables:
+                  state: '[[[ return entity.attributes.battery_level ]]]'
+              - entity: sensor.valhalla_ups_battery_charge
+                type: custom:button-card
+                template: bar_row
+                name: Valhalla UPS
+              - entity: sensor.zuneth_battery_level_2
+                type: custom:button-card
+                template: bar_row
+                name: Zuneth
+            title: Devices
+
+
+
+      # [Column] Parts
+
+      - type: vertical-stack
+        cards:
+
+          - type: 'custom:button-card'
+            template: header_card_no_link
             variables:
-              - entities:
-                  - entity: sensor.bedroom_window_curtain_left_battery
-                  - entity: sensor.bedroom_window_curtain_right_battery
-                  - entity: sensor.astralplane_hue_dimmer_battery_level
-                  - entity: sensor.bedroom_hue_dimmer_battery_level
-                  - entity: sensor.living_room_hue_dimmer_battery_level
-                  - entity: sensor.living_room_accents_dimmer_battery_level
-                  - entity: sensor.living_room_dining_table_dimmer_power
-                  - entity: sensor.living_room_dimmer_knob_power
-                  - entity: sensor.hallway_dimmer_battery_level
-              - title: Remotes
+              name: PARTS
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.roborock_vacuum_a15_main_brush_left
+                type: custom:button-card
+                template: bar_row
+                name: Main Brush
+                state_display: '[[[ return Math.round(entity.state / 60 / 60) + " hr left" ]]]'
+                variables:
+                  max: 1080000
+              - entity: sensor.roborock_vacuum_a15_side_brush_left
+                type: custom:button-card
+                template: bar_row
+                name: Side Brush
+                state_display: '[[[ return Math.round(entity.state / 60 / 60) + " hr left" ]]]'
+                variables:
+                  max: 720000
+              - entity: sensor.roborock_vacuum_a15_sensor_dirty_left
+                type: custom:button-card
+                template: bar_row
+                name: Sensors
+                state_display: '[[[ return Math.round(entity.state / 60 / 60) + " hr left" ]]]'
+                variables:
+                  max: 108000
+              - entity: sensor.roborock_vacuum_a15_filter_left
+                type: custom:button-card
+                template: bar_row
+                name: Filter
+                state_display: '[[[ return Math.round(entity.state / 60 / 60) + " hr left" ]]]'
+                variables:
+                  max: 540000
+            title: Peanut Hamper
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.workspace_air_purifier_filter_run_time
+                type: custom:button-card
+                template: bar_row
+                name: Filter
+                state_display: '[[[ return Math.round((260000 - entity.state) / 60 / 24) + " d left" ]]]'
+                variables:
+                  max: 260000
+                  state: '[[[ return 260000 - entity.state ]]]'
+            title: Workspace Air Purifier
+
+          - type: entities
+            entities:
+              - type: 'custom:multiple-entity-row'
+                entity: sensor.bedroom_humidifier_power
+                secondary_info:
+                  attribute: lackWater
+            title: Bedroom Humidifier
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.pure_hot_cool_link_filter_life
+                type: custom:button-card
+                template: bar_row
+                name: Filter
+                variables:
+                  max: 4000
+            title: Bedroom Dyson Pure
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.mfc_l2700dw_black_toner_remaining
+                type: custom:button-card
+                template: bar_row
+                name: Black Toner
+                variables:
+                  bar_color: 128,128,128
+              - entity: sensor.mfc_l2700dw_drum_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Drum
+            title: Brother Multifunction Printer
+
+          - type: entities
+            style: *style-maintenance-entities
+            entities:
+              - entity: sensor.brother_hl_l3230cdw_series_c
+                type: custom:button-card
+                template: bar_row
+                name: Cyan Toner
+                variables:
+                  bar_color: 0,255,255
+              - entity: sensor.brother_hl_l3230cdw_series_m
+                type: custom:button-card
+                template: bar_row
+                name: Magenta Toner
+                variables:
+                  bar_color: 255,0,255
+              - entity: sensor.brother_hl_l3230cdw_series_y
+                type: custom:button-card
+                template: bar_row
+                name: Yellow Toner
+                variables:
+                  bar_color: 255,255,0
+              - entity: sensor.brother_hl_l3230cdw_series_bk
+                type: custom:button-card
+                template: bar_row
+                name: Black Toner
+                variables:
+                  bar_color: 128,128,128
+              - entity: sensor.hl_l3230cdw_cyan_drum_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Cyan Drum
+                variables:
+                  bar_color: 0,255,255
+              - entity: sensor.hl_l3230cdw_magenta_drum_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Magenta Drum
+                variables:
+                  bar_color: 255,0,255
+              - entity: sensor.hl_l3230cdw_yellow_drum_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Yellow Drum
+                variables:
+                  bar_color: 255,255,0
+              - entity: sensor.hl_l3230cdw_black_drum_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Black Drum
+                variables:
+                  bar_color: 128,128,128
+              - entity: sensor.hl_l3230cdw_fuser_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Fuser
+              - entity: sensor.hl_l3230cdw_pf_kit_1_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: PF Kit 1
+              - entity: sensor.hl_l3230cdw_belt_unit_remaining_life
+                type: custom:button-card
+                template: bar_row
+                name: Belt Unit
+            title: Brother Color Printer

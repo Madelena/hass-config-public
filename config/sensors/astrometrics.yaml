@@ -7,43 +7,45 @@
   scan_interval:
     hours: 1
 
-- platform: rest
-  name: NOAA Space Weather - Noon 10.7cm Radio Flux
-  resource: https://services.swpc.noaa.gov/products/summary/10cm-flux.json
-  value_template: "{{ value_json.Flux | int }}"
-  unit_of_measurement: "sfu"
-  json_attributes_path: "$"
-  json_attributes:
-    - Timestamp
+# - platform: rest
+#   name: NOAA Space Weather - Noon 10.7cm Radio Flux
+#   resource: https://services.swpc.noaa.gov/products/summary/10cm-flux.json
+#   scan_interval: 3600
+#   value_template: "{{ value_json.Flux | int }}"
+#   unit_of_measurement: "sfu"
+#   json_attributes_path: "$"
+#   json_attributes:
+#     - Timestamp
 
-- platform: rest
-  name: NOAA Space Weather - Solar Wind Magnetic Fields - Bt
-  resource: https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json
-  value_template: "{{ value_json.Bt | int }}"
-  unit_of_measurement: "nT"
-  json_attributes_path: "$"
-  json_attributes:
-    - Timestamp
+# - platform: rest
+#   name: NOAA Space Weather - Solar Wind Magnetic Fields - Bt
+#   resource: https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json
+#   value_template: "{{ value_json.Bt | int }}"
+#   unit_of_measurement: "nT"
+#   json_attributes_path: "$"
+#   json_attributes:
+#     - Timestamp
+#   scan_interval: 3600
 
-- platform: rest
-  name: NOAA Space Weather - Solar Wind Magnetic Fields - Bz
-  resource: https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json
-  value_template: "{{ value_json.Bz | int }}"
-  unit_of_measurement: "nT"
-  json_attributes_path: "$"
-  json_attributes:
-    - Timestamp
+# - platform: rest
+#   name: NOAA Space Weather - Solar Wind Magnetic Fields - Bz
+#   resource: https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json
+#   value_template: "{{ value_json.Bz | int }}"
+#   unit_of_measurement: "nT"
+#   json_attributes_path: "$"
+#   json_attributes:
+#     - Timestamp
+#   scan_interval: 3600
 
-- platform: rest
-  name: NOAA Space Weather - Solar Wind Speed
-  resource: https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json
-  value_template: "{{ value_json.WindSpeed | int }}"
-  unit_of_measurement: "km/sec"
-  json_attributes_path: "$"
-  json_attributes:
-    - Timestamp
+# - platform: rest
+#   name: NOAA Space Weather - Solar Wind Speed
+#   resource: https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json
+#   value_template: "{{ value_json.WindSpeed | int }}"
+#   unit_of_measurement: "km/sec"
+#   json_attributes_path: "$"
+#   json_attributes:
+#     - Timestamp
+#   scan_interval: 3600
 
-- platform: moon
-
-- platform: ha_skyfield
+# - platform: ha_skyfield
 

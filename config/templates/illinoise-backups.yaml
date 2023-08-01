@@ -1,0 +1,115 @@
+
+# Turn SyncBackSE Logs into sensors.
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - sensor.dorothysyncbacklog_collections
+        - sensor.dorothysyncbacklog_personal
+        - sensor.dorothysyncbacklog_portfolio
+        - sensor.dorothysyncbacklog_practices
+        - sensor.dorothysyncbacklog_projects
+
+  sensor:
+    - name: Dorothy SyncBack - Collections
+      icon: mdi:backup-restore
+      state: |
+        {{ states('sensor.dorothysyncbacklog_collections') | regex_findall_index(find='Result","(.*)"') }}
+      attributes:
+        profile_start_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_collections') | regex_findall_index(find='Profile Start Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        profile_end_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_collections') | regex_findall_index(find='Profile End Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        difference: |
+          {% set diff = states('sensor.dorothysyncbacklog_collections') | regex_findall(find='"(.*)","([0-9]*)"') %}
+          {{ diff[0][0] }} {% if diff[0][1] != "0" %}{{ diff[0][1] }} files.{% endif %}
+        
+    - name: Dorothy SyncBack - Personal
+      icon: mdi:backup-restore
+      state: |
+        {{ states('sensor.dorothysyncbacklog_personal') | regex_findall_index(find='Result","(.*)"') }}
+      attributes:
+        profile_start_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_personal') | regex_findall_index(find='Profile Start Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        profile_end_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_personal') | regex_findall_index(find='Profile End Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        difference: |
+          {% set diff = states('sensor.dorothysyncbacklog_personal') | regex_findall(find='"(.*)","([0-9]*)"') %}
+          {{ diff[0][0] }} {% if diff[0][1] != "0" %}{{ diff[0][1] }} files.{% endif %}
+
+    - name: Dorothy SyncBack - Portfolio
+      icon: mdi:backup-restore
+      state: |
+        {{ states('sensor.dorothysyncbacklog_portfolio') | regex_findall_index(find='Result","(.*)"') }}
+      attributes:
+        profile_start_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_portfolio') | regex_findall_index(find='Profile Start Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        profile_end_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_portfolio') | regex_findall_index(find='Profile End Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        difference: |
+          {% set diff = states('sensor.dorothysyncbacklog_portfolio') | regex_findall(find='"(.*)","([0-9]*)"') %}
+          {{ diff[0][0] }} {% if diff[0][1] != "0" %}{{ diff[0][1] }} files.{% endif %}
+
+    - name: Dorothy SyncBack - Practices
+      icon: mdi:backup-restore
+      state: |
+        {{ states('sensor.dorothysyncbacklog_practices') | regex_findall_index(find='Result","(.*)"') }}
+      attributes:
+        profile_start_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_practices') | regex_findall_index(find='Profile Start Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        profile_end_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_practices') | regex_findall_index(find='Profile End Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        difference: |
+          {% set diff = states('sensor.dorothysyncbacklog_practices') | regex_findall(find='"(.*)","([0-9]*)"') %}
+          {{ diff[0][0] }} {% if diff[0][1] != "0" %}{{ diff[0][1] }} files.{% endif %}
+
+    - name: Dorothy SyncBack - Projects
+      icon: mdi:backup-restore
+      state: |
+        {{ states('sensor.dorothysyncbacklog_projects') | regex_findall_index(find='Result","(.*)"') }}
+      attributes:
+        profile_start_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_projects') | regex_findall_index(find='Profile Start Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        profile_end_time: |
+          {{ strptime(states('sensor.dorothysyncbacklog_projects') | regex_findall_index(find='Profile End Time","(.*)"'), "%Y-%m-%d %H:%M:%S") }}
+        difference: |
+          {% set diff = states('sensor.dorothysyncbacklog_projects') | regex_findall(find='"(.*)","([0-9]*)"') %}
+          {{ diff[0][0] }} {% if diff[0][1] != "0" %}{{ diff[0][1] }} files.{% endif %}
+
+
+# Break email from Crashplan into sensors.
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: state
+      entity_id:
+        - sensor.crashplan_status
+
+  sensor:
+    - name: Dorothy Crashplan
+      icon: mdi:cloud-upload
+      state: |
+        {{ state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*[\w\d\.^]*[\s]*[\w\d\.^]*[\s]*([\w\d\.%]*)[\s]*') }}
+      attributes:
+        reporting_period: |
+          {{ state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='Reporting period: (.*)') }}
+        selected_size: |
+          {{ (state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*([\w\d\.^]*)\s')).split('^')[0] }}
+        difference_size: |
+          {{ (state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*([\w\d\.^]*)\s')).split('^')[1] }}
+        selected_files: |
+          {{ (state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*[\w\d\.^]*[\s]*([\w\d\.^]*)[\s]*')).split('^')[0] }}
+        difference_files: |
+          {{ (state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*[\w\d\.^]*[\s]*([\w\d\.^]*)[\s]*')).split('^')[1] }}
+        last_completed: |
+          {{ state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*[\w\d\.^]*[\s]*[\w\d\.^]*[\s]*[\w\d\.%]*[\s]*(\d* \w*)') }}
+        last_activity: |
+          {{ state_attr('sensor.crashplan_status', 'body') | regex_findall_index(find='CrashPlan Central[\s]*[\w\d\.^]*[\s]*[\w\d\.^]*[\s]*[\w\d\.%]*[\s]*\d* \w*[\s]*(\d* \w*)') }}
+        date: |
+          {{ state_attr('sensor.crashplan_status', 'date') }}
+
