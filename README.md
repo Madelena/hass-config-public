@@ -1,26 +1,36 @@
-# My Home Assistant Config
+# Madelena's Home Assistant Configs
 
-## Maximalist Dashboard
+## The Maximalist Dashboard + The Ambient Smart Display
 
 This is a redacted version of my personal dashboard configuration for [Home Assistant](https://www.home-assistant.io/), an open source home automation server that integrates nearly 2000 existing IoT services into one powerful, private, and unified user interface.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/madelena)
 
-**✨ Thank you @legovaer and @pbohannon for your generous support! ✨**
+My design is based on these principles:
+- **Expressive**: The design should display the information clearly and boldly.
+- **Contextual**: The design should adapt to the environment where it is used.
+- **Information First**: The design should focus on the information, not the ornaments.
+
+There are mainly two types of dashboards in this configuration:
+- **Maximalist Dashboards**: Intentionally dense with information. Used for control centers.
+- **Ambient Dashboards**: Succinct and sparse with information. Used for smart displays.
+
+It uses my own [Metrology theme](https://github.com/Madelena/Metrology-for-Hass), based on Metro design system, to reduce visual clutter, create a sense of visual hierarchy, and focus on the data.
 
 ## Table of Contents
 
-- [Design Principles](#design-principles)
-- [Screenshots Tour ↗](https://github.com/Madelena/hass-config-public/wiki/Views-and-Cards)
+- [The Maximalist Dashboard](#the-maximalist-dashboard)
+  - [Screenshots Tour ↗](https://github.com/Madelena/hass-config-public/wiki/Views-and-Cards)
+- [The Ambient Dashboard](#the-ambient-dashboard)
+  - [Screenshots Tour ↗](https://github.com/Madelena/hass-config-public/wiki/Ambient-Dashboard-Views)
+  - [How it works ↗](https://github.com/Madelena/hass-config-public/wiki/Ambient-Dashboard:-How-It-Works)
 - [Features](#features)
 - [How to Install](#how-to-install)
 - [Specifications ↗](https://github.com/Madelena/hass-config-public/wiki/Specifications) - Hardware, Ecosystem, List of Integrations, etc.
 - [Tools Used](#tools-used)
 - [Credits](#credits)
 
-## Design Principles
-
-The design is based on the principle that *data is beautiful*.
+## The Maximalist Dashboard
 
 Contrary to conventional UX design, the dashboard is intentionally dense with information and not minimalist, because it is designed for only one power user: me.
 
@@ -32,11 +42,20 @@ The dashboard is designed to maximize the amount of information displayed withou
 
 Animation is toned down so that it still feels responsive but not distracting. Colors are used to draw attention to things that I need to attend to, and the monochromatic color scheme keeps the visual priority clear. The wireframe aesthetic for illustrations and flat icons keeps visual noise to the minimum.
 
-It uses my own [Metrology theme](https://github.com/Madelena/Metrology-for-Hass), based on Metro design system, to reduce visual clutter, create a sense of visual hierarchy, and focus on the data.
+## The Ambient Dashboard
+
+It started as a thought experiment: How little information can I show on a screen and the design will still be useful? The other extreme of maximalism bequeaths an ultraminimalist layout that only shows just *one* sensor at a time.
+
+This layout is perfect as a replacement for the ad-filled slideshows of smart home displays such as Amazon Echo Show devices and Google Home devices. With Home Assistant as its backbone, the main slideshow is infinitely customizable and the controls are tailored for my home, unlike their corporate counterparts.
+
+Designed to achieve the “pre-attentiveness” of the human brain, ambient displays make it possible for the user to process information without diverting the attention toward background tasks.
+
+There are two main components to the dashboard: the "Slides" and the "Apps". The Slides acts as the home screen that constantly and leisurely rotates each sensor information on a relaxing video backdrop. The Apps each act as a hub for controlling or monitoring a particular aspect of my home with touch-friendly and clean UI elements.
+
 
 ## Features
 
-### Data Visualizations - Make it Beautiful
+### Data Visualizations - Make it Expressive
 Data is beautiful! Data in HA is used to render some unique, eye-catching, and informative graphs as the visual focus of each page.
 
 <table>
@@ -91,6 +110,32 @@ Grid columns reflow depending on screen width and device type. Since I use the d
 
 ![The dashboard in many different sizes on many different screens.](https://user-images.githubusercontent.com/4341881/177017856-a0dc2761-6ea6-4a41-a135-50cb0d3f9071.png)
 
+### Live Tiles - Make it Tidy
+
+<table>
+  <tr>
+    <td width="50%">Perfect square grid with tiles in all sizes</td>
+    <td width="50%">Rotating cube animation to subtly catch the right amount of attention</td>
+  </tr>
+  <tr>
+    <td width="50%">Variations based on states</td>
+    <td width="50%">Layouts for cameras, pictures, media players, etc.</td>
+  </tr>
+</table>
+
+### Contextual Showxatings - Make it Handy
+Show the right amount of information in the right context.
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://user-images.githubusercontent.com/4341881/176365452-1e027b60-142e-4263-927b-b97c324edfd0.jpeg"/>An e-Paper display using ESPHome shows just what is needed before heading outside.</td>
+    <td width="50%">A stretched bar LCD display running a custom server works as an ambient clock.</td>
+  </tr>
+  <tr>
+    <td width="50%">An always-on display with the Maximalist Dashboard works as a command center of the home.</td>
+    <td width="50%">An Amazon Echo Show showing a simplified dashboard makes it easy to mark chores as done.</td>
+  </tr>
+</table>
 
 ## Screenshots
 
